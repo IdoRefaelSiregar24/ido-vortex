@@ -38,39 +38,35 @@ export default function Login() {
 
     return (
         <div>
-            <h2 className="text-2xl font-semibold text-gray-700 mb-6 text-center">
-                Selamat Datang 💊
-            </h2>
-
             {error && (
-                <div className="bg-red-100 mb-5 p-4 text-sm text-red-700 rounded-lg flex items-center">
-                    <BsFillExclamationDiamondFill className="text-red-500 mr-2 text-lg" /> {error}
+                <div className="bg-red-50 border border-red-200 mb-5 p-4 text-sm text-red-600 rounded-xl flex items-center">
+                    <BsFillExclamationDiamondFill className="text-red-500 mr-3 text-lg" /> {error}
                 </div>
             )}
             {loading && (
-                <div className="bg-gray-100 mb-5 p-4 text-sm rounded-lg flex items-center">
-                    <ImSpinner2 className="mr-2 animate-spin" /> Mohon Tunggu...
+                <div className="bg-gray-50 border border-gray-200 mb-5 p-4 text-sm text-gray-600 rounded-xl flex items-center">
+                    <ImSpinner2 className="mr-3 animate-spin text-emerald-600 text-lg" /> Autentikasi...
                 </div>
             )}
 
-            <form onSubmit={handleSubmit}>
-                <div className="mb-5">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                    <input type="text" name="email" onChange={handleChange} placeholder="emilys" className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 outline-none focus:ring-2 focus:ring-hijau/20" />
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="flex flex-col space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700">Username</label>
+                    <input type="text" name="email" onChange={handleChange} placeholder="emilys" className="w-full p-2.5 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all" />
                 </div>
-                <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                    <input type="password" name="password" onChange={handleChange} placeholder="********" className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 outline-none focus:ring-2 focus:ring-hijau/20" />
+                <div className="flex flex-col space-y-1.5">
+                    <label className="text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" name="password" onChange={handleChange} placeholder="••••••••" className="w-full p-2.5 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all" />
                 </div>
-                <button type="submit" className="w-full bg-hijau hover:bg-teal-700 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-300">
-                    Login
+                <button type="submit" className="w-full mt-2 px-4 py-2.5 bg-emerald-600 text-white text-sm font-semibold rounded-lg hover:bg-emerald-700 transition-all shadow-sm">
+                    Masuk ke Dashboard
                 </button>
             </form>
 
-            <div className="mt-4 text-center text-sm">
-                <Link to="/forgot" className="text-hijau hover:underline">Lupa Password?</Link>
-                <span className="text-gray-400 mx-2">•</span>
-                <Link to="/register" className="text-hijau hover:underline">Daftar Akun</Link>
+            <div className="mt-6 flex items-center justify-center space-x-4 text-sm">
+                <Link to="/forgot" className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors">Lupa Password?</Link>
+                <div className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                <Link to="/register" className="text-emerald-600 hover:text-emerald-700 font-medium transition-colors">Daftar Akun</Link>
             </div>
         </div>
     );

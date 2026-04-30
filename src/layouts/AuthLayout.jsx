@@ -2,19 +2,22 @@ import { Outlet } from "react-router-dom";
 
 export default function AuthLayout() {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-50 to-gray-100">
-            <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md border border-gray-100">
-                <div className="flex items-center justify-center mb-6">
-                    <h1 className="text-3xl font-poppins font-extrabold text-gray-800">
-                        <span className="text-hijau">Apotek</span>
-                        <span className="text-gray-800"> Sehat</span>
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 font-inter">
+            <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 w-full max-w-md">
+                <div className="flex flex-col items-center justify-center mb-8">
+                    <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 text-2xl font-bold mb-3">
+                        +
+                    </div>
+                    <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
+                        Apotek Keluarga
                     </h1>
+                    <p className="text-sm text-gray-500 mt-1">Portal Manajemen Farmasi</p>
                 </div>
 
                 <Outlet />
 
-                <p className="text-center text-sm text-gray-400 mt-6">
-                    © 2026 Apotek Sehat Pekanbaru. All rights reserved.
+                <p className="text-center text-xs text-gray-400 mt-8">
+                    © 2026 Apotek Keluarga. All rights reserved.
                 </p>
             </div>
         </div>
