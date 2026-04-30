@@ -40,7 +40,6 @@ export default function PropertyCard({ property }) {
           isHovered ? 'shadow-2xl' : 'shadow-md'
         }`}
         style={{
-          /* Nilai transform bersifat dinamis dari posisi mouse — tidak bisa pakai className */
           transform,
           transition: isHovered
             ? 'transform 0.1s ease-out, box-shadow 0.3s ease'
@@ -48,7 +47,6 @@ export default function PropertyCard({ property }) {
           transformStyle: 'preserve-3d',
         }}
       >
-        {/* Memanggil Child Component: Image */}
         <PropertyImage
           imageUrl={property.imageUrl}
           name={property.name}
@@ -57,16 +55,13 @@ export default function PropertyCard({ property }) {
         />
 
         <div className="p-5 flex flex-col flex-grow">
-          {/* Memanggil Child Component: Header */}
           <PropertyHeader
             name={property.name}
             location={property.details.location}
           />
 
-          {/* Memanggil Child Component: Spesifikasi */}
           <PropertySpecs specs={property.details.specs} />
 
-          {/* Memanggil Child Component: Harga + Tombol */}
           <PropertyPrice
             price={property.details.price}
             onViewDetails={() => setShowModal(true)}
@@ -74,7 +69,6 @@ export default function PropertyCard({ property }) {
         </div>
       </div>
 
-      {/* Modal Detail Properti */}
       {showModal && (
         <PropertyModal property={property} onClose={() => setShowModal(false)} />
       )}

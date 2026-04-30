@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { FaHome } from 'react-icons/fa'
+
 export default function PropertyImage({ imageUrl, name, tags, isHovered }) {
   const badge = tags && tags[0] ? tags[0] : null;
 

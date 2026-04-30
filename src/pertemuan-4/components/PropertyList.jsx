@@ -4,7 +4,6 @@ import PropertyCard from './PropertyCard';
 import { formatRupiah } from './currency';
 
 const FILTER_TAGS = ['Semua', 'Minimalis', 'Mewah', 'Modern', 'Investasi', 'Subsidi'];
-// Mengambil list lokasi unik dari JSON untuk Filter ke-2
 const UNIQUE_LOCATIONS = ['Semua', ...new Set(propertiesData.map(p => p.details.location.split(', ')[0]))];
 
 // ── Navbar ─────────────────────────────────────────────────────────────────
@@ -40,13 +39,13 @@ function Navbar() {
 
 // ── PropertyList (Main Component) ──────────────────────────────────────────
 export default function PropertyList() {
-  // Best Practice State: Mengelola Input & Tampilan
+
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('Semua');
-  const [locationFilter, setLocationFilter] = useState('Semua'); // Filter ke-2
-  const [viewMode, setViewMode] = useState('guest'); // Toggle Guest (Card) vs Admin (Table)
+  const [locationFilter, setLocationFilter] = useState('Semua'); 
+  const [viewMode, setViewMode] = useState('guest'); 
 
-  // Data JSON: Logika Search & 2 Filter (Chained)
+
   const filteredProperties = propertiesData.filter((property) => {
     const matchSearch =
       property.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -60,7 +59,7 @@ export default function PropertyList() {
       locationFilter === 'Semua' || 
       property.details.location.includes(locationFilter);
 
-    return matchSearch && matchTag && matchLocation;
+    return matchSearch &&  matchTag && matchLocation;
   });
 
   return (
@@ -93,7 +92,7 @@ export default function PropertyList() {
           </div>
         </div>
 
-        {/* Panel Form: 1 Search & 2 Filters */}
+        
         <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <label className="block text-xs font-bold text-gray-500 mb-2 uppercase tracking-wide">Cari Properti</label>
@@ -141,7 +140,7 @@ export default function PropertyList() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProperties.map((property) => (
                 <PropertyCard key={property.id} property={property} />
-              ))}
+              ))} 
             </div>
           ) : (
             /* TAMPILAN ADMIN (TABEL) */
