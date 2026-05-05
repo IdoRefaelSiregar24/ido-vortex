@@ -47,7 +47,7 @@ export default function Dashboard() {
                         <FaCalendarAlt className="mr-2 text-gray-400" />
                         {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                     </button>
-                    <button className="flex items-center bg-emerald-600 border border-transparent rounded-lg px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 transition">
+                    <button className="flex items-center bg-hijau border border-transparent rounded-lg px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 transition">
                         <FaPlus className="mr-2" />
                         Transaksi Baru
                     </button>
