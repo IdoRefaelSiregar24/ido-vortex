@@ -1,30 +1,69 @@
 @import "tailwindcss";
 
+/* --- Mengatur font bawaan (Default) --- */
 body {
-    @apply font-barlow;
+    @apply font-lato;
+}
+
+/* --- Import Font Lato --- */
+@font-face {
+    font-family: 'Lato';
+    src: url('/fonts/Lato-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
 }
 
 @font-face {
-    font-family: 'Barlow';
-    src: url('/fonts/Barlow-Regular.ttf') format('truetype');
+    font-family: 'Lato';
+    src: url('/fonts/Lato-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
 }
 
 @font-face {
-    font-family: 'Poppins';
-    src: url('/fonts/Poppins-Regular.ttf') format('truetype');
+    font-family: 'Lato';
+    src: url('/fonts/Lato-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
 }
 
 @theme {
+    /* --- Font Family --- */
+    --font-lato: "Lato", sans-serif;
 
-    --font-barlow: "Barlow", sans-serif;
-    --font-poppins: "Poppins", sans-serif;          
+    /* --- Color Scheme --- */
+    --color-ocean-green: #4EA674;
+    --color-cyprus: #023337;
+    --color-surf-crest: #C1E6BA;
+    --color-aqua-spring: #EAF8E7;
+    --color-primary-cta: #6467F2; 
+    --color-success: #21C45D;
+    --color-pending: #F0D411;
+    --color-error: #EF4343;
+    --color-grey: #7C7C7C;
 
-    --color-latar: #f3f4f6;
-    --color-teks: #374151;
-    --color-teks-samping: #6b7280;
-    --color-garis: #e5e7eb;
-    --color-hijau: #00B074;
-    --color-merah: #ef4444;
-    --color-biru: #3b82f6;
-    --color-kuning: #f59e0b;
+    /* --- Type Scale (Ukuran Teks & Jarak) --- */
+    
+    /* Display / Header 1 */
+    --text-display: 57px;
+    --text-display--letter-spacing: -0.25%;
+    
+    /* Header 2 */
+    --text-header2: 32px;
+    --text-header2--letter-spacing: 0;
+    
+    /* Title / Body Large */
+    --text-title-large: 22px;
+    
+    /* Title for Dashboard */
+    --text-dashboard: 18px;
+    --text-dashboard--letter-spacing: -2%;
+    
+    /* Body */
+    --text-body: 16px;
+    --text-body--line-height: 140%;
+    
+    /* Button Text (Sama ukuran dengan body, tapi dipisah jika ingin spesifik) */
+    --text-button: 16px;
+    --text-button--letter-spacing: 0;
 }

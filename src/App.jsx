@@ -16,6 +16,7 @@ const AuthLayout = React.lazy(() => import("./layouts/AuthLayout"));
 const Login = React.lazy(() => import("./pages/auth/Login"));
 const Register = React.lazy(() => import("./pages/auth/Register"));
 const Forgot = React.lazy(() => import("./pages/auth/Forgot"));
+const ComponentTest = React.lazy(() => import("./pages/ComponentTest"));
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/obat" element={<Obat />} />
           <Route path="/transaksi" element={<Transaksi />} />
           <Route path="/pelanggan" element={<Pelanggan />} />
+          <Route path="/test" element={<ComponentTest />} />
 
           {/* Error Routes */}
           <Route path="/error/400" element={<ErrorPage kodeError="400" deskripsiError="Bad Request! Ada yang salah dengan permintaanmu." />} />

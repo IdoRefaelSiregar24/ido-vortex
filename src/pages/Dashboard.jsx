@@ -36,24 +36,7 @@ export default function Dashboard() {
 
     return (
         <div className="font-inter text-gray-800 pb-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center py-8">
-                <div>
-                    <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">Ringkasan Apotek</h1>
-                    <p className="text-sm text-gray-500 mt-1">Pantau pendapatan, stok obat, dan aktivitas hari ini.</p>
-                </div>
-                <div className="flex items-center space-x-3 mt-4 md:mt-0">
-                    <button className="flex items-center bg-white border border-gray-200 rounded-lg px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition">
-                        <FaCalendarAlt className="mr-2 text-gray-400" />
-                        {new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
-                    </button>
-                    <button className="flex items-center bg-hijau border border-transparent rounded-lg px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 transition">
-                        <FaPlus className="mr-2" />
-                        Transaksi Baru
-                    </button>
-                </div>
-            </div>
-
+           
             {/* Stat Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm flex flex-col justify-between">
