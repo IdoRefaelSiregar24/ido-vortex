@@ -3,7 +3,7 @@ import { MdTrendingUp, MdCheckCircle, MdPending, MdCancel, MdOutlineInventory2 }
 import { AreaChart, Area, ResponsiveContainer, BarChart, Bar, Cell, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 import { obatData, transaksiData } from "../data";
 
-export function Dashboard() {
+export default function Dashboard() {
     const totalTransaksi = transaksiData.length;
     const totalPendapatan = transaksiData
         .filter(t => t.status === "Selesai")
