@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 // Ikon Logo Utama
 const LogoIcon = () => (
@@ -24,35 +25,35 @@ const Icons = {
 };
 
 export default function Sidebar() {
-  const [activeMenu, setActiveMenu] = useState('Dashboard');
+  const location = useLocation();
 
   const navigation = [
     {
       title: 'Main menu',
       items: [
-        { name: 'Dashboard', icon: Icons.Dashboard },
-        { name: 'Order Management', icon: Icons.Order },
-        { name: 'Customers', icon: Icons.Customer },
-        { name: 'Coupon Code', icon: Icons.Coupon },
-        { name: 'Categories', icon: Icons.Category },
-        { name: 'Transaction', icon: Icons.Transaction },
-        { name: 'Brand', icon: Icons.Brand },
+        { name: 'Dashboard', icon: Icons.Dashboard, path: '/' },
+        { name: 'Order Management', icon: Icons.Order, path: '/order-management' },
+        { name: 'Customers', icon: Icons.Customer, path: '/pelanggan' },
+        { name: 'Coupon Code', icon: Icons.Coupon, path: '/coupon' },
+        { name: 'Categories', icon: Icons.Category, path: '/categories' },
+        { name: 'Transaction', icon: Icons.Transaction, path: '/transaksi' },
+        { name: 'Brand', icon: Icons.Brand, path: '/brand' },
       ]
     },
     {
       title: 'Product',
       items: [
-        { name: 'Add Products', icon: Icons.Add },
-        { name: 'Product Media', icon: Icons.Media },
-        { name: 'Product List', icon: Icons.List },
-        { name: 'Product Reviews', icon: Icons.Review },
+        { name: 'Add Products', icon: Icons.Add, path: '/add-product' },
+        { name: 'Product Media', icon: Icons.Media, path: '/product-media' },
+        { name: 'Product List', icon: Icons.List, path: '/obat' },
+        { name: 'Product Reviews', icon: Icons.Review, path: '/reviews' },
       ]
     },
     {
       title: 'Admin',
       items: [
-        { name: 'Admin role', icon: Icons.Customer },
-        { name: 'Control Authority', icon: Icons.Admin },
+        { name: 'Admin role', icon: Icons.Customer, path: '/admin-role' },
+        { name: 'Control Authority', icon: Icons.Admin, path: '/authority' },
       ]
     }
   ];
@@ -83,13 +84,13 @@ export default function Sidebar() {
             </h3>
             <nav className="space-y-1">
               {section.items.map((item) => {
-                const isActive = activeMenu === item.name;
+                const isActive = location.pathname === item.path;
                 const Icon = item.icon;
 
                 return (
-                  <button
+                  <Link
                     key={item.name}
-                    onClick={() => setActiveMenu(item.name)}
+                    to={item.path}
                     className={`
                       flex items-center gap-4 px-4 py-3 rounded-xl w-full text-left transition-all duration-200
                       ${isActive 
@@ -100,7 +101,7 @@ export default function Sidebar() {
                   >
                     <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-grey'}`} />
                     <span className="text-body">{item.name}</span>
-                  </button>
+                  </Link>
                 );
               })}
             </nav>

@@ -8,6 +8,7 @@ import "./assets/tailwind.css";
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const Obat = React.lazy(() => import("./pages/Obat"));
 const Transaksi = React.lazy(() => import("./pages/Transaksi"));
+const OrderManagement = React.lazy(() => import("./pages/OrderManagement"));
 const Pelanggan = React.lazy(() => import("./pages/Pelanggan"));
 const NotFound = React.lazy(() => import("./pages/NotFound"));
 const ErrorPage = React.lazy(() => import("./pages/ErrorPage"));
@@ -27,6 +28,7 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/obat" element={<Obat />} />
           <Route path="/transaksi" element={<Transaksi />} />
+          <Route path="/order-management" element={<OrderManagement />} />
           <Route path="/pelanggan" element={<Pelanggan />} />
           <Route path="/test" element={<ComponentTest />} />
 

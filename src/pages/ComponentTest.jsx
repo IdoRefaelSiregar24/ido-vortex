@@ -7,6 +7,7 @@ import ProductCard   from '../components/ProductCard';
 // import PageHeader from '../components/PageHeader';
 import ReviewCard from '../components/ReviewCard';
 import SearchField from '../components/SearchField';
+import SalesCard from '../components/SalesCard';
 // import Sidebar from '../components/Sidebar';
 
 const ComponentTest = () => {
@@ -67,6 +68,13 @@ const ComponentTest = () => {
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-2">Sidebar</h2>
         
+      </div>
+
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-2">Sales Card</h2>
+        <div className="flex space-x-2">
+          <SalesCard />
+        </div>
       </div>
 
       {/* <div className="mb-8">
