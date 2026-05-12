@@ -6,10 +6,10 @@ import Button from '../components/Button';
 
 export default function OrderManagement() {
   return (
-    <div className="flex flex-col space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
+    <div className="flex flex-col space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10 pt-4 bg-gray-50 min-h-screen">
       
       {/* Header Section */}
-      <div className="flex justify-between items-center pt-4">
+      <div className="flex justify-between items-center">
           <h1 className="text-[22px] font-bold text-cyprus">Order List</h1>
           <div className="flex gap-3">
               <Button variant="primary" className="!px-4 !py-2 !rounded-lg !text-sm !shadow-sm !gap-1">

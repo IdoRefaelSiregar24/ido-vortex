@@ -4,12 +4,12 @@ import Pagination from './Pagination';
 
 const generateDummyData = () => {
   const base = [
-    { name: 'Wireless Bluetooth Headphones', payment: 'Paid', status: 'Delivered', price: '49.99' },
-    { name: "Men's T-Shirt", payment: 'Unpaid', status: 'Pending', price: '14.99' },
-    { name: "Men's Leather Wallet", payment: 'Paid', status: 'Delivered', price: '49.99' },
-    { name: 'Memory Foam Pillow', payment: 'Paid', status: 'Shipped', price: '39.99' },
-    { name: 'Adjustable Dumbbells', payment: 'Unpaid', status: 'Pending', price: '14.99' },
-    { name: 'Coffee Maker', payment: 'Unpaid', status: 'Cancelled', price: '79.99' },
+    { name: 'Paracetamol 500mg', payment: 'Paid', status: 'Delivered', price: '5.99' },
+    { name: 'Ibuprofen 400mg', payment: 'Unpaid', status: 'Pending', price: '6.99' },
+    { name: 'Amoxicillin 250mg', payment: 'Paid', status: 'Delivered', price: '8.99' },
+    { name: 'Vitamin C 1000mg', payment: 'Paid', status: 'Shipped', price: '4.99' },
+    { name: 'Omeprazole 20mg', payment: 'Unpaid', status: 'Pending', price: '7.99' },
+    { name: 'Cetirizine 10mg', payment: 'Unpaid', status: 'Cancelled', price: '5.99' },
   ];
   const images = [
     'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=40&h=40&q=80',

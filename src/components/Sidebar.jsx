@@ -34,8 +34,8 @@ export default function Sidebar() {
         { name: 'Dashboard', icon: Icons.Dashboard, path: '/' },
         { name: 'Order Management', icon: Icons.Order, path: '/order-management' },
         { name: 'Customers', icon: Icons.Customer, path: '/pelanggan' },
+        { name: 'Obat', icon: Icons.Category, path: '/products' },
         { name: 'Coupon Code', icon: Icons.Coupon, path: '/coupon' },
-        { name: 'Categories', icon: Icons.Category, path: '/categories' },
         { name: 'Transaction', icon: Icons.Transaction, path: '/transaksi' },
         { name: 'Brand', icon: Icons.Brand, path: '/brand' },
       ]

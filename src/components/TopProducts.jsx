@@ -2,25 +2,25 @@ import React from 'react';
 import { MdSearch } from 'react-icons/md';
 
 const topProducts = [
-  { name: 'Apple iPhone 13', item: '#FXZ-4567', price: '$999.00', image: 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?auto=format&fit=crop&w=48&h=48&q=80' },
-  { name: 'Nike Air Jordan', item: '#FXZ-4567', price: '$72.40', image: 'https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=48&h=48&q=80' },
-  { name: 'T-shirt', item: '#FXZ-4567', price: '$35.40', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=48&h=48&q=80' },
-  { name: 'Assorted Cross Bag', item: '#FXZ-4567', price: '$80.00', image: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=48&h=48&q=80' },
+  { name: 'Paracetamol 500mg', item: '#OBT-0001', price: '$5.99', image: 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?auto=format&fit=crop&w=48&h=48&q=80' },
+  { name: 'Ibuprofen 400mg', item: '#OBT-0002', price: '$6.99', image: 'https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=48&h=48&q=80' },
+  { name: 'Amoxicillin 250mg', item: '#OBT-0003', price: '$8.99', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=48&h=48&q=80' },
+  { name: 'Vitamin C 1000mg', item: '#OBT-0004', price: '$4.99', image: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=48&h=48&q=80' },
 ];
 
 const TopProducts = () => {
   return (
     <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 w-full font-sans">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-gray-800">Top Products</h3>
-        <a href="#" className="text-[13px] text-primary-cta font-medium hover:underline">All product</a>
+        <h3 className="text-lg font-semibold text-gray-800">Obat Teratas</h3>
+        <a href="#" className="text-[13px] text-primary-cta font-medium hover:underline">Semua obat</a>
       </div>
 
       <div className="relative mb-6">
         <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
         <input 
           type="text" 
-          placeholder="Search" 
+          placeholder="Cari obat" 
           className="w-full bg-[#f8fafc] text-sm border-none rounded-lg py-2.5 pl-10 pr-4 outline-none focus:ring-1 focus:ring-gray-200"
         />
       </div>

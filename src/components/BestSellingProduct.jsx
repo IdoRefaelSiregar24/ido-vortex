@@ -4,32 +4,32 @@ import Button from './Button';
 
 const products = [
   { 
-    name: 'Apple iPhone 13', 
+    name: 'Paracetamol 500mg', 
     image: 'https://images.unsplash.com/photo-1632661674596-df8be070a5c5?auto=format&fit=crop&w=40&h=40&q=80',
     orders: 104, 
     status: 'Stock', 
-    price: '$999.00' 
+    price: '$5.99' 
   },
   { 
-    name: 'Nike Air Jordan', 
+    name: 'Ibuprofen 400mg', 
     image: 'https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=40&h=40&q=80',
     orders: 56, 
     status: 'Stock out', 
-    price: '$999.00' 
+    price: '$6.99' 
   },
   { 
-    name: 'T-shirt', 
+    name: 'Amoxicillin 250mg', 
     image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=40&h=40&q=80',
     orders: 266, 
     status: 'Stock', 
-    price: '$999.00' 
+    price: '$8.99' 
   },
   { 
-    name: 'Cross Bag', 
+    name: 'Vitamin C 1000mg', 
     image: 'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?auto=format&fit=crop&w=40&h=40&q=80',
     orders: 506, 
     status: 'Stock', 
-    price: '$999.00' 
+    price: '$4.99' 
   },
 ];
 
@@ -37,7 +37,7 @@ const BestSellingProduct = () => {
   return (
     <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 w-full font-sans">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-lg font-semibold text-gray-800">Best selling product</h3>
+        <h3 className="text-lg font-semibold text-gray-800">Obat Terlaris</h3>
         <Button variant="primary" className="!px-4 !py-1.5 !text-sm !rounded-md !gap-1">
           Filter <MdFilterList size={16} />
         </Button>
@@ -47,7 +47,7 @@ const BestSellingProduct = () => {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-aqua-spring text-gray-500 text-[11px] font-semibold uppercase tracking-wider">
-              <th className="py-3 px-4 rounded-l-md">PRODUCT</th>
+              <th className="py-3 px-4 rounded-l-md">OBAT</th>
               <th className="py-3 px-4">TOTAL ORDER</th>
               <th className="py-3 px-4">STATUS</th>
               <th className="py-3 px-4 rounded-r-md">PRICE</th>
