@@ -9,6 +9,7 @@ const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const Obat = React.lazy(() => import("./pages/Obat"));
 const Transaksi = React.lazy(() => import("./pages/Transaksi"));
 const OrderManagement = React.lazy(() => import("./pages/OrderManagement"));
+const Components = React.lazy(() => import("./pages/Components"));
 const Pelanggan = React.lazy(() => import("./pages/Pelanggan"));
 const NotFound = React.lazy(() => import("./pages/NotFound"));
 const ErrorPage = React.lazy(() => import("./pages/ErrorPage"));
@@ -17,7 +18,6 @@ const AuthLayout = React.lazy(() => import("./layouts/AuthLayout"));
 const Login = React.lazy(() => import("./pages/auth/Login"));
 const Register = React.lazy(() => import("./pages/auth/Register"));
 const Forgot = React.lazy(() => import("./pages/auth/Forgot"));
-const ComponentTest = React.lazy(() => import("./pages/ComponentTest"));
 const ProductDetail = React.lazy(() => import("./pages/products/ProductDetail"));
 const Products = React.lazy(() => import("./pages/Products"));
 
@@ -34,7 +34,7 @@ function App() {
           <Route path="/pelanggan" element={<Pelanggan />} />
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetail />} />
-          <Route path="/test" element={<ComponentTest />} />
+          <Route path="/components" element={<Components />} />
 
           {/* Error Routes */}
           <Route path="/error/400" element={<ErrorPage kodeError="400" deskripsiError="Bad Request! Ada yang salah dengan permintaanmu." />} />
