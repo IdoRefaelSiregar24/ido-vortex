@@ -33,6 +33,11 @@ import ProductPricing from "../components/products/ProductPricing";
 import ProductTable from "../components/products/ProductTable";
 import ReportChart from "../components/ReportChart";
 
+// Shadcn UI Components
+import { Input } from "../components/ui/input";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
+import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
+
 export default function Components() {
   const [openSections, setOpenSections] = useState([1]); // First section open by default
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -366,6 +371,59 @@ export default function Components() {
           <div>
             <h3 className="text-sm font-bold text-gray-700 mb-3">Complete ProductList Component</h3>
             <ProductList />
+          </div>
+        </div>
+      )
+    },
+    {
+      id: 7,
+      title: "7. Shadcn UI Components",
+      content: (
+        <div className="space-y-8 animate-fadeIn pb-4">
+          <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+            <h3 className="text-sm font-bold text-gray-700 mb-4 border-b pb-2">Input (Shadcn)</h3>
+            <div className="max-w-sm">
+              <Input type="email" placeholder="Email address" />
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+            <h3 className="text-sm font-bold text-gray-700 mb-4 border-b pb-2">Alert (Shadcn)</h3>
+            <Alert>
+              <AlertTitle>Heads up!</AlertTitle>
+              <AlertDescription>
+                Shadcn UI components have been successfully integrated into the project.
+              </AlertDescription>
+            </Alert>
+          </div>
+
+          <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+            <h3 className="text-sm font-bold text-gray-700 mb-4 border-b pb-2">Table (Shadcn)</h3>
+            <Table>
+              <TableCaption>A list of recent transactions.</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">Invoice</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Method</TableHead>
+                  <TableHead className="text-right">Amount</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell className="font-medium">INV001</TableCell>
+                  <TableCell>Paid</TableCell>
+                  <TableCell>Credit Card</TableCell>
+                  <TableCell className="text-right">$250.00</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">INV002</TableCell>
+                  <TableCell>Pending</TableCell>
+                  <TableCell>PayPal</TableCell>
+                  <TableCell className="text-right">$150.00</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
           </div>
         </div>
       )

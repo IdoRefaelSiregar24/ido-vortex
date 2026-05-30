@@ -2,11 +2,21 @@ import React from "react";
 import OrderStatCard from "../components/OrderStatCard";
 import CustomerOverviewChart from "../components/CustomerOverviewChart";
 import CustomerTable from "../components/CustomerTable";
+import { Alert, AlertTitle, AlertDescription } from "../components/ui/alert";
+import { Input } from "../components/ui/input";
 
 export default function Pelanggan() {
     return (
         <div className="flex flex-col space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10 pt-4 bg-gray-50 min-h-screen">
             
+            {/* Top Alert Notification */}
+            <Alert variant="default" className="bg-aqua-spring border-ocean-green/30">
+                <AlertTitle className="text-cyprus font-bold">Info Sistem</AlertTitle>
+                <AlertDescription className="text-ocean-green font-medium">
+                    Data pelanggan terbaru telah berhasil disinkronisasi dengan database utama pada pukul 08:00 WIB.
+                </AlertDescription>
+            </Alert>
+
             {/* Top Section: Stats & Chart */}
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 
@@ -31,7 +41,13 @@ export default function Pelanggan() {
             </div>
 
             {/* Bottom Section: Table */}
-            <div className="mt-2">
+            <div className="mt-2 space-y-4">
+                <div className="flex items-center justify-between bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                    <h2 className="text-lg font-bold text-cyprus">Daftar Pelanggan</h2>
+                    <div className="w-64">
+                        <Input type="text" placeholder="Cari pelanggan..." />
+                    </div>
+                </div>
                 <CustomerTable />
             </div>
 
