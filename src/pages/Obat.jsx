@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { MdAdd, MdSearch, MdFilterList, MdOutlineInventory2 } from "react-icons/md";
 import PageHeader from "../components/PageHeader";
 import Modal from "../components/Modal";
@@ -7,6 +7,13 @@ import { obatData } from "../data";
 export default function Obat() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [obat] = useState(obatData);
+    const searchInputRef = useRef(null);
+
+    useEffect(() => {
+        if (searchInputRef.current) {
+            searchInputRef.current.focus();
+        }
+    }, []);
 
     const getKategoriStyle = (kategori) => {
         switch (kategori) {
@@ -36,6 +43,7 @@ export default function Obat() {
                     <div className="relative w-full md:w-64">
                         <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
                         <input
+                            ref={searchInputRef}
                             type="text"
                             placeholder="Cari obat..."
                             className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none"

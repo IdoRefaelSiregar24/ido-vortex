@@ -67,7 +67,7 @@ export default function Sidebar() {
         <div className="flex items-center gap-3 cursor-pointer">
           <LogoIcon />
           <span className="text-title-large font-bold text-cyprus tracking-wide">
-            Dealport
+            Apotek Sehat Pekanbaru
           </span>
         </div>
         {/* Tombol Collapse (Opsional) */}
