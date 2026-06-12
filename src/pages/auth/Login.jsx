@@ -1,8 +1,8 @@
-import axios from "axios";
 import { useState } from "react";
 import { BsFillExclamationDiamondFill } from "react-icons/bs";
 import { ImSpinner2 } from "react-icons/im";
 import { useNavigate, Link } from "react-router-dom";
+import { supabase } from "../../lib/supabase";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -13,22 +13,24 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setError(false);
+        setError("");
 
-        axios
-            .post("https://dummyjson.com/user/login", {
-                username: dataForm.email,
+        try {
+            const { data, error: signInError } = await supabase.auth.signInWithPassword({
+                email: dataForm.email,
                 password: dataForm.password,
-            })
-            .then((response) => {
-                if (response.status !== 200) { setError(response.data.message); return; }
+            });
+
+            if (signInError) {
+                setError(signInError.message);
+            } else {
                 navigate("/");
-            })
-            .catch((err) => {
-                if (err.response) setError(err.response.data.message || "Terjadi kesalahan");
-                else setError(err.message || "Kesalahan tidak diketahui");
-            })
-            .finally(() => setLoading(false));
+            }
+        } catch (err) {
+            setError(err.message || "Terjadi kesalahan saat masuk.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleChange = (evt) => {
@@ -40,26 +42,46 @@ export default function Login() {
         <div>
             {error && (
                 <div className="bg-red-50 border border-red-200 mb-5 p-4 text-sm text-red-600 rounded-xl flex items-center">
-                    <BsFillExclamationDiamondFill className="text-red-500 mr-3 text-lg" /> {error}
+                    <BsFillExclamationDiamondFill className="text-red-500 mr-3 text-lg flex-shrink-0" /> {error}
                 </div>
             )}
             {loading && (
                 <div className="bg-gray-50 border border-gray-200 mb-5 p-4 text-sm text-gray-600 rounded-xl flex items-center">
-                    <ImSpinner2 className="mr-3 animate-spin text-emerald-600 text-lg" /> Autentikasi...
+                    <ImSpinner2 className="mr-3 animate-spin text-emerald-600 text-lg flex-shrink-0" /> Autentikasi...
                 </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="flex flex-col space-y-1.5">
-                    <label className="text-sm font-medium text-gray-700">Username</label>
-                    <input type="text" name="email" onChange={handleChange} placeholder="emilys" className="w-full p-2.5 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all" />
+                    <label className="text-sm font-medium text-gray-700">Email</label>
+                    <input 
+                        type="email" 
+                        name="email" 
+                        value={dataForm.email}
+                        onChange={handleChange} 
+                        placeholder="email@contoh.com" 
+                        className="w-full p-2.5 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all" 
+                        required
+                    />
                 </div>
                 <div className="flex flex-col space-y-1.5">
                     <label className="text-sm font-medium text-gray-700">Password</label>
-                    <input type="password" name="password" onChange={handleChange} placeholder="••••••••" className="w-full p-2.5 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all" />
+                    <input 
+                        type="password" 
+                        name="password" 
+                        value={dataForm.password}
+                        onChange={handleChange} 
+                        placeholder="••••••••" 
+                        className="w-full p-2.5 text-sm bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all" 
+                        required
+                    />
                 </div>
-                <button type="submit" className="w-full mt-2 px-4 py-2.5 bg-emerald-600 text-white text-sm font-semibold rounded-lg hover:bg-emerald-700 transition-all shadow-sm">
-                    Masuk ke Dashboard
+                <button 
+                    type="submit" 
+                    disabled={loading}
+                    className="w-full mt-2 px-4 py-2.5 bg-emerald-600 text-white text-sm font-semibold rounded-lg hover:bg-emerald-700 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    {loading ? "Memproses..." : "Masuk ke Dashboard"}
                 </button>
             </form>
 
@@ -71,3 +93,4 @@ export default function Login() {
         </div>
     );
 }
+

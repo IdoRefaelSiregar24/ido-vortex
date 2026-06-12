@@ -1,6 +1,26 @@
-import { Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
+import Loading from "../components/Loading";
 
 export default function AuthLayout() {
+    const navigate = useNavigate();
+    const [checking, setChecking] = useState(true);
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                navigate("/", { replace: true });
+            } else {
+                setChecking(false);
+            }
+        });
+    }, [navigate]);
+
+    if (checking) {
+        return <Loading />;
+    }
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 font-inter">
             <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200 w-full max-w-md">
@@ -21,5 +41,6 @@ export default function AuthLayout() {
                 </p>
             </div>
         </div>
-    )
+    );
 }
+

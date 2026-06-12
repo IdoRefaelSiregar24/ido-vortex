@@ -24,8 +24,28 @@ const Icons = {
   Admin: (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
 };
 
-export default function Sidebar() {
+import { supabase } from '../lib/supabase';
+
+export default function Sidebar({ user }) {
   const location = useLocation();
+
+  const handleLogout = async () => {
+    if (window.confirm("Apakah Anda yakin ingin keluar dari sistem?")) {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        alert("Gagal keluar: " + error.message);
+      }
+    }
+  };
+
+  const initials = user?.full_name
+    ? user.full_name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .substring(0, 2)
+        .toUpperCase()
+    : "U";
 
   const navigation = [
     {
@@ -53,7 +73,7 @@ export default function Sidebar() {
     {
       title: 'Admin',
       items: [
-        { name: 'Admin role', icon: Icons.Customer, path: '/admin-role' },
+        { name: 'User Management', icon: Icons.Customer, path: '/user-management' },
         { name: 'Control Authority', icon: Icons.Admin, path: '/authority' },
       ]
     }
@@ -115,21 +135,21 @@ export default function Sidebar() {
         {/* Profil */}
         <div className="flex items-center justify-between px-2">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200">
-              <img src="https://i.pravatar.cc/100?u=mark" alt="Profile" className="w-full h-full object-cover" />
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-aqua-spring border border-ocean-green/20 flex items-center justify-center text-ocean-green font-bold text-sm">
+              {initials}
             </div>
             <div className="flex flex-col">
-              <span className="text-sm font-bold text-cyprus leading-none">Dealport</span>
-              <span className="text-[11px] text-gray-400 truncate w-32">Mark@thedesigner...</span>
+              <span className="text-sm font-bold text-cyprus leading-none truncate w-32">{user?.full_name || "Apoteker"}</span>
+              <span className="text-[11px] text-gray-400 truncate w-32">{user?.email || "staff@apotek.com"}</span>
             </div>
           </div>
-          <button className="text-gray-400 hover:text-error">
+          <button onClick={handleLogout} className="text-gray-400 hover:text-error cursor-pointer">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
           </button>
         </div>
 
         {/* Tombol Your Shop */}
-        <button className="flex items-center justify-between w-full p-4 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors group">
+        <button className="flex items-center justify-between w-full p-4 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors group cursor-pointer">
           <div className="flex items-center gap-3">
             <svg className="text-cyprus" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><rect x="9" y="22" width="6" height="0"/></svg>
             <span className="text-sm font-bold text-cyprus">Your Shop</span>

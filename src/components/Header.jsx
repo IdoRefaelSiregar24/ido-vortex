@@ -19,15 +19,25 @@ const SunIcon = () => (
   </svg>
 );
 
-export default function Header() {
+export default function Header({ user }) {
+  const initials = user?.full_name
+    ? user.full_name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .substring(0, 2)
+        .toUpperCase()
+    : "U";
+
   return (
     <header className="flex items-center justify-between w-full px-8 py-5 bg-white border-b border-gray-100">
       <div>
-        <h1 className="text-[22px] font-bold text-cyprus tracking-tight">Dashboard</h1>
+        <h1 className="text-[22px] font-bold text-cyprus tracking-tight">
+          Dashboard
+        </h1>
       </div>
 
       <div className="flex items-center gap-6">
-        {/* Sekarang ini akan berfungsi karena komponen sudah didefinisikan */}
         <InputField 
           variant="minimal" 
           placeholder="Search data, users, or reports"
@@ -45,14 +55,18 @@ export default function Header() {
           </div>
         </button>
 
-        <button className="w-10 h-10 rounded-full overflow-hidden border-2 border-transparent hover:border-ocean-green transition-all cursor-pointer shadow-sm">
-          <img 
-            src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
-            alt="User" 
-            className="w-full h-full object-cover" 
-          />
-        </button>
+        <div className="flex items-center gap-3">
+          {user && (
+            <div className="hidden md:flex flex-col text-right">
+              <span className="text-sm font-bold text-cyprus">{user.full_name}</span>
+              <span className="text-[11px] text-gray-400 capitalize">{user.role}</span>
+            </div>
+          )}
+          <div className="w-10 h-10 rounded-full border border-ocean-green/20 bg-aqua-spring hover:border-ocean-green transition-all cursor-pointer shadow-sm flex items-center justify-center text-ocean-green font-bold text-sm">
+            {initials}
+          </div>
+        </div>
       </div>
     </header>
   );
-}
+}
