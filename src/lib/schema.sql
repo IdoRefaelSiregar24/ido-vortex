@@ -2,17 +2,30 @@
 -- 1. PEMBUATAN TABEL PROFILES (DENGAN TINGKAT KEAMANAN / RLS)
 -- =========================================================================
 
--- Buat tabel profiles jika belum ada
-create table if not exists public.profiles (
+create table  public.profiles (
   id uuid references auth.users on delete cascade primary key,
   email text not null,
   full_name text not null,
-  role text not null default 'staff' check (role in ('admin', 'staff', 'manager')),
+  role text not null default 'staff' check (role in ('admin', 'staff', 'manager', 'member')),
+  membership_status text not null default 'free' check (membership_status in ('free', 'premium', 'vip')),
+  membership_points integer not null default 0 check (membership_points >= 0),
+  membership_joined_at timestamp with time zone not null default timezone('utc'::text, now()),
   created_at timestamp with time zone not null default timezone('utc'::text, now())
 );
 
 -- Aktifkan Row Level Security (RLS) jika belum aktif
 alter table public.profiles enable row level security;
+
+-- =========================================================================
+-- MIGRATION: JALANKAN PERINTAH ALTER DI BAWAH JIKA TABEL SUDAH ADA SEBELUMNYA
+-- =========================================================================
+-- alter table public.profiles 
+--   add column if not exists membership_status text not null default 'free' check (membership_status in ('free', 'premium', 'vip')),
+--   add column if not exists membership_points integer not null default 0 check (membership_points >= 0),
+--   add column if not exists membership_joined_at timestamp with time zone not null default now();
+-- alter table public.profiles drop constraint if exists profiles_role_check;
+-- alter table public.profiles add constraint profiles_role_check check (role in ('admin', 'staff', 'manager', 'member'));
+-- =========================================================================
 
 -- =========================================================================
 -- 2. HAMPIRAN FUNGSI BANTU & KEBIJAKAN AKSES (POLICIES)
@@ -71,7 +84,7 @@ begin
     new.id,
     new.email,
     coalesce(new.raw_user_meta_data->>'full_name', ''),
-    coalesce(new.raw_user_meta_data->>'role', 'staff')
+    coalesce(new.raw_user_meta_data->>'role', 'member') -- default ke member untuk registrasi baru
   );
   return new;
 end;
@@ -84,18 +97,17 @@ create trigger on_auth_user_created
   for each row execute procedure public.handle_new_user();
 
 -- =========================================================================
--- 4. SEEDER: BUAT USER ADMIN KELUARGA
+-- 4. SEEDER: BUAT USER ADMIN KELUARGA (JALANKAN SEKALI SAJA)
 -- =========================================================================
 
 -- Aktifkan extension pgcrypto jika belum aktif
 create extension if not exists pgcrypto;
 
--- Script seeder dengan pemeriksaan email unik agar tidak duplikat saat dijalankan ulang
 do $$
 declare
   admin_id uuid := gen_random_uuid();
   admin_email text := 'admin@apotek.com';
-  admin_password text := 'admin12345'; -- Silakan ganti password ini
+  admin_password text := 'admin12345';
   admin_name text := 'Admin Apotek Keluarga';
 begin
   -- Hapus user lama (jika ada) dari auth.users untuk mereset seeder secara bersih

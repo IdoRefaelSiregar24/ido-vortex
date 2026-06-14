@@ -28,12 +28,21 @@ export default function MainLayout() {
           .then(({ data: profileData, error }) => {
             if (mounted) {
               if (profileData) {
+                if (profileData.role === "member") {
+                  navigate("/member-dashboard", { replace: true });
+                  return;
+                }
                 setProfile(profileData);
               } else {
+                const fallbackRole = currentSession.user.user_metadata?.role || "staff";
+                if (fallbackRole === "member") {
+                  navigate("/member-dashboard", { replace: true });
+                  return;
+                }
                 setProfile({
                   full_name: currentSession.user.user_metadata?.full_name || "User",
                   email: currentSession.user.email,
-                  role: currentSession.user.user_metadata?.role || "staff"
+                  role: fallbackRole
                 });
               }
               setLoading(false);

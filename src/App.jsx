@@ -21,14 +21,22 @@ const Forgot = React.lazy(() => import("./pages/auth/Forgot"));
 const ProductDetail = React.lazy(() => import("./pages/products/ProductDetail"));
 const Products = React.lazy(() => import("./pages/Products"));
 const UserManagement = React.lazy(() => import("./pages/UserManagement"));
+const LandingPage = React.lazy(() => import("./pages/LandingPage"));
+const MemberDashboard = React.lazy(() => import("./pages/MemberDashboard"));
 
 function App() {
   return (
     <Suspense fallback={<Loading />}>
       <Routes>
+        {/* Halaman Publik (Landing Page) */}
+        <Route path="/" element={<LandingPage />} />
+
+        {/* Halaman Publik khusus Member */}
+        <Route path="/member-dashboard" element={<MemberDashboard />} />
+
         {/* MainLayout — Halaman Admin Apotek */}
         <Route element={<MainLayout />}>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/obat" element={<Obat />} />
           <Route path="/transaksi" element={<Transaksi />} />
           <Route path="/order-management" element={<OrderManagement />} />

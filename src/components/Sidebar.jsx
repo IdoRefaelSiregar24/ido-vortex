@@ -51,7 +51,7 @@ export default function Sidebar({ user }) {
     {
       title: 'Main menu',
       items: [
-        { name: 'Dashboard', icon: Icons.Dashboard, path: '/' },
+        { name: 'Dashboard', icon: Icons.Dashboard, path: '/dashboard' },
         { name: 'Order Management', icon: Icons.Order, path: '/order-management' },
         { name: 'Customers', icon: Icons.Customer, path: '/pelanggan' },
         { name: 'Obat', icon: Icons.Category, path: '/products' },

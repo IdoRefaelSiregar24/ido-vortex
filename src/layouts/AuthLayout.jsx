@@ -8,13 +8,51 @@ export default function AuthLayout() {
     const [checking, setChecking] = useState(true);
 
     useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            if (session) {
-                navigate("/", { replace: true });
-            } else {
-                setChecking(false);
-            }
-        });
+        let mounted = true;
+        
+        supabase.auth.getSession()
+            .then(({ data: { session } }) => {
+                if (session && mounted) {
+                    // Fetch user profile to redirect to correct dashboard
+                    supabase
+                        .from("profiles")
+                        .select("role")
+                        .eq("id", session.user.id)
+                        .single()
+                        .then(({ data }) => {
+                            if (mounted) {
+                                if (data?.role === "member") {
+                                    navigate("/member-dashboard", { replace: true });
+                                } else {
+                                    navigate("/dashboard", { replace: true });
+                                }
+                            }
+                        })
+                        .catch(() => {
+                            // Fallback using user metadata if table query fails
+                            if (mounted) {
+                                const role = session.user.user_metadata?.role || "staff";
+                                if (role === "member") {
+                                    navigate("/member-dashboard", { replace: true });
+                                } else {
+                                    navigate("/dashboard", { replace: true });
+                                }
+                            }
+                        });
+                } else if (mounted) {
+                    setChecking(false);
+                }
+            })
+            .catch((err) => {
+                console.error("AuthLayout session check failed:", err);
+                if (mounted) {
+                    setChecking(false);
+                }
+            });
+
+        return () => {
+            mounted = false;
+        };
     }, [navigate]);
 
     if (checking) {
@@ -29,7 +67,7 @@ export default function AuthLayout() {
                         +
                     </div>
                     <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
-                        Apotek Keluarga
+                        Apotek Sehat Pekanbaru
                     </h1>
                     <p className="text-sm text-gray-500 mt-1">Portal Manajemen Farmasi</p>
                 </div>

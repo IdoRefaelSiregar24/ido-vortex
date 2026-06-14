@@ -52,7 +52,7 @@ export default function Register() {
                 options: {
                     data: {
                         full_name: formData.fullName,
-                        role: "staff"
+                        role: "member"
                     }
                 }
             });

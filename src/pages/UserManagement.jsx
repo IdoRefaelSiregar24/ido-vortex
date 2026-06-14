@@ -3,16 +3,16 @@ import { useOutletContext } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { createClient } from "@supabase/supabase-js";
 import { MdEdit, MdDelete, MdPersonAdd, MdSearch } from "react-icons/md";
-import { BsFillExclamationDiamondFill } from "react-icons/bs";
+import { BsFillExclamationDiamondFill, BsAward } from "react-icons/bs";
 import { ImSpinner2 } from "react-icons/im";
 import Modal from "../components/Modal";
-import PageHeader from "../components/PageHeader";
 
 export default function UserManagement() {
     const { user: currentUser } = useOutletContext();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
+    const [filterMemberStatus, setFilterMemberStatus] = useState("all");
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
@@ -22,8 +22,21 @@ export default function UserManagement() {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     // Form states
-    const [addForm, setAddForm] = useState({ fullName: "", email: "", password: "", role: "staff" });
-    const [editForm, setEditForm] = useState({ id: "", fullName: "", role: "staff" });
+    const [addForm, setAddForm] = useState({ 
+        fullName: "", 
+        email: "", 
+        password: "", 
+        role: "member",
+        membershipStatus: "free",
+        membershipPoints: 0
+    });
+    const [editForm, setEditForm] = useState({ 
+        id: "", 
+        fullName: "", 
+        role: "member",
+        membershipStatus: "free",
+        membershipPoints: 0
+    });
     const [selectedUser, setSelectedUser] = useState(null);
     const [actionLoading, setActionLoading] = useState(false);
 
@@ -90,11 +103,24 @@ export default function UserManagement() {
 
             if (signUpError) {
                 setError(signUpError.message);
-            } else {
-                setSuccess(`User baru ${addForm.fullName} berhasil ditambahkan!`);
-                setAddForm({ fullName: "", email: "", password: "", role: "staff" });
-                setIsAddModalOpen(false);
-                fetchUsers();
+            } else if (data.user) {
+                // Update additional CRM details if user was successfully registered
+                const { error: updateError } = await supabase
+                    .from("profiles")
+                    .update({
+                        membership_status: addForm.membershipStatus,
+                        membership_points: parseInt(addForm.membershipPoints) || 0
+                    })
+                    .eq("id", data.user.id);
+
+                if (updateError) {
+                    setError("User terdaftar tetapi gagal menyimpan data CRM: " + updateError.message);
+                } else {
+                    setSuccess(`User baru ${addForm.fullName} berhasil ditambahkan!`);
+                    setAddForm({ fullName: "", email: "", password: "", role: "member", membershipStatus: "free", membershipPoints: 0 });
+                    setIsAddModalOpen(false);
+                    fetchUsers();
+                }
             }
         } catch (err) {
             setError(err.message || "Gagal membuat user.");
@@ -103,7 +129,7 @@ export default function UserManagement() {
         }
     };
 
-    // Update User Profile
+    // Update User Profile & CRM data
     const handleEditUser = async (e) => {
         e.preventDefault();
         setActionLoading(true);
@@ -115,14 +141,16 @@ export default function UserManagement() {
                 .from("profiles")
                 .update({
                     full_name: editForm.fullName,
-                    role: editForm.role
+                    role: editForm.role,
+                    membership_status: editForm.membershipStatus,
+                    membership_points: parseInt(editForm.membershipPoints) || 0
                 })
                 .eq("id", editForm.id);
 
             if (updateError) {
                 setError(updateError.message);
             } else {
-                setSuccess("Data user berhasil diperbarui!");
+                setSuccess("Data user & CRM berhasil diperbarui!");
                 setIsEditModalOpen(false);
                 fetchUsers();
             }
@@ -140,7 +168,6 @@ export default function UserManagement() {
         setSuccess("");
 
         try {
-            // Delete from profiles table
             const { error: deleteError } = await supabase
                 .from("profiles")
                 .delete()
@@ -162,7 +189,13 @@ export default function UserManagement() {
     };
 
     const openEditModal = (user) => {
-        setEditForm({ id: user.id, fullName: user.full_name, role: user.role });
+        setEditForm({ 
+            id: user.id, 
+            fullName: user.full_name, 
+            role: user.role,
+            membershipStatus: user.membership_status || "free",
+            membershipPoints: user.membership_points || 0
+        });
         setIsEditModalOpen(true);
     };
 
@@ -171,14 +204,19 @@ export default function UserManagement() {
         setIsDeleteModalOpen(true);
     };
 
-    // Filter users
+    // Filter users by search query and membership status
     const filteredUsers = users.filter((u) => {
         const query = searchQuery.toLowerCase();
-        return (
+        const matchesQuery = (
             u.full_name?.toLowerCase().includes(query) ||
             u.email?.toLowerCase().includes(query) ||
             u.role?.toLowerCase().includes(query)
         );
+        const matchesMemberStatus = 
+            filterMemberStatus === "all" || 
+            u.membership_status === filterMemberStatus;
+
+        return matchesQuery && matchesMemberStatus;
     });
 
     const formatDate = (dateString) => {
@@ -189,10 +227,10 @@ export default function UserManagement() {
 
     return (
         <div className="font-inter max-w-7xl mx-auto space-y-6">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-left">
                 <div>
-                    <h2 className="text-2xl font-bold text-cyprus">Manajemen User</h2>
-                    <p className="text-sm text-gray-500 mt-1">Kelola hak akses dan profil staf apotek</p>
+                    <h2 className="text-2xl font-bold text-cyprus">Manajemen User & CRM</h2>
+                    <p className="text-sm text-gray-500 mt-1">Kelola hak akses, loyalitas poin, dan paket member staf & pelanggan</p>
                 </div>
                 {currentUser?.role === "admin" && (
                     <button
@@ -200,7 +238,7 @@ export default function UserManagement() {
                         className="flex items-center gap-2 px-4 py-2.5 bg-ocean-green text-white text-sm font-semibold rounded-xl hover:bg-emerald-700 hover:shadow-md transition-all cursor-pointer shadow-sm w-fit"
                     >
                         <MdPersonAdd className="text-lg" />
-                        Tambah User Baru
+                        Tambah Anggota Baru
                     </button>
                 )}
             </div>
@@ -220,20 +258,34 @@ export default function UserManagement() {
             )}
 
             {/* Search and Table Box */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                {/* Search Header */}
-                <div className="p-5 border-b border-gray-100 flex items-center justify-between gap-4 bg-gray-50/50">
-                    <div className="relative flex-1 max-w-md">
-                        <MdSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
-                        <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Cari nama, email, atau role..."
-                            className="w-full pl-10 pr-4 py-2 text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green outline-none transition-all placeholder-gray-400 shadow-inner"
-                        />
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden text-left">
+                {/* Search & Filter Header */}
+                <div className="p-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gray-50/50">
+                    <div className="flex flex-wrap items-center gap-3 flex-1 max-w-2xl">
+                        {/* Search Query */}
+                        <div className="relative flex-1 min-w-[200px]">
+                            <MdSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Cari nama, email, atau role..."
+                                className="w-full pl-10 pr-4 py-2 text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green outline-none transition-all placeholder-gray-400 shadow-inner"
+                            />
+                        </div>
+                        {/* Filter Status Member */}
+                        <select
+                            value={filterMemberStatus}
+                            onChange={(e) => setFilterMemberStatus(e.target.value)}
+                            className="px-3 py-2 text-sm bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green text-gray-700"
+                        >
+                            <option value="all">Semua Status Member</option>
+                            <option value="free">Member: Free</option>
+                            <option value="premium">Member: Premium</option>
+                            <option value="vip">Member: VIP</option>
+                        </select>
                     </div>
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    <span className="text-xs font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap">
                         Total: {filteredUsers.length} User
                     </span>
                 </div>
@@ -256,6 +308,8 @@ export default function UserManagement() {
                                     <th className="px-6 py-4">Nama Lengkap</th>
                                     <th className="px-6 py-4">Email</th>
                                     <th className="px-6 py-4">Role</th>
+                                    <th className="px-6 py-4">Member Tier</th>
+                                    <th className="px-6 py-4 text-center">Poin Loyalitas</th>
                                     <th className="px-6 py-4">Tanggal Terdaftar</th>
                                     {currentUser?.role === "admin" && (
                                         <th className="px-6 py-4 text-center">Aksi</th>
@@ -268,10 +322,18 @@ export default function UserManagement() {
                                         ? u.full_name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase()
                                         : "U";
 
-                                    let badgeColor = "bg-gray-100 text-gray-600";
-                                    if (u.role === "admin") badgeColor = "bg-red-50 text-red-600 border border-red-100";
-                                    else if (u.role === "manager") badgeColor = "bg-indigo-50 text-indigo-600 border border-indigo-100";
-                                    else if (u.role === "staff") badgeColor = "bg-emerald-50 text-emerald-600 border border-emerald-100";
+                                    // Role color mapping
+                                    let roleColor = "bg-gray-100 text-gray-600 border border-gray-200";
+                                    if (u.role === "admin") roleColor = "bg-red-50 text-red-600 border border-red-150";
+                                    else if (u.role === "manager") roleColor = "bg-indigo-50 text-indigo-600 border border-indigo-150";
+                                    else if (u.role === "staff") roleColor = "bg-emerald-50 text-emerald-600 border border-emerald-150";
+                                    else if (u.role === "member") roleColor = "bg-teal-50 text-teal-600 border border-teal-150";
+
+                                    // Member status color mapping
+                                    let statusColor = "bg-gray-100 text-gray-500 border border-gray-200";
+                                    if (u.membership_status === "vip") statusColor = "bg-red-50 text-red-700 border border-red-150 font-bold";
+                                    else if (u.membership_status === "premium") statusColor = "bg-indigo-50 text-indigo-700 border border-indigo-150 font-bold";
+                                    else if (u.membership_status === "free") statusColor = "bg-emerald-50 text-emerald-700 border border-emerald-150";
 
                                     return (
                                         <tr key={u.id} className="hover:bg-gray-50/50 transition-colors">
@@ -283,9 +345,17 @@ export default function UserManagement() {
                                             </td>
                                             <td className="px-6 py-4 text-gray-500">{u.email}</td>
                                             <td className="px-6 py-4">
-                                                <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wider ${badgeColor}`}>
+                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${roleColor}`}>
                                                     {u.role}
                                                 </span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider ${statusColor}`}>
+                                                    {u.membership_status}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 text-center font-bold text-cyprus">
+                                                {u.membership_points?.toLocaleString("id-ID") || 0} <span className="text-[10px] text-gray-400 font-medium">pts</span>
                                             </td>
                                             <td className="px-6 py-4 text-gray-400">{formatDate(u.created_at)}</td>
                                             {currentUser?.role === "admin" && (
@@ -294,7 +364,7 @@ export default function UserManagement() {
                                                         <button
                                                             onClick={() => openEditModal(u)}
                                                             className="p-1.5 hover:bg-indigo-50 text-indigo-600 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-indigo-100"
-                                                            title="Edit User"
+                                                            title="Edit User & CRM"
                                                         >
                                                             <MdEdit className="text-lg" />
                                                         </button>
@@ -320,8 +390,8 @@ export default function UserManagement() {
             </div>
 
             {/* Modal Add User */}
-            <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} title="Tambah User Baru ✨">
-                <form onSubmit={handleAddUser} className="space-y-4">
+            <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} title="Tambah Anggota Baru ✨">
+                <form onSubmit={handleAddUser} className="space-y-4 text-left">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
                         <input
@@ -356,17 +426,43 @@ export default function UserManagement() {
                             required
                         />
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                        <select
-                            value={addForm.role}
-                            onChange={(e) => setAddForm({ ...addForm, role: e.target.value })}
-                            className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green"
-                        >
-                            <option value="staff">Staff</option>
-                            <option value="manager">Manager</option>
-                            <option value="admin">Admin</option>
-                        </select>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                            <select
+                                value={addForm.role}
+                                onChange={(e) => setAddForm({ ...addForm, role: e.target.value })}
+                                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green text-gray-700"
+                            >
+                                <option value="member">Member (Pelanggan)</option>
+                                <option value="staff">Staff (Apoteker)</option>
+                                <option value="manager">Manager</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Status Member</label>
+                            <select
+                                value={addForm.membershipStatus}
+                                onChange={(e) => setAddForm({ ...addForm, membershipStatus: e.target.value })}
+                                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green text-gray-700"
+                            >
+                                <option value="free">Free</option>
+                                <option value="premium">Premium</option>
+                                <option value="vip">VIP</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Poin Awal</label>
+                            <input
+                                type="number"
+                                min="0"
+                                value={addForm.membershipPoints}
+                                onChange={(e) => setAddForm({ ...addForm, membershipPoints: parseInt(e.target.value) || 0 })}
+                                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green"
+                                placeholder="0"
+                            />
+                        </div>
                     </div>
                     <div className="flex gap-3 justify-end pt-4 border-t border-gray-100">
                         <button
@@ -387,9 +483,9 @@ export default function UserManagement() {
                 </form>
             </Modal>
 
-            {/* Modal Edit User */}
-            <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} title="Edit Staf 📝">
-                <form onSubmit={handleEditUser} className="space-y-4">
+            {/* Modal Edit User & CRM */}
+            <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} title="Edit Profil & CRM Keanggotaan 📝">
+                <form onSubmit={handleEditUser} className="space-y-4 text-left">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
                         <input
@@ -401,17 +497,43 @@ export default function UserManagement() {
                             required
                         />
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
-                        <select
-                            value={editForm.role}
-                            onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
-                            className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green"
-                        >
-                            <option value="staff">Staff</option>
-                            <option value="manager">Manager</option>
-                            <option value="admin">Admin</option>
-                        </select>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                            <select
+                                value={editForm.role}
+                                onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
+                                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green text-gray-700"
+                            >
+                                <option value="member">Member (Pelanggan)</option>
+                                <option value="staff">Staff (Apoteker)</option>
+                                <option value="manager">Manager</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Status Member</label>
+                            <select
+                                value={editForm.membershipStatus}
+                                onChange={(e) => setEditForm({ ...editForm, membershipStatus: e.target.value })}
+                                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green text-gray-700"
+                            >
+                                <option value="free">Free</option>
+                                <option value="premium">Premium</option>
+                                <option value="vip">VIP</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Poin CRM</label>
+                            <input
+                                type="number"
+                                min="0"
+                                value={editForm.membershipPoints}
+                                onChange={(e) => setEditForm({ ...editForm, membershipPoints: parseInt(e.target.value) || 0 })}
+                                className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green"
+                                placeholder="0"
+                            />
+                        </div>
                     </div>
                     <div className="flex gap-3 justify-end pt-4 border-t border-gray-100">
                         <button
@@ -434,7 +556,7 @@ export default function UserManagement() {
 
             {/* Modal Delete Confirmation */}
             <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} title="Hapus User ⚠️">
-                <div className="space-y-4">
+                <div className="space-y-4 text-left">
                     <p className="text-sm text-gray-600">
                         Apakah Anda yakin ingin menghapus user <strong className="text-cyprus">{selectedUser?.full_name}</strong> ({selectedUser?.email})?
                         Tindakan ini akan menghapus profil mereka secara permanen dari database.
