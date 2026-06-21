@@ -23,6 +23,8 @@ const Products = React.lazy(() => import("./pages/Products"));
 const UserManagement = React.lazy(() => import("./pages/UserManagement"));
 const LandingPage = React.lazy(() => import("./pages/LandingPage"));
 const MemberDashboard = React.lazy(() => import("./pages/MemberDashboard"));
+const MedicalRecordDashboard = React.lazy(() => import("./pages/MedicalRecordDashboard"));
+const PatientHealthCard = React.lazy(() => import("./pages/member/PatientHealthCard"));
 
 function App() {
   return (
@@ -33,6 +35,7 @@ function App() {
 
         {/* Halaman Publik khusus Member */}
         <Route path="/member-dashboard" element={<MemberDashboard />} />
+        <Route path="/health-card" element={<PatientHealthCard />} />
 
         {/* MainLayout — Halaman Admin Apotek */}
         <Route element={<MainLayout />}>
@@ -45,6 +48,7 @@ function App() {
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/components" element={<Components />} />
           <Route path="/user-management" element={<UserManagement />} />
+          <Route path="/medical-records" element={<MedicalRecordDashboard />} />
 
           {/* Error Routes */}
           <Route path="/error/400" element={<ErrorPage kodeError="400" deskripsiError="Bad Request! Ada yang salah dengan permintaanmu." />} />

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { FaAward, FaGift, FaUserCheck, FaSignOutAlt, FaRocket, FaClock, FaCheckCircle } from "react-icons/fa";
 import { ImSpinner2 } from "react-icons/im";
@@ -155,6 +155,14 @@ export default function MemberDashboard() {
                     <span className="font-extrabold text-cyprus tracking-tight">Member Portal</span>
                 </div>
                 <div className="flex items-center gap-4">
+                    <Link
+                        to="/health-card"
+                        className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-ocean-green bg-aqua-spring/60 hover:bg-aqua-spring rounded-xl transition-all"
+                        id="btn-health-card-from-member"
+                    >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 2v6"/><path d="M15 2v6"/><path d="M12 17v-5"/><path d="M9.5 14.5h5"/><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M4 13h16"/></svg>
+                        Kartu Kesehatan
+                    </Link>
                     <button 
                         onClick={handleLogout}
                         className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-xl transition-all cursor-pointer"
