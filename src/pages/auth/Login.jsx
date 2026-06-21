@@ -24,7 +24,23 @@ export default function Login() {
             if (signInError) {
                 setError(signInError.message);
             } else {
-                navigate("/");
+                const userId = data?.user?.id;
+                if (userId) {
+                    const { data: profileData } = await supabase
+                        .from("profiles")
+                        .select("role")
+                        .eq("id", userId)
+                        .single();
+
+                    const role = profileData?.role || data?.user?.user_metadata?.role || "staff";
+                    if (role === "member") {
+                        navigate("/member-dashboard");
+                    } else {
+                        navigate("/dashboard");
+                    }
+                } else {
+                    navigate("/");
+                }
             }
         } catch (err) {
             setError(err.message || "Terjadi kesalahan saat masuk.");
