@@ -3,6 +3,7 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Loading from "./components/Loading";
 import "./assets/tailwind.css";
+import ScrollToTop from "./components/ScrollToTop";
 
 // React Lazy — semua halaman di-lazy load
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
@@ -25,17 +26,26 @@ const LandingPage = React.lazy(() => import("./pages/LandingPage"));
 const MemberDashboard = React.lazy(() => import("./pages/MemberDashboard"));
 const MedicalRecordDashboard = React.lazy(() => import("./pages/MedicalRecordDashboard"));
 const PatientHealthCard = React.lazy(() => import("./pages/member/PatientHealthCard"));
+const MemberLayout = React.lazy(() => import("./layouts/MemberLayout"));
+const MemberObat = React.lazy(() => import("./pages/member/MemberObat"));
+
 
 function App() {
   return (
     <Suspense fallback={<Loading />}>
+      <ScrollToTop />
       <Routes>
-        {/* Halaman Publik (Landing Page) */}
+        {/* Halaman Publik (Landing Page) & Katalog */}
         <Route path="/" element={<LandingPage />} />
+        <Route path="/member-obat" element={<MemberObat />} />
 
-        {/* Halaman Publik khusus Member */}
-        <Route path="/member-dashboard" element={<MemberDashboard />} />
-        <Route path="/health-card" element={<PatientHealthCard />} />
+
+        {/* Halaman Khusus Member */}
+        <Route element={<MemberLayout />}>
+          <Route path="/member-dashboard" element={<MemberDashboard />} />
+          <Route path="/health-card" element={<PatientHealthCard />} />
+        </Route>
+
 
         {/* MainLayout — Halaman Admin Apotek */}
         <Route element={<MainLayout />}>

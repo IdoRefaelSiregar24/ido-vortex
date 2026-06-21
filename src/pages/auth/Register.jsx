@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 import { BsFillExclamationDiamondFill } from "react-icons/bs";
@@ -15,6 +15,10 @@ export default function Register() {
         password: "",
         confirmPassword: ""
     });
+
+    useEffect(() => {
+        document.title = "Daftar Akun Baru - Apotek Keluarga";
+    }, []);
 
     const handleChange = (e) => {
         setFormData({
@@ -83,14 +87,14 @@ export default function Register() {
             )}
             
             {success && (
-                <div className="bg-emerald-50 border border-emerald-200 mb-5 p-4 text-sm text-emerald-600 rounded-xl flex items-center">
-                    <ImSpinner2 className="mr-3 animate-spin text-emerald-600 text-lg flex-shrink-0" /> {success}
+                <div className="bg-emerald-50 border border-emerald-250/70 mb-5 p-4 text-sm text-emerald-700 rounded-xl flex items-center">
+                    <ImSpinner2 className="mr-3 animate-spin text-ocean-green text-lg flex-shrink-0" /> {success}
                 </div>
             )}
 
             {loading && !success && (
-                <div className="bg-gray-50 border border-gray-200 mb-5 p-4 text-sm text-gray-600 rounded-xl flex items-center">
-                    <ImSpinner2 className="mr-3 animate-spin text-emerald-600 text-lg flex-shrink-0" /> Memproses pendaftaran...
+                <div className="bg-gray-50 border border-gray-205 mb-5 p-4 text-sm text-gray-600 rounded-xl flex items-center">
+                    <ImSpinner2 className="mr-3 animate-spin text-ocean-green text-lg flex-shrink-0" /> Memproses pendaftaran...
                 </div>
             )}
 
@@ -103,7 +107,7 @@ export default function Register() {
                         value={formData.fullName}
                         onChange={handleChange}
                         placeholder="Nama lengkap" 
-                        className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 outline-none focus:ring-2 focus:ring-hijau/20" 
+                        className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 outline-none focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green transition-all" 
                         required
                     />
                 </div>
@@ -115,7 +119,7 @@ export default function Register() {
                         value={formData.email}
                         onChange={handleChange}
                         placeholder="email@contoh.com" 
-                        className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 outline-none focus:ring-2 focus:ring-hijau/20" 
+                        className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 outline-none focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green transition-all" 
                         required
                     />
                 </div>
@@ -127,7 +131,7 @@ export default function Register() {
                         value={formData.password}
                         onChange={handleChange}
                         placeholder="********" 
-                        className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 outline-none focus:ring-2 focus:ring-hijau/20" 
+                        className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 outline-none focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green transition-all" 
                         required
                     />
                 </div>
@@ -139,20 +143,19 @@ export default function Register() {
                         value={formData.confirmPassword}
                         onChange={handleChange}
                         placeholder="********" 
-                        className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 outline-none focus:ring-2 focus:ring-hijau/20" 
+                        className="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 outline-none focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green transition-all" 
                         required
                     />
                 </div>
                 <button 
                     type="submit" 
                     disabled={loading}
-                    className="w-full bg-hijau hover:bg-teal-700 text-white font-semibold py-2.5 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-ocean-green hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                     {loading ? "Mendaftar..." : "Daftar"}
                 </button>
             </form>
-            <p className="mt-4 text-center text-sm text-gray-500">Sudah punya akun? <Link to="/login" className="text-hijau hover:underline">Login</Link></p>
+            <p className="mt-4 text-center text-sm text-gray-500">Sudah punya akun? <Link to="/login" className="text-ocean-green font-bold hover:underline">Login</Link></p>
         </div>
     );
 }
-

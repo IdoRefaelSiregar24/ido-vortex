@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import AllergyBadge from "../../components/patient/AllergyBadge";
 import ChronicBadge, { ChronicGroup } from "../../components/patient/ChronicBadge";
 
@@ -128,9 +128,14 @@ function TimelineItem({ tx, isFirst }) {
 // ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 export default function PatientHealthCard() {
   const navigate   = useNavigate();
-  const patient    = PATIENT_DATA; // Ganti dengan fetch dari Supabase saat produksi
+  const { patientData } = useOutletContext();
+  const patient    = patientData || PATIENT_DATA;
   const bmi        = bmiCategory(patient.bmi);
   const [activeTab, setActiveTab] = useState("overview"); // "overview" | "history"
+
+  useEffect(() => {
+    document.title = "Kartu Kesehatan Pasien - Apotek Keluarga Pekanbaru";
+  }, []);
 
   const initials = patient.full_name
     .split(" ").map((n) => n[0]).join("").substring(0, 2).toUpperCase();
@@ -144,33 +149,18 @@ export default function PatientHealthCard() {
   return (
     <div className="min-h-screen bg-[#FAFAFA] font-sans pb-16" style={{ fontFamily: "'Inter', 'system-ui', sans-serif" }}>
 
-      {/* ── Top Nav ── */}
-      <nav className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-gray-200">
-        <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate(-1)}
-              className="text-gray-400 hover:text-gray-700 transition-colors p-1 cursor-pointer"
-              id="btn-back-health-card"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M19 12H5M12 5l-7 7 7 7" />
-              </svg>
-            </button>
-            <div className="w-px h-4 bg-gray-200" />
-            <span className="text-sm font-semibold text-gray-700">Kartu Kesehatan Digital</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-gray-900 border border-gray-200 rounded-lg px-3 py-1.5 hover:border-gray-400 transition-all cursor-pointer"
-              id="btn-download-health-card"
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Unduh PDF
-            </button>
-          </div>
-        </div>
-      </nav>
+      {/* ── Top Action Bar ── */}
+      <div className="max-w-3xl mx-auto px-4 pt-6 flex justify-between items-center">
+        <h2 className="text-xl font-black text-cyprus tracking-tight">Kartu Kesehatan Anda</h2>
+        <button
+          className="flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-gray-900 border border-gray-200 rounded-lg px-3 py-1.5 hover:border-gray-400 bg-white transition-all cursor-pointer shadow-xs"
+          id="btn-download-health-card"
+          onClick={() => window.print()}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Cetak Kartu
+        </button>
+      </div>
 
       <main className="max-w-3xl mx-auto px-4 pt-6 space-y-4">
 

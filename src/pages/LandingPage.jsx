@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { 
     FaHeartbeat, FaPills, FaShippingFast, FaCheckCircle, FaAward, 
     FaUserPlus, FaSignInAlt, FaBuilding, FaUsers, FaStethoscope,
@@ -9,11 +9,30 @@ import { supabase } from "../lib/supabase";
 
 export default function LandingPage() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [activeTab, setActiveTab] = useState("home"); // home, profile, services, contact
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [contactForm, setContactForm] = useState({ name: "", email: "", message: "" });
     const [contactSuccess, setContactSuccess] = useState(false);
     const [userProfile, setUserProfile] = useState(null);
     const [loadingAuth, setLoadingAuth] = useState(true);
+
+    useEffect(() => {
+        if (location.state?.activeTab) {
+            setActiveTab(location.state.activeTab);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    }, [location.state]);
+
+    useEffect(() => {
+        const titles = {
+            home: "Apotek Keluarga - Layanan Kesehatan Modern & Program Keanggotaan Pekanbaru",
+            profile: "Profil Apotek Keluarga - Rantai Distribusi Farmasi Terpercaya",
+            services: "Layanan Farmasi, Antar Obat, & Cek Kesehatan Dasar - Apotek Keluarga",
+            contact: "Kontak & Lokasi Apotek Keluarga - Hubungi Layanan Kesehatan 24 Jam",
+        };
+        document.title = titles[activeTab] || "Apotek Keluarga";
+    }, [activeTab]);
 
     const handleContactSubmit = (e) => {
         e.preventDefault();
@@ -116,9 +135,15 @@ export default function LandingPage() {
                         Dapatkan kemudahan akses obat-obatan berkualitas, konsultasi apoteker gratis, dan kumpulkan poin loyalitas dari setiap transaksi untuk diklaim menjadi diskon menarik.
                     </p>
                     <div className="flex flex-wrap gap-4 pt-2">
-                        <Link to="/register" className="px-6 py-3.5 bg-ocean-green text-white text-base font-bold rounded-xl hover:bg-emerald-700 hover:shadow-lg hover:shadow-ocean-green/10 transition-all shadow-md">
-                            Gabung Member Gratis
-                        </Link>
+                        {userProfile ? (
+                            <Link to={userProfile.role === "member" ? "/member-dashboard" : "/dashboard"} className="px-6 py-3.5 bg-ocean-green text-white text-base font-bold rounded-xl hover:bg-emerald-700 hover:shadow-lg hover:shadow-ocean-green/10 transition-all shadow-md">
+                                Masuk ke Member Area
+                            </Link>
+                        ) : (
+                            <Link to="/register" className="px-6 py-3.5 bg-ocean-green text-white text-base font-bold rounded-xl hover:bg-emerald-700 hover:shadow-lg hover:shadow-ocean-green/10 transition-all shadow-md">
+                                Gabung Member Gratis
+                            </Link>
+                        )}
                         <button 
                             onClick={() => {
                                 const section = document.getElementById("membership");
@@ -135,15 +160,25 @@ export default function LandingPage() {
                     <div className="relative bg-white border border-gray-150 p-6 rounded-2xl shadow-xl w-full max-w-sm">
                         <div className="flex items-center justify-between pb-4 border-b border-gray-100">
                             <h3 className="font-bold text-cyprus">Kartu Member Digital</h3>
-                            <span className="text-xs font-bold text-ocean-green px-2 py-0.5 bg-aqua-spring rounded-full">VIP Member</span>
+                            <span className="text-xs font-bold text-ocean-green px-2 py-0.5 bg-aqua-spring rounded-full">
+                                {userProfile?.membership_status
+                                    ? (userProfile.membership_status === "free" ? "Free Member" : userProfile.membership_status === "premium" ? "Premium Member" : "VIP Member")
+                                    : "VIP Member"
+                                }
+                            </span>
                         </div>
                         <div className="py-8 text-center space-y-2">
                             <span className="text-xs text-gray-400 uppercase tracking-widest font-bold block">Poin Anggota</span>
-                            <h2 className="text-5xl font-black text-cyprus">2,450 <span className="text-sm font-medium text-gray-400">pts</span></h2>
+                            <h2 className="text-5xl font-black text-cyprus">
+                                {userProfile?.membership_points !== undefined ? userProfile.membership_points.toLocaleString("id-ID") : "2,450"}{" "}
+                                <span className="text-sm font-medium text-gray-400">pts</span>
+                            </h2>
                         </div>
                         <div className="pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400">
                             <span>Keluarga Apotek ID</span>
-                            <span className="font-semibold text-cyprus">AK-99827</span>
+                            <span className="font-semibold text-cyprus">
+                                {userProfile?.id ? `AK-${userProfile.id.substring(0, 5).toUpperCase()}` : "AK-99827"}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -513,7 +548,7 @@ export default function LandingPage() {
     );
 
     return (
-        <div className="bg-[#f8faf9] min-h-screen text-gray-800 font-inter flex flex-col justify-between">
+        <div className="bg-[#f8faf9] min-h-screen text-gray-800 font-inter flex flex-col justify-between relative">
             <div>
                 {/* Header / Navbar */}
                 <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 px-6 py-4 flex items-center justify-between">
@@ -526,7 +561,7 @@ export default function LandingPage() {
                         </span>
                     </div>
 
-                    {/* Navigation Menu */}
+                    {/* Navigation Menu (Desktop) */}
                     <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-gray-500">
                         <button 
                             onClick={() => setActiveTab("home")}
@@ -534,6 +569,12 @@ export default function LandingPage() {
                         >
                             Home
                         </button>
+                        <Link 
+                            to="/member-obat"
+                            className="hover:text-ocean-green transition-colors font-semibold"
+                        >
+                            Katalog Obat
+                        </Link>
                         <button 
                             onClick={() => setActiveTab("profile")}
                             className={`hover:text-ocean-green transition-colors cursor-pointer ${activeTab === "profile" ? "text-ocean-green font-bold" : ""}`}
@@ -554,40 +595,156 @@ export default function LandingPage() {
                         </button>
                     </nav>
 
-                    <div className="flex items-center gap-3">
-                        {!loadingAuth && (
-                            userProfile ? (
-                                <>
-                                    <Link 
-                                        to={userProfile.role === "member" ? "/member-dashboard" : "/dashboard"} 
-                                        className="flex items-center gap-1.5 px-4 py-2 text-sm font-bold text-white bg-ocean-green rounded-xl hover:bg-emerald-700 hover:shadow-md transition-all shadow-sm"
-                                    >
-                                        Dashboard
-                                    </Link>
-                                    <button 
-                                        onClick={async () => {
-                                            if (window.confirm("Apakah Anda yakin ingin keluar dari sistem?")) {
-                                                await supabase.auth.signOut();
-                                            }
-                                        }} 
-                                        className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-cyprus hover:text-red-650 transition-colors cursor-pointer"
-                                    >
-                                        Keluar
-                                    </button>
-                                </>
+                    <div className="flex items-center gap-2 md:gap-3">
+                        <div className="hidden md:flex items-center gap-3">
+                            {!loadingAuth && (
+                                userProfile ? (
+                                    <>
+                                        <Link 
+                                            to={userProfile.role === "member" ? "/member-dashboard" : "/dashboard"} 
+                                            className="flex items-center gap-1.5 px-4 py-2 text-sm font-bold text-white bg-ocean-green rounded-xl hover:bg-emerald-700 hover:shadow-md transition-all shadow-sm"
+                                        >
+                                            Dashboard
+                                        </Link>
+                                        <button 
+                                            onClick={async () => {
+                                                if (window.confirm("Apakah Anda yakin ingin keluar dari sistem?")) {
+                                                    await supabase.auth.signOut();
+                                                }
+                                            }} 
+                                            className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-cyprus hover:text-red-650 transition-colors cursor-pointer"
+                                        >
+                                            Keluar
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link to="/login" className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-cyprus hover:text-ocean-green transition-colors">
+                                            <FaSignInAlt /> Masuk
+                                        </Link>
+                                        <Link to="/register" className="flex items-center gap-1.5 px-4 py-2 text-sm font-bold text-white bg-ocean-green rounded-xl hover:bg-emerald-700 hover:shadow-md transition-all shadow-sm">
+                                            <FaUserPlus /> Daftar
+                                        </Link>
+                                    </>
+                                )
+                            )}
+                        </div>
+
+                        {/* Hamburger Button (Mobile) */}
+                        <button
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="md:hidden p-2 text-gray-500 hover:text-ocean-green rounded-lg hover:bg-gray-100 transition-colors cursor-pointer focus:outline-none"
+                            aria-label="Toggle Menu"
+                        >
+                            {isMobileMenuOpen ? (
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
                             ) : (
-                                <>
-                                    <Link to="/login" className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold text-cyprus hover:text-ocean-green transition-colors">
-                                        <FaSignInAlt /> Masuk
-                                    </Link>
-                                    <Link to="/register" className="flex items-center gap-1.5 px-4 py-2 text-sm font-bold text-white bg-ocean-green rounded-xl hover:bg-emerald-700 hover:shadow-md transition-all shadow-sm">
-                                        <FaUserPlus /> Daftar
-                                    </Link>
-                                </>
-                            )
-                        )}
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                                </svg>
+                            )}
+                        </button>
                     </div>
                 </header>
+
+                {/* Mobile Navigation Drawer */}
+                {isMobileMenuOpen && (
+                    <div className="md:hidden border-b border-gray-100 bg-white/95 backdrop-blur-md shadow-lg animate-fade-in z-45 absolute w-full left-0 px-6 py-5 space-y-4 text-left">
+                        <div className="flex flex-col gap-3 font-semibold text-gray-600">
+                            <button
+                                onClick={() => {
+                                    setActiveTab("home");
+                                    setIsMobileMenuOpen(false);
+                                }}
+                                className={`text-left py-2 border-b border-gray-50 hover:text-ocean-green transition-colors cursor-pointer ${activeTab === "home" ? "text-ocean-green font-bold" : ""}`}
+                            >
+                                Home
+                            </button>
+                            <Link
+                                to="/member-obat"
+                                className="py-2 border-b border-gray-50 hover:text-ocean-green transition-colors font-semibold block"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                                Katalog Obat
+                            </Link>
+                            <button
+                                onClick={() => {
+                                    setActiveTab("profile");
+                                    setIsMobileMenuOpen(false);
+                                }}
+                                className={`text-left py-2 border-b border-gray-50 hover:text-ocean-green transition-colors cursor-pointer ${activeTab === "profile" ? "text-ocean-green font-bold" : ""}`}
+                            >
+                                Profil Company
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setActiveTab("services");
+                                    setIsMobileMenuOpen(false);
+                                }}
+                                className={`text-left py-2 border-b border-gray-50 hover:text-ocean-green transition-colors cursor-pointer ${activeTab === "services" ? "text-ocean-green font-bold" : ""}`}
+                            >
+                                Layanan
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setActiveTab("contact");
+                                    setIsMobileMenuOpen(false);
+                                }}
+                                className={`text-left py-2 border-b border-gray-50 hover:text-ocean-green transition-colors cursor-pointer ${activeTab === "contact" ? "text-ocean-green font-bold" : ""}`}
+                            >
+                                Hubungi Kami
+                            </button>
+                        </div>
+                        <div className="pt-2 flex flex-col gap-2">
+                            {!loadingAuth && (
+                                userProfile ? (
+                                    <>
+                                        <Link
+                                            to={userProfile.role === "member" ? "/member-dashboard" : "/dashboard"}
+                                            className="w-full text-center py-2.5 bg-ocean-green text-white font-bold text-sm rounded-xl hover:bg-emerald-700 transition-colors shadow-sm block"
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                        >
+                                            Masuk Dashboard
+                                        </Link>
+                                        <button
+                                            onClick={async () => {
+                                                setIsMobileMenuOpen(false);
+                                                if (window.confirm("Apakah Anda yakin ingin keluar dari sistem?")) {
+                                                    await supabase.auth.signOut();
+                                                }
+                                            }}
+                                            className="w-full text-center py-2.5 text-sm font-semibold text-red-650 hover:bg-red-50 border border-transparent rounded-xl transition-all cursor-pointer"
+                                        >
+                                            Keluar
+                                        </button>
+                                    </>
+                                ) : (
+                                    <div className="flex gap-2">
+                                        <Link
+                                            to="/login"
+                                            className="flex-1 text-center py-2.5 text-sm font-semibold text-cyprus hover:bg-gray-50 border border-gray-200 rounded-xl transition-colors"
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                        >
+                                            Masuk
+                                        </Link>
+                                        <Link
+                                            to="/register"
+                                            className="flex-1 text-center py-2.5 bg-ocean-green text-white font-bold text-sm rounded-xl hover:bg-emerald-700 transition-colors shadow-sm"
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                        >
+                                            Daftar
+                                        </Link>
+                                    </div>
+                                )
+                            )}
+                        </div>
+                    </div>
+                )}
 
                 {/* Main Dynamic View Content */}
                 <main className="transition-all duration-300">
@@ -610,6 +767,7 @@ export default function LandingPage() {
 
                     <div className="flex flex-wrap justify-center gap-6 text-xs font-semibold text-gray-400">
                         <button onClick={() => setActiveTab("home")} className="hover:text-white transition-colors">Home</button>
+                        <Link to="/member-obat" className="hover:text-white transition-colors">Katalog Obat</Link>
                         <button onClick={() => setActiveTab("profile")} className="hover:text-white transition-colors">Profil</button>
                         <button onClick={() => setActiveTab("services")} className="hover:text-white transition-colors">Layanan</button>
                         <button onClick={() => setActiveTab("contact")} className="hover:text-white transition-colors">Kontak</button>
