@@ -482,106 +482,163 @@ export default function MemberObat() {
             <p className="text-sm text-gray-500 mt-1">Cari obat, cek stok tersedia, dan tambah langsung ke keranjang belanja Anda.</p>
           </div>
 
-          {/* Search & Categories Bar */}
-          <div className="bg-white border border-gray-250/60 rounded-2xl p-5 shadow-xs space-y-4">
-            <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
-              {/* Search input */}
-              <div className="relative flex-1 max-w-md">
-                <MdSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Cari nama obat atau khasiat..."
-                  className="w-full pl-10 pr-4 py-2.5 text-sm bg-white border border-gray-250/80 rounded-xl focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green outline-none transition-all placeholder-gray-400 shadow-inner"
-                  id="search-obat-member"
-                />
-              </div>
+          {/* Main Layout Grid (Left Sidebar + Right Products Grid) */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+            {/* Left Sidebar: Kategori (3 Columns) */}
+            <aside className="md:col-span-3 bg-white border border-gray-200 rounded-2xl p-5 shadow-xs space-y-5">
+              <div>
+                <h3 className="text-xs font-black text-zinc-450 uppercase tracking-widest pb-3 border-b border-zinc-100">Golongan Obat</h3>
+                <div className="flex flex-col gap-1 mt-3">
+                  {categories.map((cat) => {
+                    const isActive = activeCategory === cat;
+                    let icon = <span className="text-sm">💊</span>;
+                    if (cat === "Semua") icon = <span className="text-sm">📦</span>;
+                    else if (cat === "Obat Bebas") icon = <span className="w-3.5 h-3.5 rounded-full bg-emerald-500 border border-emerald-600 inline-block flex-shrink-0" />;
+                    else if (cat === "Obat Bebas Terbatas") icon = <span className="w-3.5 h-3.5 rounded-full bg-blue-500 border border-blue-600 inline-block flex-shrink-0" />;
+                    else if (cat === "Obat Keras") icon = <div className="w-4 h-4 rounded-full bg-red-600 border border-black flex items-center justify-center text-[9px] font-black text-black leading-none">K</div>;
+                    else if (cat === "Suplemen") icon = <span className="w-3.5 h-3.5 rounded-full bg-amber-400 border border-amber-500 inline-block flex-shrink-0" />;
 
-              <div className="text-xs text-gray-400 font-bold uppercase tracking-wider">
-                Menampilkan {filteredObat.length} dari {obatData.length} item
-              </div>
-            </div>
-
-            {/* Categories pills list */}
-            <div className="flex flex-wrap gap-1.5 pt-2 border-t border-gray-50">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`text-xs font-bold px-3.5 py-2 rounded-xl transition-all cursor-pointer border ${
-                    activeCategory === cat
-                      ? "bg-gray-900 text-white border-gray-900 shadow-xs"
-                      : "bg-white text-gray-500 hover:text-gray-800 border-gray-200 hover:bg-gray-50"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Grid cards */}
-          {filteredObat.length === 0 ? (
-            <div className="bg-white border border-gray-200 rounded-2xl py-20 text-center text-gray-400 shadow-xs">
-              <FaPills className="mx-auto text-4xl mb-3 text-gray-300" />
-              <p className="font-semibold text-sm">Obat tidak ditemukan</p>
-              <p className="text-xs text-gray-400 mt-1">Coba gunakan kata kunci pencarian atau kategori lain.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredObat.map((item) => {
-                const isObatKeras = item.kategori === "Obat Keras";
-                const isInCart = cart.some((c) => c.id === item.id);
-                
-                return (
-                  <div
-                    key={item.id}
-                    onClick={() => setSelectedObat(item)}
-                    className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between hover:border-gray-300 relative group"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <span className={`px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-md border ${getKategoriBadge(item.kategori)}`}>
-                          {item.kategori}
-                        </span>
-                        {isObatKeras && (
-                          <span className="bg-red-50 text-red-600 border border-red-100 text-[10px] font-bold uppercase px-2 py-0.5 rounded flex items-center gap-1">
-                            <MdWarning className="text-xs" /> Resep Dokter
-                          </span>
-                        )}
-                      </div>
-
-                      <h3 className="font-extrabold text-cyprus group-hover:text-ocean-green transition-colors text-base line-clamp-1">{item.nama}</h3>
-                      <p className="text-xs text-zinc-500 mt-1.5 line-clamp-2 leading-relaxed font-normal">{item.deskripsi}</p>
-                    </div>
-
-                    <div className="pt-4 border-t border-zinc-100 mt-5 flex items-center justify-between">
-                      <div>
-                        <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">Harga</span>
-                        <span className="text-base font-black text-cyprus">{formatCurrency(item.harga)}</span>
-                      </div>
-                      
-                      {/* Add/Remove Cart Button */}
+                    return (
                       <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleAddToCart(item);
-                        }}
-                        className={`px-4 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer border ${
-                          isInCart
-                            ? "bg-zinc-100 text-zinc-800 border-zinc-200 hover:bg-zinc-250"
-                            : "bg-zinc-900 text-white border-zinc-900 hover:bg-zinc-800 shadow-sm"
+                        key={cat}
+                        onClick={() => setActiveCategory(cat)}
+                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer text-left ${
+                          isActive
+                            ? "bg-zinc-950 text-white shadow-xs"
+                            : "text-zinc-550 hover:bg-zinc-50 hover:text-zinc-900"
                         }`}
                       >
-                        {isInCart ? "Hapus" : "Tambah"}
+                        {icon}
+                        <span className="truncate">{cat}</span>
                       </button>
-                    </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Body Systems Category from Reference Image */}
+              <div className="pt-2">
+                <h3 className="text-xs font-black text-zinc-455 uppercase tracking-widest pb-3 border-b border-zinc-100">Kondisi Tubuh</h3>
+                <div className="flex flex-col gap-1 mt-3">
+                  {[
+                    { label: "Darah & Jantung", emoji: "🩸" },
+                    { label: "Hormon & Kelenjar", emoji: "🧪" },
+                    { label: "Kepala & Saraf", emoji: "🧠" },
+                    { label: "Kulit & Alergi", emoji: "🧴" },
+                    { label: "Otot, Sendi & Tulang", emoji: "🦵" },
+                    { label: "Saluran Pencernaan", emoji: "🍏" },
+                  ].map((item) => (
+                    <button
+                      key={item.label}
+                      onClick={() => {
+                        if (item.label.includes("Darah")) {
+                          setSearch("Amlodipine");
+                        } else if (item.label.includes("Pencernaan")) {
+                          setSearch("Omeprazole");
+                        } else {
+                          setSearch("");
+                        }
+                        setActiveCategory("Semua");
+                      }}
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-550 hover:bg-zinc-50 hover:text-zinc-950 transition-all cursor-pointer text-left"
+                    >
+                      <span className="text-base flex-shrink-0 leading-none">{item.emoji}</span>
+                      <span className="truncate">{item.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </aside>
+
+            {/* Right Column: Grid and Search (9 Columns) */}
+            <div className="md:col-span-9 space-y-6">
+              {/* Search Bar */}
+              <div className="bg-white border border-gray-250/60 rounded-2xl p-5 shadow-xs">
+                <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center justify-between">
+                  <div className="relative flex-1 max-w-md">
+                    <MdSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
+                    <input
+                      type="text"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder="Cari nama obat atau khasiat..."
+                      className="w-full pl-10 pr-4 py-2.5 text-sm bg-white border border-gray-250/80 rounded-xl focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green outline-none transition-all placeholder-gray-400 shadow-inner"
+                      id="search-obat-member"
+                    />
                   </div>
-                );
-              })}
+                  <div className="text-xs text-gray-400 font-bold uppercase tracking-wider">
+                    Menampilkan {filteredObat.length} dari {obatData.length} item
+                  </div>
+                </div>
+              </div>
+
+              {/* Product Grid */}
+              {filteredObat.length === 0 ? (
+                <div className="bg-white border border-gray-200 rounded-2xl py-20 text-center text-gray-400 shadow-xs">
+                  <FaPills className="mx-auto text-4xl mb-3 text-gray-300" />
+                  <p className="font-semibold text-sm">Obat tidak ditemukan</p>
+                  <p className="text-xs text-gray-400 mt-1">Coba gunakan kata kunci pencarian atau kategori lain.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredObat.map((item) => {
+                    const isObatKeras = item.kategori === "Obat Keras";
+                    const isInCart = cart.some((c) => c.id === item.id);
+                    
+                    return (
+                      <div
+                        key={item.id}
+                        onClick={() => setSelectedObat(item)}
+                        className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between hover:border-gray-300 relative group"
+                      >
+                        {/* SCM BPOM "Obat Keras" Red Circle K Badge on top-right of image box area */}
+                        {isObatKeras && (
+                          <div 
+                            className="absolute top-4 right-4 w-5 h-5 rounded-full bg-red-600 border border-black flex items-center justify-center text-[9px] font-black text-black leading-none shadow-sm z-10" 
+                            title="Obat Keras - Harus dengan Resep Dokter"
+                          >
+                            K
+                          </div>
+                        )}
+
+                        <div>
+                          <div className="flex items-center justify-between mb-3 pr-6">
+                            <span className={`px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-md border ${getKategoriBadge(item.kategori)}`}>
+                              {item.kategori}
+                            </span>
+                          </div>
+
+                          <h3 className="font-extrabold text-cyprus group-hover:text-ocean-green transition-colors text-base line-clamp-1">{item.nama}</h3>
+                          <p className="text-xs text-zinc-500 mt-1.5 line-clamp-2 leading-relaxed font-normal">{item.deskripsi}</p>
+                        </div>
+
+                        <div className="pt-4 border-t border-zinc-100 mt-5 flex items-center justify-between">
+                          <div>
+                            <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">Harga</span>
+                            <span className="text-base font-black text-cyprus">{formatCurrency(item.harga)}</span>
+                          </div>
+                          
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAddToCart(item);
+                            }}
+                            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer border ${
+                              isInCart
+                                ? "bg-zinc-100 text-zinc-800 border-zinc-200 hover:bg-zinc-250"
+                                : "bg-zinc-900 text-white border-zinc-900 hover:bg-zinc-800 shadow-sm"
+                            }`}
+                          >
+                            {isInCart ? "Hapus" : "Tambah"}
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </main>
       </div>
 
