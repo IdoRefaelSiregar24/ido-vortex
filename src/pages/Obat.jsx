@@ -38,9 +38,9 @@ export default function Obat() {
             </PageHeader>
 
             {/* Search */}
-            <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-                <div className="flex items-center space-x-4 w-full md:w-auto">
-                    <div className="relative w-full md:w-64">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-left">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+                    <div className="relative w-full sm:w-64">
                         <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
                         <input
                             ref={searchInputRef}
@@ -49,12 +49,12 @@ export default function Obat() {
                             className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none"
                         />
                     </div>
-                    <button className="flex items-center space-x-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors px-3 py-2 rounded-lg border border-transparent">
+                    <button className="flex items-center justify-center space-x-2 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 transition-colors px-3 py-2 rounded-lg border border-gray-200 sm:border-transparent cursor-pointer">
                         <MdFilterList className="text-lg" />
                         <span className="text-sm font-medium">Filter</span>
                     </button>
                 </div>
-                <div className="hidden md:block text-gray-500 text-sm">
+                <div className="hidden sm:block text-gray-500 text-sm">
                     Menampilkan <span className="font-medium text-gray-900">{obat.length}</span> obat
                 </div>
             </div>

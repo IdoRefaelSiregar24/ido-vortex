@@ -9,7 +9,7 @@ export default function OrderManagement() {
     <div className="flex flex-col space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10 pt-4 bg-gray-50 min-h-screen">
       
       {/* Header Section */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-left">
           <h1 className="text-[22px] font-bold text-cyprus">Order List</h1>
           <div className="flex gap-3">
               <Button variant="primary" className="!px-4 !py-2 !rounded-lg !text-sm !shadow-sm !gap-1">

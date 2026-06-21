@@ -26,7 +26,7 @@ const Icons = {
 
 import { supabase } from '../lib/supabase';
 
-export default function Sidebar({ user }) {
+export default function Sidebar({ user, isOpen, setIsOpen }) {
   const location = useLocation();
 
   const handleLogout = async () => {
@@ -80,7 +80,11 @@ export default function Sidebar({ user }) {
   ];
 
   return (
-    <aside className="w-[280px] h-screen bg-white border-r border-gray-100 flex flex-col py-6 overflow-y-auto">
+    <aside className={`
+      fixed inset-y-0 left-0 z-50 w-[280px] h-screen bg-white border-r border-gray-100 flex flex-col py-6 overflow-y-auto
+      transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:z-0
+      ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+    `}>
       
       {/* 1. Header & Logo */}
       <div className="flex items-center justify-between px-6 mb-8">
@@ -90,8 +94,15 @@ export default function Sidebar({ user }) {
             Apotek Sehat Pekanbaru
           </span>
         </div>
-        {/* Tombol Collapse (Opsional) */}
-        <button className="text-gray-400">
+        {/* Close Button on Mobile */}
+        <button onClick={() => setIsOpen && setIsOpen(false)} className="text-gray-400 lg:hidden hover:text-cyprus cursor-pointer p-1">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        {/* Tombol Collapse (Desktop Only) */}
+        <button className="text-gray-400 hidden lg:block">
            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/></svg>
         </button>
       </div>
@@ -112,6 +123,7 @@ export default function Sidebar({ user }) {
                   <Link
                     key={item.name}
                     to={item.path}
+                    onClick={() => setIsOpen && setIsOpen(false)}
                     className={`
                       flex items-center gap-4 px-4 py-3 rounded-xl w-full text-left transition-all duration-200
                       ${isActive 

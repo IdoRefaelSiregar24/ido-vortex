@@ -25,12 +25,12 @@ export default function Transaksi() {
                 </button>
             </PageHeader>
 
-            <div className="flex justify-between items-center bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-                <div className="relative w-full md:w-64">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-left">
+                <div className="relative w-full sm:w-64">
                     <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
                     <input type="text" placeholder="Cari transaksi..." className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all outline-none" />
                 </div>
-                <div className="hidden md:block text-gray-500 text-sm">
+                <div className="hidden sm:block text-gray-500 text-sm">
                     Total <span className="font-medium text-gray-900">{transaksi.length}</span> transaksi
                 </div>
             </div>

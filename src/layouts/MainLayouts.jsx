@@ -63,19 +63,29 @@ export default function MainLayout() {
     };
   }, [navigate]);
 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   if (loading) {
     return <Loading />;
   }
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-[#F8F9FA] font-lato">
+    <div className="flex h-screen w-full overflow-hidden bg-[#F8F9FA] font-lato relative">
+      {/* Backdrop for mobile sidebar */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/40 z-40 lg:hidden transition-opacity duration-300"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar: Sisi Kiri */}
-      <Sidebar user={profile} />
+      <Sidebar user={profile} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 
       {/* Konten: Sisi Kanan */}
       <div className="flex flex-col flex-1 min-w-0">
-        <Header user={profile} />
-        <main className="flex-1 overflow-y-auto p-8">
+        <Header user={profile} onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+        <main className="flex-1 overflow-y-auto p-4 md:p-8">
           <Outlet context={{ user: profile }} />
         </main>
       </div>
