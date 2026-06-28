@@ -17,7 +17,7 @@ export default function Register() {
     });
 
     useEffect(() => {
-        document.title = "Daftar Akun Baru - Apotek Keluarga";
+        document.title = "Daftar Akun Baru - Apotek Sehat Pekanbaru";
     }, []);
 
     const handleChange = (e) => {

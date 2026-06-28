@@ -12,6 +12,9 @@ export default function CheckoutForm({ cartItems, onSubmit, triggerMember, setTr
     chronicDisease: ""
   });
 
+  const [uploadedFileName, setUploadedFileName] = useState("");
+  const [uploadProgress, setUploadProgress] = useState(0);
+
   const [loyaltyConfig, setLoyaltyConfig] = useState({
     points_to_currency_rate: 100,
     max_redeem_percentage: 50.00
@@ -111,16 +114,16 @@ export default function CheckoutForm({ cartItems, onSubmit, triggerMember, setTr
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-left">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 text-left items-start">
       {/* Form Section (7 Columns) */}
       <form onSubmit={handleSubmit} className="lg:col-span-7 space-y-6">
-        <div className="bg-white border border-zinc-200 rounded-lg p-6 space-y-6">
+        <div className="bg-white border border-zinc-200 rounded-2xl p-6 space-y-6 shadow-2xs">
           <div className="flex items-center justify-between border-b border-zinc-150 pb-4">
-            <h3 className="text-lg font-black text-zinc-900 tracking-tight">Informasi Pengiriman</h3>
+            <h3 className="text-base font-black text-zinc-900 tracking-tight">Informasi Pengiriman Medis</h3>
             <button
               type="button"
               onClick={fillDummy}
-              className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 hover:text-zinc-900 border border-zinc-200 hover:border-zinc-350 px-2.5 py-1 rounded transition-all cursor-pointer"
+              className="text-[9px] font-extrabold uppercase tracking-wider text-zinc-500 hover:text-zinc-900 border border-zinc-200 hover:border-zinc-350 px-2.5 py-1.5 rounded-lg transition-all cursor-pointer bg-zinc-50"
             >
               Gunakan Data Demo Budi
             </button>
@@ -128,65 +131,122 @@ export default function CheckoutForm({ cartItems, onSubmit, triggerMember, setTr
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Nama Lengkap</label>
+              <label className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider">Nama Lengkap</label>
               <input
                 type="text"
                 required
                 value={formData.fullName}
                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                className="w-full px-3.5 py-2.5 text-sm bg-white border border-zinc-250/90 rounded-md focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 outline-none transition-all placeholder-zinc-400 font-medium"
+                className="w-full px-3.5 py-2.5 text-xs bg-white border border-zinc-200 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all placeholder-zinc-400 font-semibold text-zinc-800"
                 placeholder="cth. Budi Santoso"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Nomor Telepon</label>
+              <label className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider">Nomor Telepon</label>
               <input
                 type="text"
                 required
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full px-3.5 py-2.5 text-sm bg-white border border-zinc-250/90 rounded-md focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 outline-none transition-all placeholder-zinc-400 font-medium"
+                className="w-full px-3.5 py-2.5 text-xs bg-white border border-zinc-200 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all placeholder-zinc-400 font-semibold text-zinc-800"
                 placeholder="cth. 0812-xxxx-xxxx"
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Alamat Surel (Email)</label>
+            <label className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider">Alamat Surel (Email)</label>
             <input
               type="email"
               required
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-3.5 py-2.5 text-sm bg-white border border-zinc-250/90 rounded-md focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 outline-none transition-all placeholder-zinc-400 font-medium"
+              className="w-full px-3.5 py-2.5 text-xs bg-white border border-zinc-200 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all placeholder-zinc-400 font-semibold text-zinc-800"
               placeholder="cth. budi@email.com"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Alamat Pengiriman</label>
+            <label className="text-[10px] font-extrabold text-zinc-400 uppercase tracking-wider">Alamat Pengiriman Lengkap</label>
             <textarea
               required
               rows="3"
               value={formData.address}
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              className="w-full px-3.5 py-2.5 text-sm bg-white border border-zinc-250/90 rounded-md focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 outline-none transition-all placeholder-zinc-400 resize-none font-medium"
-              placeholder="Masukkan alamat pengiriman lengkap..."
+              className="w-full px-3.5 py-2.5 text-xs bg-white border border-zinc-200 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all placeholder-zinc-400 resize-none font-semibold text-zinc-800"
+              placeholder="Masukkan alamat lengkap pengantaran obat..."
             ></textarea>
           </div>
         </div>
 
+        {/* Prescription Upload Slot - Renders conditionally if any "Obat Keras" is in cart */}
+        {cartItems.some(item => item.kategori === "Obat Keras") && (
+          <div className="bg-red-50/40 border border-red-200/50 p-5 rounded-2xl space-y-4">
+            <div className="flex items-start gap-3">
+              <span className="w-5 h-5 rounded-full bg-red-100 border border-red-200 flex items-center justify-center text-red-700 text-xs font-black">K</span>
+              <div className="space-y-1 text-left">
+                <h4 className="text-xs font-extrabold text-zinc-900 uppercase tracking-wide leading-none">Unggah Resep Dokter (Wajib)</h4>
+                <p className="text-[11px] text-zinc-500 leading-relaxed mt-1">
+                  Pesanan Anda mengandung obat keras wajib resep. Mohon unggah foto resep dokter Anda yang sah untuk divalidasi oleh Apoteker Apotek Sehat Pekanbaru.
+                </p>
+              </div>
+            </div>
+            
+            <div className="border-2 border-dashed border-zinc-200 hover:border-emerald-500 bg-white rounded-xl p-6 transition-colors duration-300 flex flex-col items-center justify-center text-center relative cursor-pointer group">
+              <input 
+                type="file" 
+                accept="image/*,.pdf" 
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    setUploadedFileName(e.target.files[0].name);
+                    setUploadProgress(0);
+                    const interval = setInterval(() => {
+                      setUploadProgress((prev) => {
+                        if (prev >= 100) {
+                          clearInterval(interval);
+                          return 100;
+                        }
+                        return prev + 25;
+                      });
+                    }, 150);
+                  }
+                }}
+                className="absolute inset-0 opacity-0 cursor-pointer z-10" 
+              />
+              <span className="text-3xl text-zinc-300 group-hover:text-emerald-500 transition-colors">📁</span>
+              <span className="text-[11px] font-bold text-zinc-850 mt-2 block">
+                {uploadedFileName ? uploadedFileName : "Pilih atau Seret Foto Resep Dokter di Sini"}
+              </span>
+              <span className="text-[9px] text-zinc-400 mt-0.5 block">Format yang didukung: JPG, PNG, PDF (Maks. 5MB)</span>
+              
+              {uploadedFileName && (
+                <div className="w-full max-w-[220px] mt-4">
+                  <div className="w-full bg-zinc-100 rounded-full h-1.5 overflow-hidden">
+                    <div 
+                      className="bg-emerald-500 h-1.5 rounded-full transition-all duration-300"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+                  <span className="text-[9px] font-bold text-emerald-700 mt-1 block">
+                    {uploadProgress < 100 ? `Mengunggah... ${uploadProgress}%` : "✓ Berhasil diunggah & siap diverifikasi"}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Conditional CRM block based on whether user is member or guest */}
         {userProfile ? (
           /* Active Member CRM Block */
-          <div className="bg-white border border-zinc-200 rounded-lg p-6 space-y-4">
+          <div className="bg-white border border-zinc-200 rounded-2xl p-6 space-y-4 shadow-2xs">
             <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-100 p-4 rounded-xl">
-              <FaUserCheck className="text-emerald-755 text-lg flex-shrink-0" />
-              <div>
-                <h4 className="text-sm font-black text-emerald-900 leading-none">
+              <FaUserCheck className="text-emerald-600 text-lg flex-shrink-0" />
+              <div className="text-left">
+                <h4 className="text-xs font-extrabold text-emerald-950 uppercase tracking-wide leading-none">
                   Akun Terhubung: {userProfile.membership_status?.toUpperCase() || 'GOLD'} MEMBER (Aktif)
                 </h4>
-                <p className="text-[11px] text-emerald-700 mt-1 font-medium">
+                <p className="text-[11px] text-emerald-700 mt-1.5 font-medium leading-relaxed">
                   Poin saat ini: {userProfile.membership_points?.toLocaleString("id-ID")} pts. Anda otomatis mendapatkan gratis ongkir member.
                 </p>
               </div>
@@ -195,86 +255,90 @@ export default function CheckoutForm({ cartItems, onSubmit, triggerMember, setTr
             {/* Loyalty Points Redemption Accordion */}
             <div className="border-t border-zinc-150 pt-4 space-y-3 text-left">
               <div className="flex items-center justify-between">
-                <label className="text-[10px] font-bold text-zinc-550 uppercase tracking-wider">Tukarkan Poin Loyalitas</label>
-                <span className="text-[9px] text-zinc-500 font-bold bg-zinc-100 px-2 py-0.5 rounded border border-zinc-200">
+                <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Tukarkan Poin Loyalitas</label>
+                <span className="text-[9px] text-zinc-500 font-extrabold bg-zinc-50 px-2 py-0.5 rounded border border-zinc-200">
                   1 Poin = Rp {loyaltyConfig.points_to_currency_rate}
                 </span>
               </div>
               
-              <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-4 space-y-3 text-xs">
-                <div className="flex justify-between items-center text-zinc-650 font-semibold">
-                  <span>Saldo Poin Anda:</span>
-                  <span className="font-bold text-zinc-900">{userProfile.membership_points?.toLocaleString("id-ID")} pts</span>
-                </div>
-                <div className="flex justify-between items-center text-zinc-650 font-semibold">
-                  <span>Batas Maksimal Penukaran ({loyaltyConfig.max_redeem_percentage}%):</span>
-                  <span className="font-bold text-zinc-900">
-                    {maxRedeemablePoints.toLocaleString("id-ID")} pts (Setara Rp {((maxRedeemablePoints) * loyaltyConfig.points_to_currency_rate).toLocaleString("id-ID")})
-                  </span>
-                </div>
-                
-                <div className="flex items-center gap-3 mt-3">
-                  <input
-                    type="number"
-                    min="0"
-                    max={Math.min(userProfile.membership_points || 0, maxRedeemablePoints)}
-                    value={pointsInput}
-                    onChange={(e) => handlePointsChange(parseInt(e.target.value) || 0)}
-                    className="w-32 px-3 py-2 text-xs bg-white border border-zinc-300 rounded-md focus:ring-1 focus:ring-zinc-900 outline-none font-bold text-zinc-800"
-                    placeholder="0"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleRedeemMax}
-                    className="px-3 py-2 bg-zinc-900 hover:bg-zinc-800 text-white font-extrabold text-[10px] uppercase rounded-md transition-all cursor-pointer"
-                  >
-                    Tukarkan Maksimal
-                  </button>
+              <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-4 space-y-3 text-xs min-h-[140px] flex flex-col justify-between">
+                <div>
+                  <div className="flex justify-between items-center text-zinc-600 font-semibold">
+                    <span>Saldo Poin Anda:</span>
+                    <span className="font-bold text-zinc-900">{userProfile.membership_points?.toLocaleString("id-ID")} pts</span>
+                  </div>
+                  <div className="flex justify-between items-center text-zinc-600 font-semibold mt-1">
+                    <span>Batas Maksimal Penukaran ({loyaltyConfig.max_redeem_percentage}%):</span>
+                    <span className="font-bold text-zinc-900">
+                      {maxRedeemablePoints.toLocaleString("id-ID")} pts (Rp {((maxRedeemablePoints) * loyaltyConfig.points_to_currency_rate).toLocaleString("id-ID")})
+                    </span>
+                  </div>
                 </div>
                 
-                {pointsInput > 0 && !pointsError && (
-                  <p className="text-[11px] text-green-700 font-bold mt-1">
-                    ✓ Berhasil diterapkan! Potongan harga: Rp {(pointsInput * loyaltyConfig.points_to_currency_rate).toLocaleString("id-ID")}
-                  </p>
-                )}
-                {pointsError && (
-                  <p className="text-[11px] text-red-650 font-bold mt-1">
-                    ⚠ {pointsError}
-                  </p>
-                )}
+                <div>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="number"
+                      min="0"
+                      max={Math.min(userProfile.membership_points || 0, maxRedeemablePoints)}
+                      value={pointsInput}
+                      onChange={(e) => handlePointsChange(parseInt(e.target.value) || 0)}
+                      className="w-32 px-3 py-2 text-xs bg-white border border-zinc-200 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none font-bold text-zinc-800"
+                      placeholder="0"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleRedeemMax}
+                      className="px-3 py-2 bg-zinc-900 hover:bg-zinc-800 text-white font-extrabold text-[10px] uppercase rounded-lg transition-all cursor-pointer shadow-2xs"
+                    >
+                      Tukarkan Maksimal
+                    </button>
+                  </div>
+                  
+                  {pointsInput > 0 && !pointsError && (
+                    <p className="text-[10px] text-emerald-700 font-extrabold mt-2">
+                      ✓ Berhasil diterapkan! Potongan harga: Rp {(pointsInput * loyaltyConfig.points_to_currency_rate).toLocaleString("id-ID")}
+                    </p>
+                  )}
+                  {pointsError && (
+                    <p className="text-[10px] text-red-650 font-bold mt-2">
+                      ⚠ {pointsError}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
 
             {/* Pre-filled editable medical profile inputs */}
-            <div className="pt-2 border-t border-zinc-150 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
+            <div className="pt-4 border-t border-zinc-150 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5 text-left">
                 <div className="flex justify-between items-center">
-                  <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Alergi Obat (Verifikasi Akun)</label>
-                  <span className="text-[9px] text-zinc-500 font-semibold bg-zinc-100 px-1.5 py-0.2 rounded border border-zinc-200/50">Medis</span>
+                  <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Alergi Obat</label>
+                  <span className="text-[9px] text-zinc-500 font-semibold bg-zinc-50 px-1.5 py-0.2 rounded border border-zinc-200/50">Medis</span>
                 </div>
                 <input
                   type="text"
                   value={formData.allergies}
                   onChange={(e) => setFormData({ ...formData, allergies: e.target.value })}
-                  className="w-full px-3 py-2 text-xs bg-white border border-zinc-250/90 rounded-md focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 outline-none transition-all placeholder-zinc-400 font-semibold text-zinc-700"
-                  placeholder="Cth. Penisilin (Kosongkan jika tidak ada)"
+                  className="w-full px-3 py-2 text-xs bg-white border border-zinc-200 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all placeholder-zinc-400 font-semibold text-zinc-700"
+                  placeholder="Cth. Penisilin (Kosong jika tidak ada)"
                 />
               </div>
-              <div className="space-y-1.5">
+              <div className="space-y-1.5 text-left">
                 <div className="flex justify-between items-center">
-                  <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Penyakit Kronis (Verifikasi Akun)</label>
-                  <span className="text-[9px] text-zinc-500 font-semibold bg-zinc-100 px-1.5 py-0.2 rounded border border-zinc-200/50">Medis</span>
+                  <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Penyakit Kronis</label>
+                  <span className="text-[9px] text-zinc-500 font-semibold bg-zinc-50 px-1.5 py-0.2 rounded border border-zinc-200/50">Medis</span>
                 </div>
                 <input
                   type="text"
                   value={formData.chronicDisease}
                   onChange={(e) => setFormData({ ...formData, chronicDisease: e.target.value })}
-                  className="w-full px-3 py-2 text-xs bg-white border border-zinc-250/90 rounded-md focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 outline-none transition-all placeholder-zinc-400 font-semibold text-zinc-700"
+                  className="w-full px-3 py-2 text-xs bg-white border border-zinc-200 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all placeholder-zinc-400 font-semibold text-zinc-700"
                   placeholder="Cth. Hipertensi Kronis"
                 />
               </div>
-              <div className="sm:col-span-2 text-[10px] font-semibold text-zinc-500 leading-relaxed flex items-start gap-1.5 bg-zinc-50 border border-zinc-200 p-3 rounded-lg">
-                <FaExclamationTriangle className="text-zinc-700 text-xs flex-shrink-0 mt-0.5" />
+              <div className="sm:col-span-2 text-[10px] font-semibold text-zinc-500 leading-relaxed flex items-start gap-1.5 bg-zinc-50 border border-zinc-150 p-3 rounded-lg text-left">
+                <FaExclamationTriangle className="text-zinc-600 text-xs flex-shrink-0 mt-0.5" />
                 <span>
                   <strong>Informasi Keamanan Resep:</strong> Data alergi dan rekam penyakit kronis di atas telah disinkronkan dengan data rekam medis *Patient 360* Anda. Tim apoteker kami akan memverifikasi kesesuaian obat sebelum pesanan disiapkan.
                 </span>
@@ -283,7 +347,7 @@ export default function CheckoutForm({ cartItems, onSubmit, triggerMember, setTr
           </div>
         ) : (
           /* Guest Instant Member Activation CRM Block */
-          <div className="bg-white border border-zinc-200 rounded-lg p-6 space-y-4">
+          <div className="bg-white border border-zinc-200 rounded-2xl p-6 space-y-4 shadow-2xs">
             <div className="flex items-start gap-3">
               <div className="h-5 flex items-center">
                 <input
@@ -291,11 +355,11 @@ export default function CheckoutForm({ cartItems, onSubmit, triggerMember, setTr
                   type="checkbox"
                   checked={triggerMember}
                   onChange={(e) => setTriggerMember(e.target.checked)}
-                  className="w-4 h-4 rounded text-zinc-900 border-zinc-300 focus:ring-zinc-900 focus:ring-opacity-20 cursor-pointer"
+                  className="w-4 h-4 rounded text-emerald-600 border-zinc-300 focus:ring-emerald-500 focus:ring-opacity-20 cursor-pointer"
                 />
               </div>
-              <div className="flex-1">
-                <label htmlFor="instant-member" className="text-sm font-bold text-zinc-900 select-none cursor-pointer flex items-center gap-1.5">
+              <div className="flex-1 text-left">
+                <label htmlFor="instant-member" className="text-sm font-bold text-zinc-950 select-none cursor-pointer flex items-center gap-1.5">
                   <FaUserShield className="text-zinc-600 text-base" /> Simpan data medis &amp; Aktifkan Member Gold Gratis
                 </label>
                 <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
@@ -306,35 +370,35 @@ export default function CheckoutForm({ cartItems, onSubmit, triggerMember, setTr
 
             {/* Expanded Medical Profile Inputs */}
             {triggerMember && (
-              <div className="pt-4 border-t border-zinc-150 grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in">
+              <div className="pt-4 border-t border-zinc-150 grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade-in text-left">
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center">
                     <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Alergi Obat</label>
-                    <span className="text-[9px] text-zinc-500 font-semibold bg-zinc-100 px-1.5 py-0.2 rounded border border-zinc-200/50">Medis</span>
+                    <span className="text-[9px] text-zinc-500 font-semibold bg-zinc-50 px-1.5 py-0.2 rounded border border-zinc-200/50">Medis</span>
                   </div>
                   <input
                     type="text"
                     value={formData.allergies}
                     onChange={(e) => setFormData({ ...formData, allergies: e.target.value })}
-                    className="w-full px-3 py-2 text-xs bg-white border border-zinc-250/90 rounded-md focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 outline-none transition-all placeholder-zinc-400 font-semibold text-zinc-700"
+                    className="w-full px-3 py-2 text-xs bg-white border border-zinc-200 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all placeholder-zinc-400 font-semibold text-zinc-700"
                     placeholder="Cth. Penisilin, Amoxicillin (Kosongkan jika tidak ada)"
                   />
                 </div>
                 <div className="space-y-1.5">
                   <div className="flex justify-between items-center">
                     <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Penyakit Kronis</label>
-                    <span className="text-[9px] text-zinc-500 font-semibold bg-zinc-100 px-1.5 py-0.2 rounded border border-zinc-200/50">Medis</span>
+                    <span className="text-[9px] text-zinc-500 font-semibold bg-zinc-50 px-1.5 py-0.2 rounded border border-zinc-200/50">Medis</span>
                   </div>
                   <input
                     type="text"
                     value={formData.chronicDisease}
                     onChange={(e) => setFormData({ ...formData, chronicDisease: e.target.value })}
-                    className="w-full px-3 py-2 text-xs bg-white border border-zinc-250/90 rounded-md focus:ring-2 focus:ring-zinc-900/10 focus:border-zinc-900 outline-none transition-all placeholder-zinc-400 font-semibold text-zinc-700"
+                    className="w-full px-3 py-2 text-xs bg-white border border-zinc-200 rounded-lg focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all placeholder-zinc-400 font-semibold text-zinc-700"
                     placeholder="Cth. Diabetes Tipe 2, Hipertensi Kronis"
                   />
                 </div>
-                <div className="sm:col-span-2 text-[10px] font-semibold text-zinc-500 leading-relaxed flex items-start gap-1.5 bg-zinc-50 border border-zinc-200 p-3 rounded-lg">
-                  <FaExclamationTriangle className="text-zinc-700 text-xs flex-shrink-0 mt-0.5" />
+                <div className="sm:col-span-2 text-[10px] font-semibold text-zinc-500 leading-relaxed flex items-start gap-1.5 bg-zinc-50 border border-zinc-150 p-3 rounded-lg">
+                  <FaExclamationTriangle className="text-zinc-600 text-xs flex-shrink-0 mt-0.5" />
                   <span>
                     <strong>Informasi Keamanan:</strong> Data alergi dan rekam penyakit kronis digunakan oleh apoteker kami untuk memverifikasi keamanan resep Anda sebelum penyerahan obat demi mencegah interaksi yang membahayakan jiwa.
                   </span>
@@ -347,8 +411,8 @@ export default function CheckoutForm({ cartItems, onSubmit, triggerMember, setTr
 
       {/* Cart Summary Section (5 Columns) */}
       <div className="lg:col-span-5 space-y-6">
-        <div className="bg-white border border-zinc-200 rounded-lg p-6 space-y-6">
-          <h3 className="text-lg font-bold text-zinc-900 tracking-tight border-b border-zinc-150 pb-4">Ringkasan Pesanan</h3>
+        <div className="bg-white border border-zinc-200 rounded-2xl p-6 space-y-6 shadow-2xs">
+          <h3 className="text-base font-bold text-zinc-900 tracking-tight border-b border-zinc-150 pb-4">Ringkasan Pesanan</h3>
 
           {cartItems.length === 0 ? (
             <p className="text-xs text-zinc-400 italic">Keranjang belanja kosong</p>
@@ -384,14 +448,14 @@ export default function CheckoutForm({ cartItems, onSubmit, triggerMember, setTr
             </div>
             
             {(userProfile || triggerMember) && (
-              <div className="flex justify-between text-emerald-700 font-bold bg-emerald-50/50 border border-emerald-100 p-2 rounded-lg">
+              <div className="flex justify-between text-emerald-700 font-bold bg-emerald-50 border border-emerald-100 p-2.5 rounded-xl">
                 <span>Reward Ongkir Member</span>
                 <span>Gratis Ongkir</span>
               </div>
             )}
 
             {pointsInput > 0 && !pointsError && (
-              <div className="flex justify-between text-red-650 font-bold bg-red-50 border border-red-100 p-2 rounded-lg">
+              <div className="flex justify-between text-red-700 font-bold bg-red-50 border border-red-100 p-2.5 rounded-xl">
                 <span>Tukar {pointsInput} Poin</span>
                 <span>-{new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(pointsInput * loyaltyConfig.points_to_currency_rate)}</span>
               </div>
@@ -408,9 +472,10 @@ export default function CheckoutForm({ cartItems, onSubmit, triggerMember, setTr
           </div>
 
           <button
+            type="button"
             onClick={handleSubmit}
             disabled={cartItems.length === 0 || !!pointsError}
-            className="w-full py-3 text-xs font-bold tracking-wider text-white bg-zinc-900 hover:bg-zinc-800 disabled:bg-zinc-100 disabled:text-zinc-400 rounded-md transition-all shadow-sm cursor-pointer"
+            className="w-full py-3 text-xs font-bold tracking-wider text-white bg-zinc-900 hover:bg-zinc-800 disabled:bg-zinc-100 disabled:text-zinc-400 rounded-lg transition-all shadow-sm cursor-pointer"
           >
             {userProfile ? "Bayar Sekarang (Benefit Member)" : (triggerMember ? "Bayar & Aktifkan Member Gold" : "Proses Pembayaran Guest")}
           </button>

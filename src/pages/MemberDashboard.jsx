@@ -13,7 +13,7 @@ export default function MemberDashboard() {
     const [message, setMessage] = useState({ text: "", type: "" });
 
     useEffect(() => {
-        document.title = "Dashboard Anggota - Apotek Keluarga Pekanbaru";
+        document.title = "Dashboard Anggota - Apotek Sehat Pekanbaru";
     }, []);
 
     // Simulate claiming a benefit
@@ -94,7 +94,7 @@ export default function MemberDashboard() {
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <h1 className="text-3xl font-black text-cyprus tracking-tight">Halo, {user?.full_name}! 👋</h1>
-                        <p className="text-sm text-gray-500 mt-1">Selamat datang kembali di area member Apotek Keluarga.</p>
+                        <p className="text-sm text-gray-500 mt-1">Selamat datang kembali di area member Apotek Sehat Pekanbaru.</p>
                     </div>
                 </div>
 
@@ -243,7 +243,7 @@ export default function MemberDashboard() {
                                 <div className="p-4 flex items-center justify-between text-xs text-gray-500">
                                     <span className="flex items-center gap-2 font-semibold text-cyprus">
                                         <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full"></span>
-                                        Bergabung dengan Apotek Keluarga
+                                        Bergabung dengan Apotek Sehat Pekanbaru
                                     </span>
                                     <span className="text-xs text-gray-400">Hari ini</span>
                                 </div>

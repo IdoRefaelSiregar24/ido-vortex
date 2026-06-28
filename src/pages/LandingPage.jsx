@@ -26,12 +26,12 @@ export default function LandingPage() {
 
     useEffect(() => {
         const titles = {
-            home: "Apotek Keluarga - Layanan Kesehatan Modern & Program Keanggotaan Pekanbaru",
-            profile: "Profil Apotek Keluarga - Rantai Distribusi Farmasi Terpercaya",
-            services: "Layanan Farmasi, Antar Obat, & Cek Kesehatan Dasar - Apotek Keluarga",
-            contact: "Kontak & Lokasi Apotek Keluarga - Hubungi Layanan Kesehatan 24 Jam",
+            home: "Apotek Sehat Pekanbaru - Layanan Kesehatan Modern & Program Keanggotaan Pekanbaru",
+            profile: "Profil Apotek Sehat Pekanbaru - Rantai Distribusi Farmasi Terpercaya",
+            services: "Layanan Farmasi, Antar Obat, & Cek Kesehatan Dasar - Apotek Sehat Pekanbaru",
+            contact: "Kontak & Lokasi Apotek Sehat Pekanbaru - Hubungi Layanan Kesehatan 24 Jam",
         };
-        document.title = titles[activeTab] || "Apotek Keluarga";
+        document.title = titles[activeTab] || "Apotek Sehat Pekanbaru";
     }, [activeTab]);
 
     const handleContactSubmit = (e) => {
@@ -129,7 +129,7 @@ export default function LandingPage() {
                     </span>
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-cyprus leading-tight tracking-tight">
                         Sehat Bersama <br />
-                        <span className="text-ocean-green">Apotek Keluarga</span>
+                        <span className="text-ocean-green">Apotek Sehat Pekanbaru</span>
                     </h1>
                     <p className="text-base md:text-lg text-gray-500 leading-relaxed max-w-xl">
                         Dapatkan kemudahan akses obat-obatan berkualitas, konsultasi apoteker gratis, dan kumpulkan poin loyalitas dari setiap transaksi untuk diklaim menjadi diskon menarik.
@@ -305,7 +305,7 @@ export default function LandingPage() {
                 <span className="px-3 py-1 bg-aqua-spring text-ocean-green text-xs font-bold uppercase tracking-wider rounded-full">
                     🏢 Profil Perusahaan
                 </span>
-                <h2 className="text-4xl font-extrabold text-cyprus tracking-tight">Tentang Apotek Keluarga</h2>
+                <h2 className="text-4xl font-extrabold text-cyprus tracking-tight">Tentang Apotek Sehat Pekanbaru</h2>
                 <p className="text-sm text-gray-400 max-w-xl mx-auto">Kami berdedikasi untuk memberikan layanan farmasi modern berkualitas tinggi dan terpercaya untuk seluruh keluarga Indonesia.</p>
             </div>
 
@@ -486,7 +486,7 @@ export default function LandingPage() {
                         <div className="absolute inset-0 bg-cover bg-center opacity-25" style={{ backgroundImage: `url('https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/101.4478,0.5071,13/400x300?access_token=mock')` }}></div>
                         <FaMapMarkerAlt className="text-ocean-green text-3xl mb-2 animate-bounce z-10" />
                         <span className="text-xs font-bold text-cyprus z-10">Peta Outlet Pekanbaru</span>
-                        <span className="text-[10px] text-gray-400 z-10 mt-1">Gunakan navigasi Google Maps ke Apotek Keluarga</span>
+                        <span className="text-[10px] text-gray-400 z-10 mt-1">Gunakan navigasi Google Maps ke Apotek Sehat Pekanbaru</span>
                     </div>
                 </div>
 
@@ -557,7 +557,7 @@ export default function LandingPage() {
                             +
                         </div>
                         <span className="text-xl font-extrabold text-cyprus tracking-tight">
-                            Apotek Keluarga
+                            Apotek Sehat Pekanbaru
                         </span>
                     </div>
 
@@ -762,7 +762,7 @@ export default function LandingPage() {
                         <div className="w-8 h-8 bg-ocean-green rounded-lg flex items-center justify-center text-white text-lg font-bold">
                             +
                         </div>
-                        <span className="text-white font-bold tracking-tight">Apotek Keluarga</span>
+                        <span className="text-white font-bold tracking-tight">Apotek Sehat Pekanbaru</span>
                     </div>
 
                     <div className="flex flex-wrap justify-center gap-6 text-xs font-semibold text-gray-400">
@@ -774,7 +774,7 @@ export default function LandingPage() {
                     </div>
 
                     <p className="text-center md:text-left text-xs">
-                        © 2026 Apotek Keluarga. All rights reserved. Portal Kesehatan Modern Pekanbaru.
+                        © 2026 Apotek Sehat Pekanbaru. All rights reserved. Portal Kesehatan Modern Pekanbaru.
                     </p>
                 </div>
             </footer>

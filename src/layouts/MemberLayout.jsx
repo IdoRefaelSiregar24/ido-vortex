@@ -199,7 +199,7 @@ export default function MemberLayout() {
             </div>
             <div className="text-left">
               <span className="font-extrabold text-cyprus tracking-tight text-sm md:text-base block leading-none">Portal Member</span>
-              <span className="text-[10px] text-gray-400 font-bold tracking-widest uppercase">Apotek Keluarga</span>
+              <span className="text-[9px] text-zinc-400 font-extrabold tracking-wider uppercase mt-0.5">Apotek Sehat Pekanbaru</span>
             </div>
           </div>
 
@@ -217,8 +217,8 @@ export default function MemberLayout() {
                   to={tab.path}
                   className={`px-4 py-2 text-xs font-bold rounded-lg transition-all ${
                     isActive
-                      ? "bg-gray-900 text-white shadow-sm"
-                      : "text-gray-500 hover:text-gray-800 hover:bg-gray-50"
+                      ? "bg-zinc-900 text-white shadow-sm"
+                      : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50"
                   }`}
                 >
                   {tab.label}
@@ -230,21 +230,21 @@ export default function MemberLayout() {
           {/* User profile details & Logout */}
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex flex-col text-right">
-              <span className="text-xs font-black text-cyprus">{patientData?.full_name}</span>
-              <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+              <span className="text-xs font-black text-zinc-800">{patientData?.full_name}</span>
+              <span className="text-[9px] text-zinc-400 font-bold uppercase tracking-wider mt-0.5">
                 {patientData?.membership_points?.toLocaleString("id-ID")} pts · <span className={`px-1.5 py-0.2 rounded border ${tierBadge}`}>{patientData?.membership_status}</span>
               </span>
             </div>
             
-            <div className="w-8 h-8 rounded-full overflow-hidden bg-aqua-spring border border-ocean-green/20 flex items-center justify-center text-ocean-green font-bold text-xs">
+            <div className="w-8 h-8 rounded-full overflow-hidden bg-emerald-50 border border-emerald-200/50 flex items-center justify-center text-emerald-700 font-bold text-xs">
               {initials}
             </div>
 
-            <div className="w-px h-6 bg-gray-200 hidden md:block" />
+            <div className="w-px h-6 bg-zinc-200 hidden md:block" />
 
             <button
               onClick={handleLogout}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-red-650 bg-red-50 hover:bg-red-100 rounded-lg transition-all cursor-pointer shadow-2xs border border-red-200/30"
               title="Keluar dari akun"
             >
               <FaSignOutAlt className="text-xs" />

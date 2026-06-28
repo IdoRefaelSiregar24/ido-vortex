@@ -75,7 +75,7 @@ export default function AuthLayout() {
                 <Outlet />
 
                 <p className="text-center text-xs text-gray-400 mt-8">
-                    © 2026 Apotek Keluarga. All rights reserved.
+                    © 2026 Apotek Sehat Pekanbaru. All rights reserved.
                 </p>
             </div>
         </div>

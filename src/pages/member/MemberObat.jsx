@@ -8,6 +8,23 @@ import Modal from "../../components/Modal";
 import CheckoutForm from "../../components/crm/CheckoutForm";
 import RewardCard from "../../components/crm/RewardCard";
 
+const getProductImage = (item) => {
+  const name = item.nama.toLowerCase();
+  if (name.includes("paracetamol")) {
+    return "https://images.unsplash.com/photo-1584017911766-d451b3d0e843?auto=format&fit=crop&w=400&h=300&q=80";
+  }
+  if (name.includes("amoxicillin") || name.includes("cetirizine") || name.includes("ibuprofen") || name.includes("candesartan")) {
+    return "https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&w=400&h=300&q=80";
+  }
+  if (name.includes("vitamin") || name.includes("antangin")) {
+    return "https://images.unsplash.com/photo-1616679911721-eff6eec18fcd?auto=format&fit=crop&w=400&h=300&q=80";
+  }
+  if (name.includes("sirup") || name.includes("cair") || name.includes("obh")) {
+    return "https://images.unsplash.com/photo-1550572017-edd951b55104?auto=format&fit=crop&w=400&h=300&q=80";
+  }
+  return "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?auto=format&fit=crop&w=400&h=300&q=80";
+};
+
 export default function MemberObat() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
@@ -30,7 +47,7 @@ export default function MemberObat() {
   const categories = ["Semua", "Obat Bebas", "Obat Bebas Terbatas", "Obat Keras", "Suplemen"];
 
   useEffect(() => {
-    document.title = "Katalog Obat & Suplemen - Apotek Keluarga Pekanbaru";
+    document.title = "Katalog Obat & Suplemen - Apotek Sehat Pekanbaru";
   }, []);
 
   useEffect(() => {
@@ -293,7 +310,7 @@ export default function MemberObat() {
                 </div>
                 <div className="text-left">
                   <span className="font-extrabold text-cyprus tracking-tight text-sm md:text-base block leading-none">Portal Member</span>
-                  <span className="text-[10px] text-gray-400 font-bold tracking-widest uppercase">Apotek Keluarga</span>
+                  <span className="text-[9px] text-zinc-400 font-extrabold tracking-wider uppercase mt-0.5">Apotek Sehat Pekanbaru</span>
                 </div>
               </Link>
 
@@ -410,7 +427,7 @@ export default function MemberObat() {
                 +
               </div>
               <span className="text-xl font-extrabold text-cyprus tracking-tight">
-                Apotek Keluarga
+                Apotek Sehat Pekanbaru
               </span>
             </Link>
 
@@ -663,38 +680,83 @@ export default function MemberObat() {
                   {filteredObat.map((item) => {
                     const isObatKeras = item.kategori === "Obat Keras";
                     const isInCart = cart.some((c) => c.id === item.id);
+                    const sediaan = item.nama.toLowerCase().includes("cair") ? "Cair" : (item.nama.toLowerCase().includes("sirup") ? "Sirup" : "Tablet");
                     
+                    const getRegulasiIndicator = (kategori) => {
+                      switch (kategori) {
+                        case "Obat Bebas":
+                          return (
+                            <div className="flex items-center gap-1.5" title="Obat Bebas — Dapat dibeli tanpa resep dokter">
+                              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 border border-emerald-600 inline-block flex-shrink-0" />
+                              <span className="text-[9px] font-black text-emerald-700 bg-emerald-50/70 px-2 py-0.5 rounded border border-emerald-150 uppercase tracking-wide">Bebas</span>
+                            </div>
+                          );
+                        case "Obat Bebas Terbatas":
+                          return (
+                            <div className="flex items-center gap-1.5" title="Obat Bebas Terbatas — Bebas dibeli dalam jumlah terbatas">
+                              <span className="w-2.5 h-2.5 rounded-full bg-blue-500 border border-blue-600 inline-block flex-shrink-0" />
+                              <span className="text-[9px] font-black text-blue-700 bg-blue-50/70 px-2 py-0.5 rounded border border-blue-150 uppercase tracking-wide">Bebas Terbatas</span>
+                            </div>
+                          );
+                        case "Obat Keras":
+                          return (
+                            <div className="flex items-center gap-1.5" title="Obat Keras — Harus tebus dengan resep dokter">
+                              <div className="w-3.5 h-3.5 rounded-full bg-red-650 border border-black flex items-center justify-center text-[8px] font-black text-black leading-none flex-shrink-0">K</div>
+                              <span className="text-[9px] font-black text-red-700 bg-red-50/70 px-2 py-0.5 rounded border border-red-150 uppercase tracking-wide">Obat Keras</span>
+                            </div>
+                          );
+                        default:
+                          return (
+                            <div className="flex items-center gap-1.5">
+                              <span className="w-2.5 h-2.5 rounded-full bg-zinc-300 border border-zinc-400 inline-block flex-shrink-0" />
+                              <span className="text-[9px] font-black text-zinc-650 bg-zinc-50 px-2 py-0.5 rounded border border-zinc-150 uppercase tracking-wide">{kategori}</span>
+                            </div>
+                          );
+                      }
+                    };
+
                     return (
                       <div
                         key={item.id}
                         onClick={() => setSelectedObat(item)}
-                        className="bg-white border border-gray-200 rounded-2xl p-5 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between hover:border-gray-300 relative group"
+                        className="bg-white border border-zinc-200/90 rounded-2xl p-5 shadow-2xs hover:shadow-md hover:border-emerald-200 transition-all duration-300 cursor-pointer flex flex-col justify-between relative group text-left"
                       >
-                        {/* SCM BPOM "Obat Keras" Red Circle K Badge on top-right of image box area */}
-                        {isObatKeras && (
-                          <div 
-                            className="absolute top-4 right-4 w-5 h-5 rounded-full bg-red-600 border border-black flex items-center justify-center text-[9px] font-black text-black leading-none shadow-sm z-10" 
-                            title="Obat Keras - Harus dengan Resep Dokter"
-                          >
-                            K
-                          </div>
-                        )}
-
                         <div>
-                          <div className="flex items-center justify-between mb-3 pr-6">
-                            <span className={`px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-md border ${getKategoriBadge(item.kategori)}`}>
-                              {item.kategori}
-                            </span>
+                          {/* Image Box */}
+                          <div className="w-full h-32 bg-zinc-50 border border-zinc-100 rounded-xl relative overflow-hidden mb-4 transition-all duration-300">
+                            <img 
+                              src={getProductImage(item)} 
+                              alt={item.nama}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              loading="lazy"
+                            />
                           </div>
 
-                          <h3 className="font-extrabold text-cyprus group-hover:text-ocean-green transition-colors text-base line-clamp-1">{item.nama}</h3>
-                          <p className="text-xs text-zinc-500 mt-1.5 line-clamp-2 leading-relaxed font-normal">{item.deskripsi}</p>
+                          {/* Category Regulation Badging */}
+                          <div className="mb-2">
+                            {getRegulasiIndicator(item.kategori)}
+                          </div>
+
+                          {/* Drug Name */}
+                          <h3 className="font-extrabold text-zinc-900 group-hover:text-emerald-600 transition-colors text-sm line-clamp-1">
+                            {item.nama}
+                          </h3>
+
+                          {/* Kandungan Generik / Deskripsi */}
+                          <p className="text-[11px] text-zinc-400 font-semibold line-clamp-2 mt-1 leading-normal">
+                            {item.deskripsi}
+                          </p>
+
+                          {/* Sediaan Form */}
+                          <span className="text-[9px] text-zinc-400 uppercase tracking-wider font-extrabold mt-1.5 inline-block bg-zinc-50 px-1.5 py-0.5 rounded border border-zinc-100">
+                            {sediaan}
+                          </span>
                         </div>
 
                         <div className="pt-4 border-t border-zinc-100 mt-5 flex items-center justify-between">
                           <div>
-                            <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider">Harga</span>
-                            <span className="text-base font-black text-cyprus">{formatCurrency(item.harga)}</span>
+                            <span className="text-[9px] font-bold text-zinc-400 block uppercase tracking-wider">Harga</span>
+                            <span className="text-sm font-extrabold text-zinc-950">{formatCurrency(item.harga)}</span>
                           </div>
                           
                           <button
@@ -702,13 +764,15 @@ export default function MemberObat() {
                               e.stopPropagation();
                               handleAddToCart(item);
                             }}
-                            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer border ${
+                            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer border ${
                               isInCart
-                                ? "bg-zinc-100 text-zinc-800 border-zinc-200 hover:bg-zinc-250"
-                                : "bg-zinc-900 text-white border-zinc-900 hover:bg-zinc-800 shadow-sm"
+                                ? "bg-zinc-100 text-zinc-800 border-zinc-200 hover:bg-zinc-200"
+                                : isObatKeras
+                                  ? "bg-zinc-900 text-white border-zinc-900 hover:bg-zinc-800 shadow-2xs"
+                                  : "bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700 shadow-2xs"
                             }`}
                           >
-                            {isInCart ? "Hapus" : "Tambah"}
+                            {isInCart ? "Hapus" : isObatKeras ? "Tebus" : "Tambah"}
                           </button>
                         </div>
                       </div>
@@ -872,9 +936,9 @@ export default function MemberObat() {
             <div className="w-6 h-6 bg-ocean-green rounded-lg flex items-center justify-center text-white text-xs font-bold">
               +
             </div>
-            <span className="text-white font-bold tracking-tight">Apotek Keluarga</span>
+            <span className="text-white font-bold tracking-tight">Apotek Sehat Pekanbaru</span>
           </div>
-          <p>© 2026 Apotek Keluarga. All rights reserved. Portal Kesehatan Modern Pekanbaru.</p>
+          <p>© 2026 Apotek Sehat Pekanbaru. All rights reserved. Portal Kesehatan Modern Pekanbaru.</p>
         </div>
       </footer>
     </div>

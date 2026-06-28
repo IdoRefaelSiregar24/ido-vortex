@@ -50,7 +50,7 @@ export default function Login() {
     };
 
     useEffect(() => {
-        document.title = "Masuk ke Akun Anda - Apotek Keluarga";
+        document.title = "Masuk ke Akun Anda - Apotek Sehat Pekanbaru";
     }, []);
 
     const handleChange = (evt) => {

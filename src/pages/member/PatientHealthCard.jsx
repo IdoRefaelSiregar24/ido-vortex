@@ -134,7 +134,7 @@ export default function PatientHealthCard() {
   const [activeTab, setActiveTab] = useState("overview"); // "overview" | "history"
 
   useEffect(() => {
-    document.title = "Kartu Kesehatan Pasien - Apotek Keluarga Pekanbaru";
+    document.title = "Kartu Kesehatan Pasien - Apotek Sehat Pekanbaru";
   }, []);
 
   const initials = patient.full_name

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function Forgot() {
     useEffect(() => {
-        document.title = "Reset Password - Apotek Keluarga";
+        document.title = "Reset Password - Apotek Sehat Pekanbaru";
     }, []);
 
     return (
