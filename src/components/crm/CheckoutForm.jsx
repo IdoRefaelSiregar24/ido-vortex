@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaUserShield, FaExclamationTriangle, FaUserCheck } from "react-icons/fa";
+import { supabase } from "../../lib/supabase";
 
 export default function CheckoutForm({ cartItems, onSubmit, triggerMember, setTriggerMember, userProfile, patientHealthData }) {
   const [formData, setFormData] = useState({
@@ -10,6 +11,13 @@ export default function CheckoutForm({ cartItems, onSubmit, triggerMember, setTr
     allergies: "",
     chronicDisease: ""
   });
+
+  const [loyaltyConfig, setLoyaltyConfig] = useState({
+    points_to_currency_rate: 100,
+    max_redeem_percentage: 50.00
+  });
+  const [pointsInput, setPointsInput] = useState(0);
+  const [pointsError, setPointsError] = useState("");
 
   useEffect(() => {
     if (userProfile) {
@@ -35,7 +43,48 @@ export default function CheckoutForm({ cartItems, onSubmit, triggerMember, setTr
     }
   }, [userProfile, patientHealthData, setTriggerMember]);
 
+  useEffect(() => {
+    const fetchLoyaltyConfig = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("loyalty_config")
+          .select("*")
+          .eq("is_active", true)
+          .limit(1)
+          .maybeSingle();
+        if (!error && data) {
+          setLoyaltyConfig({
+            points_to_currency_rate: parseFloat(data.points_to_currency_rate) || 100,
+            max_redeem_percentage: parseFloat(data.max_redeem_percentage) || 50
+          });
+        }
+      } catch (err) {
+        console.error("Gagal memuat loyalty config:", err);
+      }
+    };
+    fetchLoyaltyConfig();
+  }, []);
+
   const totalAmount = cartItems.reduce((sum, item) => sum + item.harga * (item.quantity || 1), 0);
+  const maxRedeemablePoints = Math.floor((totalAmount * (loyaltyConfig.max_redeem_percentage / 100)) / loyaltyConfig.points_to_currency_rate);
+
+  const handlePointsChange = (val) => {
+    setPointsInput(val);
+    if (val < 0) {
+      setPointsError("Jumlah poin tidak valid.");
+    } else if (userProfile && val > (userProfile.membership_points || 0)) {
+      setPointsError(`Saldo poin tidak mencukupi. Saldo Anda: ${userProfile.membership_points} pts.`);
+    } else if (val > maxRedeemablePoints) {
+      setPointsError(`Maksimal penukaran poin untuk transaksi ini adalah ${maxRedeemablePoints} pts.`);
+    } else {
+      setPointsError("");
+    }
+  };
+
+  const handleRedeemMax = () => {
+    const maxVal = Math.min(userProfile?.membership_points || 0, maxRedeemablePoints);
+    handlePointsChange(maxVal);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -43,7 +92,9 @@ export default function CheckoutForm({ cartItems, onSubmit, triggerMember, setTr
       ...formData,
       triggerMember: userProfile ? false : triggerMember, // Only trigger member creation if they are not already a member
       totalAmount,
-      items: cartItems
+      items: cartItems,
+      pointsRedeemed: pointsInput,
+      discountAmount: pointsInput * loyaltyConfig.points_to_currency_rate
     });
   };
 
@@ -130,15 +181,72 @@ export default function CheckoutForm({ cartItems, onSubmit, triggerMember, setTr
           /* Active Member CRM Block */
           <div className="bg-white border border-zinc-200 rounded-lg p-6 space-y-4">
             <div className="flex items-center gap-3 bg-emerald-50 border border-emerald-100 p-4 rounded-xl">
-              <FaUserCheck className="text-emerald-750 text-lg flex-shrink-0" />
+              <FaUserCheck className="text-emerald-755 text-lg flex-shrink-0" />
               <div>
-                <h4 className="text-sm font-black text-emerald-900 leading-none">Akun Terhubung: Gold Member (Aktif)</h4>
-                <p className="text-[11px] text-emerald-700 mt-1 font-medium">Poin saat ini: {userProfile.membership_points?.toLocaleString("id-ID")} pts. Anda otomatis mendapatkan gratis ongkir member.</p>
+                <h4 className="text-sm font-black text-emerald-900 leading-none">
+                  Akun Terhubung: {userProfile.membership_status?.toUpperCase() || 'GOLD'} MEMBER (Aktif)
+                </h4>
+                <p className="text-[11px] text-emerald-700 mt-1 font-medium">
+                  Poin saat ini: {userProfile.membership_points?.toLocaleString("id-ID")} pts. Anda otomatis mendapatkan gratis ongkir member.
+                </p>
+              </div>
+            </div>
+
+            {/* Loyalty Points Redemption Accordion */}
+            <div className="border-t border-zinc-150 pt-4 space-y-3 text-left">
+              <div className="flex items-center justify-between">
+                <label className="text-[10px] font-bold text-zinc-550 uppercase tracking-wider">Tukarkan Poin Loyalitas</label>
+                <span className="text-[9px] text-zinc-500 font-bold bg-zinc-100 px-2 py-0.5 rounded border border-zinc-200">
+                  1 Poin = Rp {loyaltyConfig.points_to_currency_rate}
+                </span>
+              </div>
+              
+              <div className="bg-zinc-50 border border-zinc-200 rounded-xl p-4 space-y-3 text-xs">
+                <div className="flex justify-between items-center text-zinc-650 font-semibold">
+                  <span>Saldo Poin Anda:</span>
+                  <span className="font-bold text-zinc-900">{userProfile.membership_points?.toLocaleString("id-ID")} pts</span>
+                </div>
+                <div className="flex justify-between items-center text-zinc-650 font-semibold">
+                  <span>Batas Maksimal Penukaran ({loyaltyConfig.max_redeem_percentage}%):</span>
+                  <span className="font-bold text-zinc-900">
+                    {maxRedeemablePoints.toLocaleString("id-ID")} pts (Setara Rp {((maxRedeemablePoints) * loyaltyConfig.points_to_currency_rate).toLocaleString("id-ID")})
+                  </span>
+                </div>
+                
+                <div className="flex items-center gap-3 mt-3">
+                  <input
+                    type="number"
+                    min="0"
+                    max={Math.min(userProfile.membership_points || 0, maxRedeemablePoints)}
+                    value={pointsInput}
+                    onChange={(e) => handlePointsChange(parseInt(e.target.value) || 0)}
+                    className="w-32 px-3 py-2 text-xs bg-white border border-zinc-300 rounded-md focus:ring-1 focus:ring-zinc-900 outline-none font-bold text-zinc-800"
+                    placeholder="0"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleRedeemMax}
+                    className="px-3 py-2 bg-zinc-900 hover:bg-zinc-800 text-white font-extrabold text-[10px] uppercase rounded-md transition-all cursor-pointer"
+                  >
+                    Tukarkan Maksimal
+                  </button>
+                </div>
+                
+                {pointsInput > 0 && !pointsError && (
+                  <p className="text-[11px] text-green-700 font-bold mt-1">
+                    ✓ Berhasil diterapkan! Potongan harga: Rp {(pointsInput * loyaltyConfig.points_to_currency_rate).toLocaleString("id-ID")}
+                  </p>
+                )}
+                {pointsError && (
+                  <p className="text-[11px] text-red-650 font-bold mt-1">
+                    ⚠ {pointsError}
+                  </p>
+                )}
               </div>
             </div>
 
             {/* Pre-filled editable medical profile inputs */}
-            <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="pt-2 border-t border-zinc-150 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <div className="flex justify-between items-center">
                   <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Alergi Obat (Verifikasi Akun)</label>
@@ -269,25 +377,39 @@ export default function CheckoutForm({ cartItems, onSubmit, triggerMember, setTr
               <span>Subtotal</span>
               <span>{new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(totalAmount)}</span>
             </div>
+            
             <div className="flex justify-between text-zinc-500">
               <span>Biaya Pengiriman</span>
-              <span>{triggerMember ? <span className="line-through">Rp 15.000</span> : "Rp 15.000"}</span>
+              <span>{userProfile || triggerMember ? <span className="line-through">Rp 15.000</span> : "Rp 15.000"}</span>
             </div>
-            {triggerMember && (
+            
+            {(userProfile || triggerMember) && (
               <div className="flex justify-between text-emerald-700 font-bold bg-emerald-50/50 border border-emerald-100 p-2 rounded-lg">
                 <span>Reward Ongkir Member</span>
                 <span>Gratis Ongkir</span>
               </div>
             )}
+
+            {pointsInput > 0 && !pointsError && (
+              <div className="flex justify-between text-red-650 font-bold bg-red-50 border border-red-100 p-2 rounded-lg">
+                <span>Tukar {pointsInput} Poin</span>
+                <span>-{new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(pointsInput * loyaltyConfig.points_to_currency_rate)}</span>
+              </div>
+            )}
+
             <div className="border-t border-zinc-150 pt-4 flex justify-between items-baseline text-zinc-950">
               <span className="font-bold text-sm">Total Pembayaran</span>
-              <span className="text-lg font-black">{new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(totalAmount + (triggerMember ? 0 : 15000))}</span>
+              <span className="text-lg font-black">
+                {new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(
+                  Math.max(0, totalAmount - (pointsInput > 0 && !pointsError ? pointsInput * loyaltyConfig.points_to_currency_rate : 0) + (userProfile || triggerMember ? 0 : 15000))
+                )}
+              </span>
             </div>
           </div>
 
           <button
             onClick={handleSubmit}
-            disabled={cartItems.length === 0}
+            disabled={cartItems.length === 0 || !!pointsError}
             className="w-full py-3 text-xs font-bold tracking-wider text-white bg-zinc-900 hover:bg-zinc-800 disabled:bg-zinc-100 disabled:text-zinc-400 rounded-md transition-all shadow-sm cursor-pointer"
           >
             {userProfile ? "Bayar Sekarang (Benefit Member)" : (triggerMember ? "Bayar & Aktifkan Member Gold" : "Proses Pembayaran Guest")}

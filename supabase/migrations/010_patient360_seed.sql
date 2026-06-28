@@ -17,7 +17,7 @@ SELECT
     p.user_id,
     pr.full_name,
     pr.email,
-    pr.phone,
+    NULL::TEXT                  AS phone,
     p.date_of_birth,
     DATE_PART('year', AGE(p.date_of_birth))::INT AS age,
     p.gender,
@@ -44,7 +44,7 @@ INNER JOIN public.profiles pr          ON pr.id = p.user_id
 LEFT  JOIN public.patient_allergies a  ON a.user_id = p.user_id
 LEFT  JOIN public.patient_segment_members psm ON psm.user_id = p.user_id
 LEFT  JOIN public.patient_segments seg ON seg.id = psm.segment_id
-GROUP BY p.id, pr.full_name, pr.email, pr.phone, p.user_id,
+GROUP BY p.id, pr.full_name, pr.email, p.user_id,
          p.date_of_birth, p.gender, p.blood_type, p.weight_kg,
          p.height_cm, p.medical_conditions, p.emergency_contact_name,
          p.emergency_contact_phone, p.notes, p.created_at, p.updated_at;

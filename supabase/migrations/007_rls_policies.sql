@@ -15,24 +15,70 @@
 -- ────────────────────────────────────────────
 CREATE OR REPLACE FUNCTION public.is_admin_or_staff()
 RETURNS BOOLEAN AS $$
-  SELECT EXISTS (
+BEGIN
+  RETURN EXISTS (
     SELECT 1 FROM public.profiles
     WHERE id = auth.uid()
     AND role IN ('admin', 'manager', 'staff')
   );
-$$ LANGUAGE sql SECURITY DEFINER STABLE;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER STABLE;
 
 CREATE OR REPLACE FUNCTION public.is_admin()
 RETURNS BOOLEAN AS $$
-  SELECT EXISTS (
+BEGIN
+  RETURN EXISTS (
     SELECT 1 FROM public.profiles
     WHERE id = auth.uid()
     AND role = 'admin'
   );
-$$ LANGUAGE sql SECURITY DEFINER STABLE;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER STABLE;
 
-COMMENT ON FUNCTION public.is_admin_or_staff IS 'Cek apakah current user memiliki role admin, manager, atau staff';
-COMMENT ON FUNCTION public.is_admin IS 'Cek apakah current user memiliki role admin';
+COMMENT ON FUNCTION public.is_admin_or_staff() IS 'Cek apakah current user memiliki role admin, manager, atau staff';
+COMMENT ON FUNCTION public.is_admin() IS 'Cek apakah current user memiliki role admin';
+
+-- ────────────────────────────────────────────
+-- CLEANUP: Drop all existing policies in public schema to avoid duplicate policy errors
+-- ────────────────────────────────────────────
+DO $$
+DECLARE
+    r RECORD;
+BEGIN
+    FOR r IN (
+        SELECT policyname, tablename, schemaname
+        FROM pg_policies
+        WHERE schemaname = 'public'
+    ) LOOP
+        EXECUTE format('DROP POLICY IF EXISTS %I ON %I.%I', r.policyname, r.schemaname, r.tablename);
+    END LOOP;
+END $$;
+
+-- ══════════════════════════════════════════════════════════════
+-- PROFILES — RLS
+-- ══════════════════════════════════════════════════════════════
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "profiles_select_authenticated"
+    ON public.profiles FOR SELECT
+    TO authenticated
+    USING (true);
+
+CREATE POLICY "profiles_insert_admin"
+    ON public.profiles FOR INSERT
+    TO authenticated
+    WITH CHECK (public.is_admin());
+
+CREATE POLICY "profiles_update_own_or_admin"
+    ON public.profiles FOR UPDATE
+    TO authenticated
+    USING (auth.uid() = id OR public.is_admin())
+    WITH CHECK (auth.uid() = id OR public.is_admin());
+
+CREATE POLICY "profiles_delete_admin"
+    ON public.profiles FOR DELETE
+    TO authenticated
+    USING (public.is_admin());
 
 -- ══════════════════════════════════════════════════════════════
 -- PRODUCTS — RLS

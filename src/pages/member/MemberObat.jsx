@@ -115,34 +115,114 @@ export default function MemberObat() {
       setCart([...cart, { ...med, quantity: 1 }]);
     }
   };
-
   const handleCheckoutSubmit = async (data) => {
     if (userProfile) {
-      // Member Checkout
-      const earnedPoints = Math.round(totalCartAmount * 0.1);
-      const newPoints = (userProfile.membership_points || 0) + earnedPoints;
-      
+      // Member Checkout - Create actual database transaction
       try {
-        const { error } = await supabase
-          .from("profiles")
-          .update({ membership_points: newPoints })
-          .eq("id", userProfile.id);
+        const orderNumber = 'ORD-' + new Date().toISOString().slice(0, 10).replace(/-/g, '') + '-' + Math.floor(1000 + Math.random() * 9000);
+        const subtotal = totalCartAmount;
+        const pointsRedeemed = data.pointsRedeemed || 0;
+        const discountAmount = data.discountAmount || 0;
+        const finalTotal = Math.max(0, subtotal - discountAmount);
+
+        // 1. Create order
+        const { data: newOrder, error: orderError } = await supabase
+          .from("orders")
+          .insert([{
+            order_number: orderNumber,
+            user_id: userProfile.id,
+            status: 'pending',
+            subtotal: subtotal,
+            discount_amount: discountAmount,
+            points_used: pointsRedeemed,
+            total: finalTotal,
+            shipping_address: data.address || "Jl. Sudirman No. 12, Pekanbaru",
+            source: 'manual',
+            notes: 'Checkout Instan Member'
+          }])
+          .select()
+          .single();
+
+        if (orderError) throw orderError;
+
+        // 2. Fetch products to map mock SKU IDs (like OBT-002) to database UUIDs
+        const { data: dbProducts, error: dbProdError } = await supabase
+          .from("products")
+          .select("id, sku");
         
-        if (!error) {
-          setUserProfile({ ...userProfile, membership_points: newPoints });
+        if (dbProdError) throw dbProdError;
+
+        const orderItems = cart.map(item => {
+          const dbProd = dbProducts?.find(p => p.sku === item.id);
+          if (!dbProd) {
+            throw new Error(`Obat dengan SKU ${item.id} tidak ditemukan di database.`);
+          }
+          return {
+            order_id: newOrder.id,
+            product_id: dbProd.id, // Gunakan UUID dari database
+            product_name: item.nama || item.name,
+            quantity: item.quantity || 1,
+            unit_price: item.harga
+          };
+        });
+
+        const { error: itemsError } = await supabase
+          .from("order_items")
+          .insert(orderItems);
+
+        if (itemsError) throw itemsError;
+
+        // 3. Confirm points redemption if user redeemed points
+        if (pointsRedeemed > 0) {
+          const { error: confirmError } = await supabase
+            .rpc('confirm_redeem_points', {
+              p_user_id: userProfile.id,
+              p_order_id: newOrder.id,
+              p_points_to_redeem: pointsRedeemed
+            });
+          if (confirmError) console.error("Error confirming points redeem:", confirmError.message);
         }
+
+        // 4. Update order to completed status (triggers Tags Engine & refill reminders on database)
+        const { error: updateStatusError } = await supabase
+          .from("orders")
+          .update({ status: 'completed' })
+          .eq('id', newOrder.id);
+
+        if (updateStatusError) throw updateStatusError;
+
+        // 5. Earn loyalty points via Supabase RPC
+        const { data: earnResult, error: earnError } = await supabase
+          .rpc('earn_loyalty_points', { p_order_id: newOrder.id });
+
+        if (earnError) console.error("Error earning loyalty points:", earnError.message);
+
+        // 6. Fetch updated user profile points balance
+        const { data: updatedProfile, error: profileError } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", userProfile.id)
+          .single();
+
+        if (!profileError && updatedProfile) {
+          setUserProfile(updatedProfile);
+        }
+
+        // 7. Update local UI state
+        setOrderSummary({
+          ...data,
+          isMember: true,
+          pointsEarned: earnResult?.points_earned || Math.round(totalCartAmount * 0.01),
+          newTotalPoints: updatedProfile?.membership_points || (userProfile.membership_points + (earnResult?.points_earned || 0) - pointsRedeemed)
+        });
+
       } catch (err) {
-        console.error("Gagal menambahkan poin member:", err);
+        console.error("Gagal memproses transaksi member:", err.message);
+        alert("Gagal memproses transaksi: " + err.message);
+        return;
       }
-      
-      setOrderSummary({
-        ...data,
-        isMember: true,
-        pointsEarned: earnedPoints,
-        newTotalPoints: newPoints
-      });
     } else {
-      // Guest Checkout
+      // Guest Checkout (Fallback / mock)
       setOrderSummary({
         ...data,
         isMember: false,
@@ -161,7 +241,6 @@ export default function MemberObat() {
     if (isMember) {
       navigate("/member-dashboard");
     } else {
-      // For guests returning from checkout
       navigate("/member-obat");
     }
   };
