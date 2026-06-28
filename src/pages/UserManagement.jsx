@@ -226,7 +226,7 @@ export default function UserManagement() {
     };
 
     return (
-        <div className="font-inter max-w-7xl mx-auto space-y-6">
+        <div className="max-w-7xl mx-auto space-y-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-left">
                 <div>
                     <h2 className="text-2xl font-bold text-cyprus">Manajemen User & CRM</h2>

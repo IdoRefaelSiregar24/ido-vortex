@@ -74,7 +74,7 @@ export default function ProductTable({ items = [], onEdit, onDelete }) {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 w-full font-sans text-left">
+    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 w-full text-left">
       
       {/* Top Toolbar */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">

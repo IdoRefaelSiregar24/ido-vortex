@@ -41,7 +41,7 @@ export default function Dashboard() {
     };
 
     return (
-        <div className="font-inter text-gray-800 pb-10 pt-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen">
+        <div className="text-gray-800 pb-10 pt-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen">
            
             {/* Stat Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">

@@ -54,7 +54,7 @@ export default function CustomerTable({ customers = [], searchQuery = "" }) {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm w-full font-sans overflow-hidden flex flex-col text-left">
+    <div className="bg-white rounded-xl border border-gray-100 shadow-sm w-full overflow-hidden flex flex-col text-left">
       <div className="overflow-x-auto flex-1 p-2">
         <Table className="min-w-[950px]">
           <TableHeader className="bg-aqua-spring text-cyprus border-b border-gray-150">
