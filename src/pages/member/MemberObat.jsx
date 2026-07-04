@@ -300,13 +300,134 @@ export default function MemberObat() {
   return (
     <div className="bg-[#FAFBFB] min-h-screen font-inter flex flex-col justify-between">
       <div>
-        {/* Unified Navbar */}
-        <LandingNavbar
-          activeTab="product"
-          setActiveTab={() => {}}
-          userProfile={userProfile}
-          loadingAuth={loadingAuth}
-        />
+        {userProfile ? (
+          /* Member Logged-In Header (Matches Member Layout Theme) */
+          <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+            <div className="max-w-6xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
+              {/* Logo */}
+              <Link to="/" className="flex items-center gap-3">
+                <div className="w-9 h-9 bg-ocean-green rounded-xl flex items-center justify-center text-white font-black text-lg">
+                  +
+                </div>
+                <div className="text-left">
+                  <span className="font-extrabold text-cyprus tracking-tight text-sm md:text-base block leading-none">Portal Member</span>
+                  <span className="text-[9px] text-zinc-400 font-extrabold tracking-wider uppercase mt-0.5">Apotek Sehat Pekanbaru</span>
+                </div>
+              </Link>
+
+              {/* Navigation Tabs - Desktop */}
+              <nav className="hidden md:flex items-center h-full gap-1">
+                <Link to="/member-dashboard" className="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800 hover:bg-gray-50 rounded-lg transition-all">
+                  Dashboard
+                </Link>
+                <Link to="/health-card" className="px-4 py-2 text-xs font-bold text-gray-500 hover:text-gray-800 hover:bg-gray-50 rounded-lg transition-all">
+                  Kartu Kesehatan
+                </Link>
+                <Link to="/member-obat" className="px-4 py-2 text-xs font-bold bg-gray-950 text-white shadow-sm rounded-lg transition-all">
+                  Katalog Obat
+                </Link>
+              </nav>
+
+              {/* Desktop Profile Details & Mobile Menu Button */}
+              <div className="flex items-center gap-3">
+                <div className="hidden md:flex items-center gap-3">
+                  <div className="flex flex-col text-right">
+                    <span className="text-xs font-black text-cyprus">{userProfile.full_name}</span>
+                    <span className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">
+                      {userProfile.membership_points?.toLocaleString("id-ID")} pts · {userProfile.membership_status}
+                    </span>
+                  </div>
+                  <div className="w-8 h-8 rounded-full overflow-hidden bg-aqua-spring border border-ocean-green/20 flex items-center justify-center text-ocean-green font-bold text-xs">
+                    {initials}
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-red-650 bg-red-50 hover:bg-red-100 rounded-lg transition-all cursor-pointer"
+                  >
+                    <FaSignOutAlt className="text-xs" /> <span>Keluar</span>
+                  </button>
+                </div>
+
+                {/* Hamburger Button (Mobile) */}
+                <button
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="md:hidden p-2 text-gray-500 hover:text-ocean-green rounded-lg hover:bg-gray-50 transition-all cursor-pointer focus:outline-none"
+                  aria-label="Toggle Navigation Menu"
+                >
+                  {isMobileMenuOpen ? (
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  ) : (
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="3" y1="12" x2="21" y2="12"></line>
+                      <line x1="3" y1="6" x2="21" y2="6"></line>
+                      <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Mobile Dropdown Menu for Member */}
+            {isMobileMenuOpen && (
+              <div className="md:hidden border-t border-gray-100 bg-white shadow-lg animate-fade-in absolute w-full left-0 z-45 px-6 py-5 space-y-4 text-left">
+                <div className="flex flex-col gap-3 font-semibold text-gray-600">
+                  <div className="pb-3 border-b border-gray-100 flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-aqua-spring flex items-center justify-center text-ocean-green font-bold">
+                      {initials}
+                    </div>
+                    <div>
+                      <h4 className="font-extrabold text-sm text-cyprus">{userProfile.full_name}</h4>
+                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                        {userProfile.membership_points?.toLocaleString("id-ID")} Poin · Tier {userProfile.membership_status}
+                      </p>
+                    </div>
+                  </div>
+                  <Link
+                    to="/member-dashboard"
+                    className="py-2 border-b border-gray-50 hover:text-ocean-green transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/health-card"
+                    className="py-2 border-b border-gray-50 hover:text-ocean-green transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Kartu Kesehatan
+                  </Link>
+                  <Link
+                    to="/member-obat"
+                    className="py-2 border-b border-gray-50 text-ocean-green font-bold transition-colors"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Katalog Obat
+                  </Link>
+                  <button
+                    onClick={async () => {
+                      setIsMobileMenuOpen(false);
+                      await handleLogout();
+                    }}
+                    className="w-full text-left py-2.5 text-red-650 font-bold text-sm transition-colors cursor-pointer"
+                  >
+                    Keluar dari Akun
+                  </button>
+                </div>
+              </div>
+            )}
+          </header>
+        ) : (
+          /* Unified LandingNavbar for Guest */
+          <LandingNavbar
+            activeTab="product"
+            setActiveTab={() => {}}
+            userProfile={userProfile}
+            loadingAuth={loadingAuth}
+          />
+        )}
 
         {/* Catalog Content Area */}
         <main className="max-w-6xl mx-auto px-4 md:px-6 py-10 space-y-8 text-left">
@@ -668,7 +789,21 @@ export default function MemberObat() {
       </Modal>
 
       {/* Footer */}
-      <LandingFooter setActiveTab={() => {}} />
+      {userProfile ? (
+        <footer className="bg-cyprus text-gray-400 border-t border-teal-950 py-8 px-6 mt-16">
+          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 bg-ocean-green rounded-lg flex items-center justify-center text-white text-xs font-bold">
+                +
+              </div>
+              <span className="text-white font-bold tracking-tight">Apotek Sehat Pekanbaru</span>
+            </div>
+            <p>© 2026 Apotek Sehat Pekanbaru. All rights reserved. Portal Member Apotek.</p>
+          </div>
+        </footer>
+      ) : (
+        <LandingFooter setActiveTab={() => {}} />
+      )}
     </div>
   );
 }
