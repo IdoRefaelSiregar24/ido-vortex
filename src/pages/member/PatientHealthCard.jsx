@@ -66,21 +66,21 @@ function bmiCategory(bmi) {
 
 // ─── Shadcn-style primitives ──────────────────────────────────────────────────
 const Card = ({ children, className = "" }) => (
-  <div className={`bg-white border border-gray-200 rounded-xl shadow-sm ${className}`}>{children}</div>
+  <div className={`bg-white border border-gray-150/60 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 ${className}`}>{children}</div>
 );
 const CardHeader = ({ children, className = "" }) => (
-  <div className={`px-5 py-4 border-b border-gray-100 ${className}`}>{children}</div>
+  <div className={`px-6 py-5 border-b border-gray-100/80 ${className}`}>{children}</div>
 );
 const CardContent = ({ children, className = "" }) => (
-  <div className={`px-5 py-4 ${className}`}>{children}</div>
+  <div className={`px-6 py-5 ${className}`}>{children}</div>
 );
 const Label = ({ children }) => (
-  <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-0.5">{children}</p>
+  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5">{children}</p>
 );
 const Value = ({ children, className = "" }) => (
-  <p className={`text-sm font-medium text-gray-800 ${className}`}>{children}</p>
+  <p className={`text-sm font-semibold text-cyprus ${className}`}>{children}</p>
 );
-const Separator = () => <hr className="border-gray-100 my-1" />;
+const Separator = () => <hr className="border-gray-100/60 my-1" />;
 
 // ─── Section Title ────────────────────────────────────────────────────────────
 function SectionTitle({ icon, title }) {
@@ -147,58 +147,58 @@ export default function PatientHealthCard() {
   }[patient.membership_status] ?? { label: "Member", bg: "bg-gray-50", text: "text-gray-600", border: "border-gray-200" };
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA] font-sans pb-16" style={{ fontFamily: "'Inter', 'system-ui', sans-serif" }}>
+    <div className="min-h-screen bg-[#f8faf9] font-lato pb-16">
 
       {/* ── Top Action Bar ── */}
-      <div className="max-w-3xl mx-auto px-4 pt-6 flex justify-between items-center">
+      <div className="max-w-3xl mx-auto px-4 pt-8 flex justify-between items-center">
         <h2 className="text-xl font-black text-cyprus tracking-tight">Kartu Kesehatan Anda</h2>
         <button
-          className="flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-gray-900 border border-gray-200 rounded-lg px-3 py-1.5 hover:border-gray-400 bg-white transition-all cursor-pointer shadow-xs"
+          className="flex items-center gap-1.5 text-xs font-bold text-gray-650 hover:text-cyprus border border-gray-200 rounded-xl px-3 py-2 hover:border-ocean-green/45 bg-white transition-all cursor-pointer shadow-xs"
           id="btn-download-health-card"
           onClick={() => window.print()}
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Cetak Kartu
         </button>
       </div>
 
-      <main className="max-w-3xl mx-auto px-4 pt-6 space-y-4">
+      <main className="max-w-3xl mx-auto px-4 pt-6 space-y-6">
 
         {/* ── Hero Card — Profile ── */}
-        <Card className="overflow-hidden">
+        <Card className="overflow-hidden relative border border-gray-150/60 shadow-md">
           {/* Accent bar top */}
-          <div className="h-1 bg-gradient-to-r from-gray-900 via-gray-600 to-gray-300" />
-          <CardContent className="pt-5">
+          <div className="h-1.5 bg-gradient-to-r from-cyprus via-ocean-green to-surf-crest" />
+          <CardContent className="pt-6">
             <div className="flex items-start gap-4">
               {/* Avatar */}
               <div className="relative flex-shrink-0">
-                <div className="w-16 h-16 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center text-xl font-black text-gray-600">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-ocean-green to-cyprus text-white flex items-center justify-center text-xl font-black shadow-md">
                   {initials}
                 </div>
-                <div className="absolute -bottom-0.5 -right-0.5 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
                   <svg width="9" height="9" viewBox="0 0 24 24" fill="white"><path d="M20 6L9 17l-5-5" stroke="white" strokeWidth="3" strokeLinecap="round" fill="none"/></svg>
                 </div>
               </div>
               {/* Info */}
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 text-left">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <h1 className="text-lg font-black text-gray-900 leading-tight">{patient.full_name}</h1>
-                    <p className="text-xs text-gray-400 mt-0.5">{patient.email}</p>
+                    <h1 className="text-lg font-black text-cyprus leading-none">{patient.full_name}</h1>
+                    <p className="text-xs text-grey font-medium mt-1.5">{patient.email}</p>
                   </div>
-                  <span className={`flex-shrink-0 text-[10px] font-bold uppercase px-2.5 py-1 rounded-md border ${tierBadge.bg} ${tierBadge.text} ${tierBadge.border}`}>
+                  <span className={`flex-shrink-0 text-[10px] font-black uppercase px-3 py-1 rounded-xl border ${tierBadge.bg} ${tierBadge.text} ${tierBadge.border} shadow-sm`}>
                     {tierBadge.label}
                   </span>
                 </div>
-                <div className="flex flex-wrap gap-3 mt-3 text-xs text-gray-500">
+                <div className="flex flex-wrap gap-x-3 gap-y-1.5 mt-4 text-xs text-gray-500 font-semibold">
                   <span className="flex items-center gap-1">
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                     Lahir {formatDate(patient.date_of_birth)}
                   </span>
                   <span>·</span>
                   <span>{patient.age} tahun</span>
                   <span>·</span>
-                  <span className="font-semibold text-gray-700 px-1.5 py-0.5 bg-gray-100 rounded text-[10px] border border-gray-200">{patient.blood_type}</span>
+                  <span className="font-black text-ocean-green px-2 py-0.5 bg-aqua-spring rounded-lg text-[10px] border border-ocean-green/20">{patient.blood_type}</span>
                   <span>·</span>
                   <span>{patient.gender === "male" ? "Laki-laki" : "Perempuan"}</span>
                 </div>
@@ -206,17 +206,17 @@ export default function PatientHealthCard() {
             </div>
 
             {/* Points */}
-            <div className="mt-4 flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
+            <div className="mt-6 flex items-center justify-between p-4 bg-[#f8faf9] rounded-2xl border border-gray-150/60 text-left">
               <div>
                 <Label>Loyalty Points</Label>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-black text-gray-900">{patient.membership_points.toLocaleString("id-ID")}</span>
-                  <span className="text-xs text-gray-400">pts</span>
+                  <span className="text-xl font-black text-cyprus">{patient.membership_points.toLocaleString("id-ID")}</span>
+                  <span className="text-xs text-gray-400 font-bold">pts</span>
                 </div>
               </div>
               <div className="text-right">
                 <Label>Member Sejak</Label>
-                <Value className="text-xs">{formatDate(patient.joined_at)}</Value>
+                <Value className="text-xs font-bold">{formatDate(patient.joined_at)}</Value>
               </div>
             </div>
           </CardContent>
@@ -257,10 +257,10 @@ export default function PatientHealthCard() {
               key={tab.key}
               id={`tab-${tab.key}`}
               onClick={() => setActiveTab(tab.key)}
-              className={`px-4 py-2.5 text-xs font-semibold border-b-2 transition-all cursor-pointer ${
+              className={`px-5 py-3 text-xs font-extrabold border-b-2 transition-all cursor-pointer ${
                 activeTab === tab.key
-                  ? "border-gray-900 text-gray-900"
-                  : "border-transparent text-gray-400 hover:text-gray-700"
+                  ? "border-ocean-green text-cyprus font-black"
+                  : "border-transparent text-gray-400 hover:text-cyprus"
               }`}
             >
               {tab.label}

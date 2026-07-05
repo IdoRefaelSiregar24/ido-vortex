@@ -82,19 +82,42 @@ export default function MemberDashboard() {
         ? user.full_name.split(" ").map((n) => n[0]).join("").substring(0, 2).toUpperCase()
         : "M";
 
-    let badgeColor = "bg-emerald-100 text-emerald-700 border border-emerald-200";
-    if (user?.membership_status === "premium") badgeColor = "bg-indigo-100 text-indigo-700 border border-indigo-200";
-    else if (user?.membership_status === "vip") badgeColor = "bg-red-100 text-red-700 border border-red-200";
+    let badgeColor = "bg-[#eaf8e7] text-ocean-green border border-ocean-green/20";
+    let tierText = "Free Member";
+    if (user?.membership_status === "premium") {
+        badgeColor = "bg-indigo-50 text-indigo-700 border border-indigo-200";
+        tierText = "Premium Member";
+    } else if (user?.membership_status === "vip") {
+        badgeColor = "bg-rose-50 text-rose-700 border border-rose-200";
+        tierText = "VIP Member";
+    }
 
     return (
-        <div className="bg-[#f8f9fa] min-h-screen font-inter pb-16">
+        <div className="bg-[#f8faf9] min-h-screen font-lato pb-16">
 
-            <main className="max-w-6xl mx-auto px-6 pt-10 space-y-8">
-                {/* Welcome & Notification */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                        <h1 className="text-3xl font-black text-cyprus tracking-tight">Halo, {user?.full_name}! 👋</h1>
-                        <p className="text-sm text-gray-500 mt-1">Selamat datang kembali di area member Apotek Sehat Pekanbaru.</p>
+            <main className="max-w-6xl mx-auto px-4 md:px-6 pt-8 space-y-8">
+                {/* Welcome Hero Banner */}
+                <div className="bg-gradient-to-br from-[#023337] via-[#034a45] to-[#045953] rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 border border-white/5">
+                    {/* Floating Abstract Shapes */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-ocean-green/10 rounded-full blur-3xl -translate-y-12 translate-x-12 animate-pulse"></div>
+                    <div className="absolute -left-12 -bottom-12 w-48 h-48 bg-aqua-spring/5 rounded-full blur-2xl"></div>
+
+                    <div className="space-y-3 text-center md:text-left z-10">
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 backdrop-blur-md text-aqua-spring text-xs font-bold uppercase tracking-wider rounded-full border border-white/10">
+                            ✨ Portal Member Sehat
+                        </span>
+                        <h1 className="text-3xl md:text-4xl font-black tracking-tight leading-tight">
+                            Halo, {user?.full_name}! 👋
+                        </h1>
+                        <p className="text-sm text-teal-150 max-w-xl">
+                            Akses riwayat medis Anda, klaim reward kesehatan menarik, dan pantau pengingat resep obat rutin Anda dalam satu tempat.
+                        </p>
+                    </div>
+
+                    <div className="z-10 shrink-0">
+                        <span className={`inline-block px-5 py-2 font-black text-xs uppercase tracking-widest rounded-2xl shadow-md border ${badgeColor}`}>
+                            ⭐ {tierText}
+                        </span>
                     </div>
                 </div>
 
@@ -108,7 +131,7 @@ export default function MemberDashboard() {
                     {/* Left Panel: Stats and Benefits */}
                     <div className="lg:col-span-8 space-y-8">
                         {message.text && (
-                            <div className={`p-4 text-sm rounded-xl flex items-center shadow-sm border ${
+                            <div className={`p-4 text-xs font-bold rounded-2xl flex items-center shadow-sm border animate-fade-in ${
                                 message.type === "success" 
                                     ? "bg-emerald-50 text-emerald-700 border-emerald-150" 
                                     : "bg-red-50 text-red-700 border-red-150"
@@ -120,78 +143,89 @@ export default function MemberDashboard() {
 
                         {/* Scorecard Keanggotaan */}
                         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
-                            {/* Card Member */}
-                            <div className="md:col-span-7 bg-white border border-gray-100 p-6 rounded-2xl shadow-sm flex flex-col justify-between relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-24 h-24 bg-ocean-green/5 rounded-full -translate-y-6 translate-x-6"></div>
-                                <div className="space-y-4">
+                            {/* Card Member (VIP-style card design) */}
+                            <div className="md:col-span-7 bg-white border border-gray-150/60 p-6 rounded-3xl shadow-sm flex flex-col justify-between relative overflow-hidden group hover:shadow-md transition-all duration-300">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-aqua-spring/40 rounded-full -translate-y-10 translate-x-10 group-hover:scale-110 transition-transform duration-500"></div>
+                                <div className="space-y-4 z-10">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Kartu Anggota</span>
-                                        <span className={`px-3 py-0.5 text-xs font-bold uppercase tracking-wider rounded-full ${badgeColor}`}>
-                                            {user?.membership_status}
-                                        </span>
+                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Digital Loyalty Card</span>
+                                        <span className="text-[10px] font-bold text-gray-400">ID: AK-{user?.id ? user.id.substring(0, 6).toUpperCase() : "99827"}</span>
                                     </div>
                                     <div className="flex items-center gap-4 pt-4">
-                                        <div className="w-12 h-12 rounded-full bg-aqua-spring border border-ocean-green/20 flex items-center justify-center text-ocean-green font-bold text-lg">
+                                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-ocean-green to-cyprus text-white flex items-center justify-center font-black text-xl shadow-md">
                                             {initials}
                                         </div>
-                                        <div>
-                                            <h3 className="text-lg font-bold text-cyprus">{user?.full_name}</h3>
-                                            <p className="text-xs text-gray-400">{user?.email}</p>
+                                        <div className="text-left">
+                                            <h3 className="text-lg font-black text-cyprus leading-none">{user?.full_name}</h3>
+                                            <p className="text-xs text-grey font-medium mt-1">{user?.email}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="pt-8 flex items-center justify-between text-xs text-gray-400 border-t border-gray-50 mt-6">
+                                <div className="pt-6 flex items-center justify-between text-xs text-gray-400 border-t border-gray-100 mt-6 z-10">
                                     <span>Bergabung Sejak:</span>
-                                    <span className="font-semibold text-cyprus">
+                                    <span className="font-bold text-cyprus">
                                         {user?.membership_joined_at ? new Date(user.membership_joined_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) : "-"}
                                     </span>
                                 </div>
                             </div>
 
-                            {/* Card Poin */}
-                            <div className="md:col-span-5 bg-cyprus text-white p-6 rounded-2xl shadow-sm flex flex-col justify-between">
-                                <div className="space-y-2">
-                                    <span className="text-xs text-teal-300 font-bold uppercase tracking-widest block">Loyalty Points</span>
-                                    <h2 className="text-5xl font-black">{user?.membership_points.toLocaleString("id-ID")} <span className="text-sm font-medium text-teal-200">pts</span></h2>
+                            {/* Card Poin (Teal-glowing accent card) */}
+                            <div className="md:col-span-5 bg-gradient-to-br from-cyprus to-[#034a45] text-white p-6 rounded-3xl shadow-md flex flex-col justify-between relative overflow-hidden group hover:shadow-lg transition-all duration-300">
+                                <div className="absolute -left-6 -bottom-6 w-24 h-24 bg-white/5 rounded-full"></div>
+                                <div className="space-y-1 text-left z-10">
+                                    <span className="text-[10px] text-surf-crest font-black uppercase tracking-widest block">Loyalty Points</span>
+                                    <h2 className="text-5xl font-black tracking-tight mt-1 flex items-baseline gap-1.5">
+                                        {user?.membership_points.toLocaleString("id-ID")}{" "}
+                                        <span className="text-sm font-bold text-surf-crest/80">pts</span>
+                                    </h2>
                                 </div>
-                                <p className="text-xs text-teal-200 leading-relaxed mt-4">
-                                    Kumpulkan poin terus untuk klaim hadiah voucher belanja obat dan suplemen gratis di bawah.
+                                <p className="text-[11px] text-teal-150 leading-relaxed mt-6 text-left z-10">
+                                    Gunakan poin belanja obat Anda untuk ditukarkan dengan potongan harga obat atau tebus produk suplemen secara gratis.
                                 </p>
                             </div>
                         </div>
 
                         {/* Klaim Benefit Section */}
                         <div className="space-y-4 text-left">
-                            <h2 className="text-xl font-bold text-cyprus flex items-center gap-2">
+                            <h2 className="text-lg font-extrabold text-cyprus flex items-center gap-2">
                                 <FaGift className="text-ocean-green" /> Klaim Benefit & Voucher
                             </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {/* Benefit 1 */}
-                                <div className="bg-white border border-gray-100 p-5 rounded-2xl flex items-center justify-between gap-4">
-                                    <div className="space-y-1">
-                                        <h3 className="font-bold text-cyprus text-sm">Voucher Diskon Rp 10.000</h3>
-                                        <p className="text-xs text-gray-400">Tukarkan 100 poin loyalitas</p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Benefit 1 (Voucher Ticket style) */}
+                                <div className="bg-white border border-gray-150/60 rounded-3xl p-5 shadow-xs flex items-center justify-between gap-4 relative overflow-hidden group hover:border-ocean-green/30 hover:shadow-md transition-all duration-300">
+                                    {/* Ticket Cutout Left & Right */}
+                                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-3 h-6 bg-[#f8faf9] border-r border-gray-150/60 rounded-r-full"></div>
+                                    <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-6 bg-[#f8faf9] border-l border-gray-150/60 rounded-l-full"></div>
+
+                                    <div className="space-y-1.5 pl-3 text-left">
+                                        <h3 className="font-extrabold text-cyprus text-sm leading-tight">Voucher Potongan Rp 10.000</h3>
+                                        <p className="text-[10px] text-grey font-bold uppercase tracking-wider">Tukar 100 Poin</p>
                                     </div>
                                     <button
                                         onClick={() => claimBenefit(100, "Voucher Diskon Rp 10.000")}
                                         disabled={actionLoading || (user?.membership_points || 0) < 100}
-                                        className="px-4 py-2 bg-ocean-green hover:bg-emerald-700 disabled:bg-gray-100 disabled:text-gray-400 text-white font-bold text-xs rounded-xl transition-all cursor-pointer"
+                                        className="mr-3 px-4 py-2.5 bg-gradient-to-br from-ocean-green to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 disabled:from-gray-100 disabled:to-gray-100 disabled:text-gray-400 text-white font-extrabold text-[11px] rounded-xl transition-all shadow-sm cursor-pointer"
                                     >
-                                        Klaim (100 Pts)
+                                        Klaim
                                     </button>
                                 </div>
-                                {/* Benefit 2 */}
-                                <div className="bg-white border border-gray-100 p-5 rounded-2xl flex items-center justify-between gap-4">
-                                    <div className="space-y-1">
-                                        <h3 className="font-bold text-cyprus text-sm">Gratis Suplemen Vitamin C</h3>
-                                        <p className="text-xs text-gray-400">Tukarkan 250 poin loyalitas</p>
+
+                                {/* Benefit 2 (Voucher Ticket style) */}
+                                <div className="bg-white border border-gray-150/60 rounded-3xl p-5 shadow-xs flex items-center justify-between gap-4 relative overflow-hidden group hover:border-ocean-green/30 hover:shadow-md transition-all duration-300">
+                                    {/* Ticket Cutout Left & Right */}
+                                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-3 h-6 bg-[#f8faf9] border-r border-gray-150/60 rounded-r-full"></div>
+                                    <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-6 bg-[#f8faf9] border-l border-gray-150/60 rounded-l-full"></div>
+
+                                    <div className="space-y-1.5 pl-3 text-left">
+                                        <h3 className="font-extrabold text-cyprus text-sm leading-tight">Gratis Suplemen Vitamin C</h3>
+                                        <p className="text-[10px] text-grey font-bold uppercase tracking-wider">Tukar 250 Poin</p>
                                     </div>
                                     <button
                                         onClick={() => claimBenefit(250, "Gratis Suplemen Vitamin C")}
                                         disabled={actionLoading || (user?.membership_points || 0) < 250}
-                                        className="px-4 py-2 bg-ocean-green hover:bg-emerald-700 disabled:bg-gray-100 disabled:text-gray-400 text-white font-bold text-xs rounded-xl transition-all cursor-pointer"
+                                        className="mr-3 px-4 py-2.5 bg-gradient-to-br from-ocean-green to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 disabled:from-gray-100 disabled:to-gray-100 disabled:text-gray-400 text-white font-extrabold text-[11px] rounded-xl transition-all shadow-sm cursor-pointer"
                                     >
-                                        Klaim (250 Pts)
+                                        Klaim
                                     </button>
                                 </div>
                             </div>
@@ -199,29 +233,29 @@ export default function MemberDashboard() {
 
                         {/* Upgrade Membership Area */}
                         {user?.membership_status !== "vip" && (
-                            <div className="bg-white border border-gray-100 p-6 rounded-2xl shadow-sm space-y-4 text-left">
-                                <h2 className="text-xl font-bold text-cyprus flex items-center gap-2">
-                                    <FaRocket className="text-ocean-green" /> Tingkatkan Keanggotaan
+                            <div className="bg-white border border-gray-150/60 p-6 rounded-3xl shadow-sm space-y-4 text-left hover:shadow-md transition-all duration-300">
+                                <h2 className="text-lg font-extrabold text-cyprus flex items-center gap-2">
+                                    <FaRocket className="text-ocean-green" /> Tingkatkan Keanggotaan Member
                                 </h2>
-                                <p className="text-sm text-gray-500">
-                                    Upgrade tier member Anda untuk melipatgandakan perolehan poin transaksi dan dapatkan benefit gratis ongkir instan.
+                                <p className="text-xs text-grey font-semibold leading-relaxed">
+                                    Tingkatkan level akun keanggotaan Anda untuk melipatgandakan perolehan poin transaksi pada setiap pembelian, layanan jalur prioritas bebas antrean tebus obat, serta gratis biaya pengiriman instan.
                                 </p>
                                 <div className="flex flex-wrap gap-4 pt-2">
                                     {user?.membership_status === "free" && (
                                         <button
                                             onClick={() => upgradeTier("premium", 200)}
                                             disabled={actionLoading}
-                                            className="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition-all shadow-sm cursor-pointer disabled:opacity-50"
+                                            className="px-5 py-3 bg-indigo-650 hover:bg-indigo-700 text-white font-bold text-xs rounded-2xl transition-all shadow-sm cursor-pointer disabled:opacity-50"
                                         >
-                                            Upgrade ke Premium (+200 Poin Bonus)
+                                            Upgrade Premium (+200 Poin Bonus)
                                         </button>
                                     )}
                                     <button
                                         onClick={() => upgradeTier("vip", 500)}
                                         disabled={actionLoading}
-                                        className="px-5 py-3 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl transition-all shadow-sm cursor-pointer disabled:opacity-50"
+                                        className="px-5 py-3 bg-gradient-to-br from-rose-600 to-red-650 hover:from-rose-700 hover:to-red-700 text-white font-bold text-xs rounded-2xl transition-all shadow-sm cursor-pointer disabled:opacity-50"
                                     >
-                                        Upgrade ke VIP (+500 Poin Bonus)
+                                        Upgrade VIP (+500 Poin Bonus)
                                     </button>
                                 </div>
                             </div>
@@ -233,19 +267,18 @@ export default function MemberDashboard() {
                         <DoseReminder />
                         <LiveChatConsultation />
 
-
                         {/* Riwayat Aktivitas singkat */}
                         <div className="space-y-4 text-left">
-                            <h2 className="text-xl font-bold text-cyprus flex items-center gap-2">
-                                <FaClock className="text-ocean-green" /> Riwayat Aktivitas Member
+                            <h2 className="text-lg font-extrabold text-cyprus flex items-center gap-2">
+                                <FaClock className="text-ocean-green" /> Aktivitas Member
                             </h2>
-                            <div className="bg-white border border-gray-100 rounded-2xl divide-y divide-gray-50 shadow-sm overflow-hidden">
+                            <div className="bg-white border border-gray-150/60 rounded-3xl divide-y divide-gray-100 shadow-sm overflow-hidden">
                                 <div className="p-4 flex items-center justify-between text-xs text-gray-500">
-                                    <span className="flex items-center gap-2 font-semibold text-cyprus">
-                                        <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full"></span>
-                                        Bergabung dengan Apotek Sehat Pekanbaru
+                                    <span className="flex items-center gap-2 font-semibold text-cyprus text-left">
+                                        <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full shrink-0"></span>
+                                        Bergabung di Portal Sehat Pekanbaru
                                     </span>
-                                    <span className="text-xs text-gray-400">Hari ini</span>
+                                    <span className="text-[10px] text-gray-400 font-bold shrink-0">Hari ini</span>
                                 </div>
                             </div>
                         </div>
