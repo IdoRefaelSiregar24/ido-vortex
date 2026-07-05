@@ -431,57 +431,66 @@ export default function MemberObat() {
 
         {/* Catalog Content Area */}
         <main className="max-w-6xl mx-auto px-4 md:px-6 py-10 space-y-8 text-left">
-          {/* Title */}
-          <div>
-            <h1 className="text-3xl font-black text-cyprus tracking-tight">Katalog Obat &amp; Suplemen</h1>
-            <p className="text-sm text-gray-500 mt-1">Cari obat, cek stok tersedia, dan tambah langsung ke keranjang belanja Anda.</p>
+          {/* Title Area */}
+          <div className="relative bg-gradient-to-r from-cyprus via-[#034040] to-ocean-green rounded-3xl p-8 md:p-10 overflow-hidden shadow-lg mb-10">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+            <div className="absolute bottom-0 left-10 w-40 h-40 bg-ocean-green/30 rounded-full blur-2xl translate-y-1/2 pointer-events-none" />
+            <div className="relative z-10">
+              <h1 className="text-4xl font-black text-white tracking-tight mb-2">Katalog Obat &amp; Suplemen</h1>
+              <p className="text-sm text-emerald-50 max-w-xl leading-relaxed">Temukan obat bebas, obat keras beresep, dan suplemen kesehatan dengan mudah. Cek ketersediaan stok secara real-time dan pesan sekarang.</p>
+            </div>
           </div>
 
           {/* Main Layout Grid (Left Sidebar + Right Products Grid) */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
             {/* Left Sidebar: Kategori (3 Columns) */}
-            <aside className="md:col-span-3 bg-white border border-gray-200 rounded-2xl p-5 shadow-xs space-y-5">
-              <div>
-                <h3 className="text-xs font-black text-zinc-450 uppercase tracking-widest pb-3 border-b border-zinc-100">Golongan Obat</h3>
-                <div className="flex flex-col gap-1 mt-3">
+            <aside className="md:col-span-3 space-y-6">
+              <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
+                <h3 className="text-xs font-black text-cyprus uppercase tracking-widest pb-4 border-b border-gray-100 mb-4 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-ocean-green"></span> Golongan Obat
+                </h3>
+                <div className="flex flex-col gap-1.5">
                   {categories.map((cat) => {
                     const isActive = activeCategory === cat;
-                    let icon = <span className="text-sm">💊</span>;
-                    if (cat === "Semua") icon = <span className="text-sm">📦</span>;
-                    else if (cat === "Obat Bebas") icon = <span className="w-3.5 h-3.5 rounded-full bg-emerald-500 border border-emerald-600 inline-block flex-shrink-0" />;
-                    else if (cat === "Obat Bebas Terbatas") icon = <span className="w-3.5 h-3.5 rounded-full bg-blue-500 border border-blue-600 inline-block flex-shrink-0" />;
-                    else if (cat === "Obat Keras") icon = <div className="w-4 h-4 rounded-full bg-red-600 border border-black flex items-center justify-center text-[9px] font-black text-black leading-none">K</div>;
-                    else if (cat === "Suplemen") icon = <span className="w-3.5 h-3.5 rounded-full bg-amber-400 border border-amber-500 inline-block flex-shrink-0" />;
+                    let icon = <span className="text-base">💊</span>;
+                    if (cat === "Semua") icon = <span className="text-base">📦</span>;
+                    else if (cat === "Obat Bebas") icon = <span className="w-4 h-4 rounded-full bg-emerald-500 border-2 border-emerald-100 flex-shrink-0 shadow-sm" />;
+                    else if (cat === "Obat Bebas Terbatas") icon = <span className="w-4 h-4 rounded-full bg-blue-500 border-2 border-blue-100 flex-shrink-0 shadow-sm" />;
+                    else if (cat === "Obat Keras") icon = <div className="w-4 h-4 rounded-full bg-red-600 border-2 border-red-100 shadow-sm flex items-center justify-center text-[8px] font-black text-white leading-none">K</div>;
+                    else if (cat === "Suplemen") icon = <span className="w-4 h-4 rounded-full bg-amber-400 border-2 border-amber-100 flex-shrink-0 shadow-sm" />;
 
                     return (
                       <button
                         key={cat}
                         onClick={() => setActiveCategory(cat)}
-                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer text-left ${
+                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold transition-all duration-300 cursor-pointer text-left group ${
                           isActive
-                            ? "bg-zinc-950 text-white shadow-xs"
-                            : "text-zinc-550 hover:bg-zinc-50 hover:text-zinc-900"
+                            ? "bg-cyprus text-white shadow-md shadow-cyprus/20 scale-[1.02]"
+                            : "text-gray-500 hover:bg-gray-50 hover:text-cyprus"
                         }`}
                       >
-                        {icon}
+                        <div className={`transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}>{icon}</div>
                         <span className="truncate">{cat}</span>
+                        {isActive && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-ocean-green" />}
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Body Systems Category from Reference Image */}
-              <div className="pt-2">
-                <h3 className="text-xs font-black text-zinc-455 uppercase tracking-widest pb-3 border-b border-zinc-100">Kondisi Tubuh</h3>
-                <div className="flex flex-col gap-1 mt-3">
+              {/* Body Systems Category */}
+              <div className="bg-white border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
+                <h3 className="text-xs font-black text-cyprus uppercase tracking-widest pb-4 border-b border-gray-100 mb-4 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-amber-400"></span> Kondisi Tubuh
+                </h3>
+                <div className="flex flex-col gap-1.5">
                   {[
-                    { label: "Darah & Jantung", emoji: "🩸" },
-                    { label: "Hormon & Kelenjar", emoji: "🧪" },
-                    { label: "Kepala & Saraf", emoji: "🧠" },
-                    { label: "Kulit & Alergi", emoji: "🧴" },
-                    { label: "Otot, Sendi & Tulang", emoji: "🦵" },
-                    { label: "Saluran Pencernaan", emoji: "🍏" },
+                    { label: "Darah & Jantung", emoji: "🩸", bg: "bg-red-50" },
+                    { label: "Hormon & Kelenjar", emoji: "🧪", bg: "bg-purple-50" },
+                    { label: "Kepala & Saraf", emoji: "🧠", bg: "bg-pink-50" },
+                    { label: "Kulit & Alergi", emoji: "🧴", bg: "bg-orange-50" },
+                    { label: "Otot, Sendi & Tulang", emoji: "🦵", bg: "bg-amber-50" },
+                    { label: "Saluran Pencernaan", emoji: "🍏", bg: "bg-green-50" },
                   ].map((item) => (
                     <button
                       key={item.label}
@@ -495,10 +504,10 @@ export default function MemberObat() {
                         }
                         setActiveCategory("Semua");
                       }}
-                      className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-550 hover:bg-zinc-50 hover:text-zinc-950 transition-all cursor-pointer text-left"
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-bold text-gray-500 hover:bg-gray-50 hover:text-cyprus transition-all duration-300 cursor-pointer text-left group"
                     >
-                      <span className="text-base flex-shrink-0 leading-none">{item.emoji}</span>
-                      <span className="truncate">{item.label}</span>
+                      <span className={`w-8 h-8 rounded-xl ${item.bg} flex items-center justify-center text-lg flex-shrink-0 group-hover:scale-110 transition-transform duration-300`}>{item.emoji}</span>
+                      <span className="truncate group-hover:translate-x-1 transition-transform duration-300">{item.label}</span>
                     </button>
                   ))}
                 </div>
@@ -508,31 +517,39 @@ export default function MemberObat() {
             {/* Right Column: Grid and Search (9 Columns) */}
             <div className="md:col-span-9 space-y-6">
               {/* Search Bar */}
-              <div className="bg-white border border-gray-250/60 rounded-2xl p-5 shadow-xs">
-                <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center justify-between">
-                  <div className="relative flex-1 max-w-md">
-                    <MdSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
+              <div className="bg-white border border-gray-100 rounded-3xl p-4 shadow-sm relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-ocean-green/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 pointer-events-none group-hover:bg-ocean-green/10 transition-colors duration-500" />
+                <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center justify-between relative z-10">
+                  <div className="relative flex-1">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <MdSearch className="text-gray-400 text-xl group-focus-within:text-ocean-green transition-colors" />
+                    </div>
                     <input
                       type="text"
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                      placeholder="Cari nama obat atau khasiat..."
-                      className="w-full pl-10 pr-4 py-2.5 text-sm bg-white border border-gray-250/80 rounded-xl focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green outline-none transition-all placeholder-gray-400 shadow-inner"
+                      placeholder="Cari nama obat, kandungan, atau khasiat..."
+                      className="w-full pl-12 pr-4 py-3 text-sm bg-gray-50/50 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-ocean-green/10 focus:border-ocean-green focus:bg-white outline-none transition-all duration-300 placeholder-gray-400 font-medium text-cyprus"
                       id="search-obat-member"
                     />
                   </div>
-                  <div className="text-xs text-gray-400 font-bold uppercase tracking-wider">
-                    Menampilkan {filteredObat.length} dari {obatData.length} item
+                  <div className="text-[10px] sm:text-xs text-gray-400 font-black uppercase tracking-widest px-4 py-2 bg-gray-50 rounded-xl whitespace-nowrap border border-gray-100">
+                    Menampilkan <span className="text-cyprus">{filteredObat.length}</span> dari {obatData.length} item
                   </div>
                 </div>
               </div>
 
               {/* Product Grid */}
               {filteredObat.length === 0 ? (
-                <div className="bg-white border border-gray-200 rounded-2xl py-20 text-center text-gray-400 shadow-xs">
-                  <FaPills className="mx-auto text-4xl mb-3 text-gray-300" />
-                  <p className="font-semibold text-sm">Obat tidak ditemukan</p>
-                  <p className="text-xs text-gray-400 mt-1">Coba gunakan kata kunci pencarian atau kategori lain.</p>
+                <div className="bg-white border border-gray-100 rounded-3xl py-24 text-center text-gray-400 shadow-sm relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gray-50/50" />
+                  <div className="relative z-10">
+                    <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <FaPills className="text-4xl text-gray-300" />
+                    </div>
+                    <p className="font-bold text-base text-cyprus">Obat tidak ditemukan</p>
+                    <p className="text-xs text-gray-500 mt-2">Coba gunakan kata kunci pencarian atau kategori lain.</p>
+                  </div>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -545,30 +562,30 @@ export default function MemberObat() {
                       switch (kategori) {
                         case "Obat Bebas":
                           return (
-                            <div className="flex items-center gap-1.5" title="Obat Bebas — Dapat dibeli tanpa resep dokter">
-                              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 border border-emerald-600 inline-block flex-shrink-0" />
-                              <span className="text-[9px] font-black text-emerald-700 bg-emerald-50/70 px-2 py-0.5 rounded border border-emerald-150 uppercase tracking-wide">Bebas</span>
+                            <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-white/95 backdrop-blur-sm shadow-sm px-2.5 py-1 rounded-lg border border-emerald-100/50 z-10" title="Obat Bebas — Dapat dibeli tanpa resep dokter">
+                              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 border border-white shadow-sm inline-block flex-shrink-0" />
+                              <span className="text-[9px] font-black text-emerald-700 uppercase tracking-wide">Bebas</span>
                             </div>
                           );
                         case "Obat Bebas Terbatas":
                           return (
-                            <div className="flex items-center gap-1.5" title="Obat Bebas Terbatas — Bebas dibeli dalam jumlah terbatas">
-                              <span className="w-2.5 h-2.5 rounded-full bg-blue-500 border border-blue-600 inline-block flex-shrink-0" />
-                              <span className="text-[9px] font-black text-blue-700 bg-blue-50/70 px-2 py-0.5 rounded border border-blue-150 uppercase tracking-wide">Bebas Terbatas</span>
+                            <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-white/95 backdrop-blur-sm shadow-sm px-2.5 py-1 rounded-lg border border-blue-100/50 z-10" title="Obat Bebas Terbatas — Bebas dibeli dalam jumlah terbatas">
+                              <span className="w-2.5 h-2.5 rounded-full bg-blue-500 border border-white shadow-sm inline-block flex-shrink-0" />
+                              <span className="text-[9px] font-black text-blue-700 uppercase tracking-wide">Terbatas</span>
                             </div>
                           );
                         case "Obat Keras":
                           return (
-                            <div className="flex items-center gap-1.5" title="Obat Keras — Harus tebus dengan resep dokter">
-                              <div className="w-3.5 h-3.5 rounded-full bg-red-650 border border-black flex items-center justify-center text-[8px] font-black text-black leading-none flex-shrink-0">K</div>
-                              <span className="text-[9px] font-black text-red-700 bg-red-50/70 px-2 py-0.5 rounded border border-red-150 uppercase tracking-wide">Obat Keras</span>
+                            <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-white/95 backdrop-blur-sm shadow-sm px-2.5 py-1 rounded-lg border border-red-100/50 z-10" title="Obat Keras — Harus tebus dengan resep dokter">
+                              <div className="w-3.5 h-3.5 rounded-full bg-red-600 border border-white shadow-sm flex items-center justify-center text-[8px] font-black text-white leading-none flex-shrink-0">K</div>
+                              <span className="text-[9px] font-black text-red-700 uppercase tracking-wide">Obat Keras</span>
                             </div>
                           );
                         default:
                           return (
-                            <div className="flex items-center gap-1.5">
-                              <span className="w-2.5 h-2.5 rounded-full bg-zinc-300 border border-zinc-400 inline-block flex-shrink-0" />
-                              <span className="text-[9px] font-black text-zinc-650 bg-zinc-50 px-2 py-0.5 rounded border border-zinc-150 uppercase tracking-wide">{kategori}</span>
+                            <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-white/95 backdrop-blur-sm shadow-sm px-2.5 py-1 rounded-lg border border-gray-100/50 z-10">
+                              <span className="w-2.5 h-2.5 rounded-full bg-gray-400 border border-white shadow-sm inline-block flex-shrink-0" />
+                              <span className="text-[9px] font-black text-gray-700 uppercase tracking-wide">{kategori}</span>
                             </div>
                           );
                       }
@@ -578,44 +595,40 @@ export default function MemberObat() {
                       <div
                         key={item.id}
                         onClick={() => setSelectedObat(item)}
-                        className="bg-white border border-zinc-200/90 rounded-2xl p-5 shadow-2xs hover:shadow-md hover:border-emerald-200 transition-all duration-300 cursor-pointer flex flex-col justify-between relative group text-left"
+                        className="bg-white border border-gray-100 rounded-3xl p-5 shadow-sm hover:shadow-xl hover:shadow-ocean-green/10 hover:border-ocean-green/30 transition-all duration-300 cursor-pointer flex flex-col justify-between relative group text-left transform hover:-translate-y-1"
                       >
                         <div>
                           {/* Image Box */}
-                          <div className="w-full h-32 bg-zinc-50 border border-zinc-100 rounded-xl relative overflow-hidden mb-4 transition-all duration-300">
+                          <div className="w-full h-40 bg-gray-50 rounded-2xl relative overflow-hidden mb-5 transition-all duration-300">
+                            {getRegulasiIndicator(item.kategori)}
+                            <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm text-cyprus text-[9px] font-black px-2 py-1 rounded-lg shadow-sm border border-gray-100/50 z-10 uppercase tracking-wide">
+                              {sediaan}
+                            </div>
                             <img 
                               src={getProductImage(item)} 
                               alt={item.nama}
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out mix-blend-multiply"
                               loading="lazy"
                             />
-                          </div>
-
-                          {/* Category Regulation Badging */}
-                          <div className="mb-2">
-                            {getRegulasiIndicator(item.kategori)}
+                            {/* Overlay gradient on hover */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-cyprus/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                           </div>
 
                           {/* Drug Name */}
-                          <h3 className="font-extrabold text-zinc-900 group-hover:text-emerald-600 transition-colors text-sm line-clamp-1">
+                          <h3 className="font-extrabold text-cyprus group-hover:text-ocean-green transition-colors text-sm line-clamp-2 leading-snug">
                             {item.nama}
                           </h3>
 
                           {/* Kandungan Generik / Deskripsi */}
-                          <p className="text-[11px] text-zinc-400 font-semibold line-clamp-2 mt-1 leading-normal">
+                          <p className="text-[11px] text-gray-500 font-medium line-clamp-2 mt-2 leading-relaxed">
                             {item.deskripsi}
                           </p>
-
-                          {/* Sediaan Form */}
-                          <span className="text-[9px] text-zinc-400 uppercase tracking-wider font-extrabold mt-1.5 inline-block bg-zinc-50 px-1.5 py-0.5 rounded border border-zinc-100">
-                            {sediaan}
-                          </span>
                         </div>
 
-                        <div className="pt-4 border-t border-zinc-100 mt-5 flex items-center justify-between">
+                        <div className="pt-4 mt-5 flex items-end justify-between border-t border-gray-50">
                           <div>
-                            <span className="text-[9px] font-bold text-zinc-400 block uppercase tracking-wider">Harga</span>
-                            <span className="text-sm font-extrabold text-zinc-950">{formatCurrency(item.harga)}</span>
+                            <span className="text-[9px] font-black text-gray-400 block uppercase tracking-widest mb-1">Harga</span>
+                            <span className="text-base font-black text-[#4ea674]">{formatCurrency(item.harga)}</span>
                           </div>
                           
                           <button
@@ -623,15 +636,15 @@ export default function MemberObat() {
                               e.stopPropagation();
                               handleAddToCart(item);
                             }}
-                            className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer border ${
+                            className={`px-4 py-2.5 text-xs font-bold rounded-xl transition-all duration-300 cursor-pointer shadow-sm active:scale-95 flex items-center justify-center ${
                               isInCart
-                                ? "bg-zinc-100 text-zinc-800 border-zinc-200 hover:bg-zinc-200"
+                                ? "bg-red-50 text-red-600 border border-red-100 hover:bg-red-100 hover:border-red-200"
                                 : isObatKeras
-                                  ? "bg-zinc-900 text-white border-zinc-900 hover:bg-zinc-800 shadow-2xs"
-                                  : "bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700 shadow-2xs"
+                                  ? "bg-cyprus text-white hover:bg-[#022528] shadow-cyprus/20 hover:shadow-md"
+                                  : "bg-ocean-green text-white hover:bg-[#3d8c5e] shadow-ocean-green/20 hover:shadow-md"
                             }`}
                           >
-                            {isInCart ? "Hapus" : isObatKeras ? "Tebus" : "Tambah"}
+                            {isInCart ? "Hapus" : isObatKeras ? "Tebus Resep" : "Tambah"}
                           </button>
                         </div>
                       </div>
@@ -646,14 +659,17 @@ export default function MemberObat() {
 
       {/* Floating Bottom Cart Panel */}
       {cart.length > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-zinc-950 text-white px-6 py-4 rounded-full flex items-center gap-6 shadow-xl border border-zinc-850 animate-bounce-subtle">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-lg">
-              <MdOutlineShoppingCart />
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-cyprus/95 backdrop-blur-md text-white px-3 py-3 pr-4 rounded-full flex items-center gap-4 shadow-2xl shadow-cyprus/30 border border-white/10 animate-fade-in translate-y-0 hover:-translate-y-1 transition-transform duration-300">
+          <div className="flex items-center gap-3 bg-white/10 rounded-full px-4 py-2">
+            <div className="relative">
+              <MdOutlineShoppingCart className="text-xl" />
+              <div className="absolute -top-1.5 -right-2 bg-ocean-green text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
+                {cart.length}
+              </div>
             </div>
-            <div className="text-left">
-              <span className="text-xs font-bold text-zinc-300 block">{cart.length} obat dipilih</span>
-              <span className="text-sm font-black tracking-tight">{formatCurrency(totalCartAmount)}</span>
+            <div className="text-left border-l border-white/20 pl-3">
+              <span className="text-[10px] font-medium text-white/70 block uppercase tracking-wider">Total Belanja</span>
+              <span className="text-sm font-black tracking-tight text-white">{formatCurrency(totalCartAmount)}</span>
             </div>
           </div>
           
@@ -662,9 +678,9 @@ export default function MemberObat() {
               setCheckoutStep("form");
               setCheckoutModalOpen(true);
             }}
-            className="px-6 py-2 bg-white text-zinc-950 font-extrabold text-xs uppercase tracking-wider rounded-full hover:bg-zinc-200 transition-colors cursor-pointer"
+            className="px-6 py-2.5 bg-ocean-green text-white font-extrabold text-xs uppercase tracking-wider rounded-full hover:bg-[#3d8c5e] transition-colors cursor-pointer shadow-lg shadow-ocean-green/40 flex items-center gap-2"
           >
-            Checkout Sekarang
+            Checkout <span className="text-base leading-none">&rarr;</span>
           </button>
         </div>
       )}
