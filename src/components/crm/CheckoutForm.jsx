@@ -21,6 +21,20 @@ export default function CheckoutForm({ cartItems, onSubmit, triggerMember, setTr
   });
   const [pointsInput, setPointsInput] = useState(0);
   const [pointsError, setPointsError] = useState("");
+  const [promoCode, setPromoCode] = useState("");
+  const [promoDiscount, setPromoDiscount] = useState(0);
+  const [promoStatus, setPromoStatus] = useState(""); // "", "success", "error"
+
+  const handleApplyPromo = () => {
+    if (promoCode.trim().toUpperCase() === "SEHAT30") {
+      const discount = Math.min(Math.round(totalAmount * 0.3), 50000);
+      setPromoDiscount(discount);
+      setPromoStatus("success");
+    } else {
+      setPromoDiscount(0);
+      setPromoStatus("error");
+    }
+  };
 
   useEffect(() => {
     if (userProfile) {
@@ -97,7 +111,8 @@ export default function CheckoutForm({ cartItems, onSubmit, triggerMember, setTr
       totalAmount,
       items: cartItems,
       pointsRedeemed: pointsInput,
-      discountAmount: pointsInput * loyaltyConfig.points_to_currency_rate
+      discountAmount: (pointsInput * loyaltyConfig.points_to_currency_rate) + promoDiscount,
+      promoCodeUsed: promoStatus === "success" ? promoCode.toUpperCase() : null
     });
   };
 
@@ -461,11 +476,69 @@ export default function CheckoutForm({ cartItems, onSubmit, triggerMember, setTr
               </div>
             )}
 
+            {/* Promo Code Input */}
+            <div className="border-t border-zinc-150 pt-4 space-y-2 text-left">
+              <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">Kode Promo / Voucher</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                  placeholder="cth. SEHAT30"
+                  className="flex-1 px-3.5 py-2 text-xs bg-white border border-zinc-200 rounded-lg outline-none uppercase font-bold text-zinc-800"
+                />
+                <button
+                  type="button"
+                  onClick={handleApplyPromo}
+                  className="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-white font-extrabold text-[10px] uppercase rounded-lg transition-colors cursor-pointer"
+                >
+                  Terapkan
+                </button>
+              </div>
+
+              {/* Available Vouchers Suggestion List */}
+              <div className="bg-amber-50/50 border border-amber-100 p-3 rounded-xl mt-2 text-left">
+                <span className="text-[8px] font-black uppercase text-amber-800 tracking-wider">🎁 VOUCHER TERSEDIA (KLIK UNTUK PAKAI)</span>
+                <div className="flex gap-2 mt-1.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPromoCode("SEHAT30");
+                      const discount = Math.min(Math.round(totalAmount * 0.3), 50000);
+                      setPromoDiscount(discount);
+                      setPromoStatus("success");
+                    }}
+                    className="flex items-center gap-1.5 bg-white border border-amber-200 hover:bg-amber-100 px-2 py-1 rounded text-[9px] font-extrabold text-amber-900 cursor-pointer shadow-3xs transition-all hover:scale-[1.02]"
+                  >
+                    🎟 SEHAT30 <span className="text-[8px] font-medium text-amber-700">(Diskon 30% Maks 50k)</span>
+                  </button>
+                </div>
+              </div>
+
+              {promoStatus === "success" && (
+                <p className="text-[10px] text-emerald-700 font-extrabold mt-1">
+                  ✓ Kode Promo berhasil digunakan!
+                </p>
+              )}
+              {promoStatus === "error" && (
+                <p className="text-[10px] text-red-650 font-bold mt-1">
+                  ⚠ Kode promo tidak valid.
+                </p>
+              )}
+            </div>
+
+            {promoDiscount > 0 && promoStatus === "success" && (
+              <div className="flex justify-between text-red-700 font-bold bg-red-50 border border-red-100 p-2.5 rounded-xl">
+                <span>Diskon Promo (SEHAT30)</span>
+                <span>-{new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(promoDiscount)}</span>
+              </div>
+            )}
+
             <div className="border-t border-zinc-150 pt-4 flex justify-between items-baseline text-zinc-950">
               <span className="font-bold text-sm">Total Pembayaran</span>
               <span className="text-lg font-black">
                 {new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(
-                  Math.max(0, totalAmount - (pointsInput > 0 && !pointsError ? pointsInput * loyaltyConfig.points_to_currency_rate : 0) + (userProfile || triggerMember ? 0 : 15000))
+                  Math.max(0, totalAmount - (pointsInput > 0 && !pointsError ? pointsInput * loyaltyConfig.points_to_currency_rate : 0) - promoDiscount + (userProfile || triggerMember ? 0 : 15000))
                 )}
               </span>
             </div>

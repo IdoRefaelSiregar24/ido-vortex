@@ -185,8 +185,9 @@ export default function HeroCarousel() {
               <div className="flex flex-col text-left">
                 <span className="text-[9px] font-black uppercase bg-white/20 px-1.5 py-0.5 rounded w-max">Promo Medis</span>
                 <p className="text-[11px] font-black leading-tight mt-1.5">Voucher Sehat 30%</p>
+                <span className="text-[8px] font-extrabold bg-yellow-400 text-red-950 px-1.5 py-0.5 rounded mt-1.5 w-max">KODE: SEHAT30</span>
               </div>
-              <span className="text-[9px] font-bold underline opacity-85 group-hover:opacity-100">More details</span>
+              <span className="text-[9px] font-bold underline opacity-85 group-hover:opacity-100">Gunakan di checkout</span>
             </Link>
 
             {/* Banner Right (Vivid blue/purple style) */}

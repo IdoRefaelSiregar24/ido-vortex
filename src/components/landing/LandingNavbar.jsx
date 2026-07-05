@@ -67,6 +67,14 @@ export default function LandingNavbar({ activeTab, setActiveTab, userProfile, lo
 
   return (
     <header className="w-full bg-white border-b border-gray-100 sticky top-0 z-50">
+      {/* Top Announcement Promo Bar */}
+      <div className="w-full bg-gradient-to-r from-cyprus via-[#034a4f] to-ocean-green text-white text-center py-2 px-4 flex items-center justify-center gap-2 relative z-50 overflow-hidden shadow-sm">
+        <span className="inline-block animate-bounce text-xs">🎉</span>
+        <p className="text-[10px] font-black tracking-wide uppercase">
+          PROMO TERBATAS: GUNAKAN KODE <span className="bg-yellow-400 text-slate-950 font-black px-2 py-0.5 rounded shadow-sm inline-block tracking-wider mx-1 animate-pulse">SEHAT30</span> UNTUK DISKON 30% DI CHECKOUT!
+        </p>
+      </div>
+
       {/* ── ROW 1: BRAND, LOCATION, LANG, SEARCH, USER, CART ──────────────── */}
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
         

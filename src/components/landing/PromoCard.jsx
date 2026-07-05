@@ -45,7 +45,11 @@ export default function PromoCard({
       {/* Content */}
       <div className="relative z-10">
         {badge && (
-          <span className="inline-block text-[10px] font-extrabold uppercase tracking-widest bg-white/20 backdrop-blur-sm text-white px-2 py-0.5 rounded-full mb-2">
+          <span className={`inline-block text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-0.5 rounded-full mb-2 ${
+            badge.includes("KODE")
+              ? "bg-yellow-450 text-slate-950 shadow-sm font-black animate-pulse"
+              : "bg-white/20 backdrop-blur-sm text-white"
+          }`}>
             {badge}
           </span>
         )}

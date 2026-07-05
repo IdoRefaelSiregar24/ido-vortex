@@ -364,8 +364,8 @@ export default function LandingPage() {
           {/* Right column — 2 promo stacked */}
           <PromoCard
             title="Diskon Vitamin & Suplemen Pilihan"
-            subtitle="Hemat hingga 30% untuk semua produk suplemen"
-            badge="PROMO MINGGU INI"
+            subtitle="Gunakan kode SEHAT30 untuk diskon 30% saat checkout!"
+            badge="PROMO MINGGU INI (KODE: SEHAT30)"
             ctaLabel="Lihat Produk"
             ctaLink="/member-obat"
             bgClass="bg-gradient-to-br from-ocean-green to-[#3a7d5a]"
@@ -909,6 +909,20 @@ export default function LandingPage() {
 
       {/* Footer (replaces old inline footer) */}
       <LandingFooter setActiveTab={setActiveTab} />
+
+      {/* Floating Voucher Badge at Bottom Right */}
+      <div className="fixed bottom-6 right-6 z-50 animate-bounce group select-none">
+        <div className="bg-gradient-to-r from-red-500 to-amber-500 text-white rounded-2xl shadow-xl p-3.5 flex items-center gap-3 border border-white/20 max-w-[240px]">
+          <div className="text-2xl animate-spin">🎟</div>
+          <div className="text-left">
+            <p className="text-[9px] font-black uppercase tracking-wider text-amber-200">Voucher Spesial</p>
+            <p className="text-[10px] font-bold mt-0.5 leading-tight">Diskon 30% Belanja Obat</p>
+            <span className="inline-block mt-1.5 text-[10px] font-black bg-white text-red-600 px-2 py-0.5 rounded shadow-sm">
+              KODE: SEHAT30
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
