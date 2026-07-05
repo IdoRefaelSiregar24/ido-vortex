@@ -120,17 +120,17 @@ export default function HeroCarousel() {
             <h3 className="text-base font-bold text-cyprus">Lindungi Imunitas Keluarga</h3>
             <p className="text-[10px] text-grey mt-0.5">Sedia P3K & suplemen harian di rumah</p>
           </div>
-          <div className="my-5 relative flex justify-center">
+          <div className="my-4 relative overflow-hidden rounded-xl h-36 w-full">
             <img
-              src="https://images.unsplash.com/photo-1581579438747-1dc8d1e0ca96?auto=format&fit=crop&w=400&q=80"
+              src="https://images.unsplash.com/photo-1616679911721-eff6eec18fcd?auto=format&fit=crop&w=500&q=80"
               alt="Immunity"
-              className="h-32 object-contain rounded-xl group-hover:scale-105 transition-transform duration-300"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
           </div>
           <div className="flex justify-center">
             <Link
               to="/member-obat"
-              className="px-10 py-2.5 bg-[#eaf8e7] hover:bg-[#c1e6ba] text-cyprus text-xs font-bold rounded-full transition-colors"
+              className="w-full text-center py-2.5 bg-ocean-green hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition-colors shadow-sm"
             >
               Shop Now
             </Link>
@@ -145,25 +145,27 @@ export default function HeroCarousel() {
               See more
             </Link>
           </div>
-          {/* Grid of 4 boxes with labels at bottom-left */}
+          {/* Grid of 4 boxes with full image cover */}
           <div className="grid grid-cols-2 gap-4 my-4">
             {[
-              { label: "Tensimeter", img: "https://images.unsplash.com/photo-1615461066841-6116e61058f4?auto=format&fit=crop&w=150&q=80" },
-              { label: "Termometer", img: "https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?auto=format&fit=crop&w=150&q=80" },
-              { label: "Oksimeter", img: "https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&w=150&q=80" },
-              { label: "Cek Darah",  img: "https://images.unsplash.com/photo-1579154204601-01588f35116f?auto=format&fit=crop&w=150&q=80" },
+              { label: "Tensimeter", img: "https://images.unsplash.com/photo-1615461066841-6116e61058f4?auto=format&fit=crop&w=250&q=80" },
+              { label: "Termometer", img: "https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?auto=format&fit=crop&w=250&q=80" },
+              { label: "Oksimeter", img: "https://images.unsplash.com/photo-1628771065518-0d82f1938462?auto=format&fit=crop&w=250&q=80" },
+              { label: "Cek Darah",  img: "https://images.unsplash.com/photo-1579154341098-e4e158cc7f55?auto=format&fit=crop&w=250&q=80" },
             ].map((item) => (
               <Link
                 key={item.label}
                 to="/member-obat"
-                className="relative bg-white border border-gray-100 rounded-xl p-3 flex flex-col items-center hover:border-ocean-green/30 hover:shadow-sm transition-all group"
+                className="relative bg-white border border-gray-100 rounded-xl overflow-hidden h-28 flex flex-col justify-end hover:border-ocean-green/30 hover:shadow-md transition-all group"
               >
                 <img
                   src={item.img}
                   alt={item.label}
-                  className="h-16 object-contain rounded group-hover:scale-105 transition-transform"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                <span className="absolute bottom-2 left-3 text-[9px] font-bold text-grey">
+                {/* Gradient overlay for readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent z-10" />
+                <span className="relative z-20 p-2.5 text-[10px] font-bold text-white text-left drop-shadow-sm">
                   {item.label}
                 </span>
               </Link>
@@ -251,7 +253,7 @@ export default function HeroCarousel() {
         {/* Card 3: Ibu & Bayi */}
         <Link to="/member-obat" className="relative h-32 rounded-xl overflow-hidden shadow-sm group">
           <div className="absolute inset-0 bg-black/40 z-10" />
-          <img src="https://images.unsplash.com/photo-1522844990619-4951c40f3dea?auto=format&fit=crop&w=300&q=80" alt="Ibu & Bayi" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+          <img src="https://media.suara.com/pictures/653x366/2024/11/26/86938-promo-diskon-kebutuhan-ibu-dan-anak.jpg" alt="Ibu & Bayi" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
           <div className="absolute inset-0 z-20 p-4 flex flex-col justify-between text-left">
             <span className="text-[9px] font-black uppercase text-[#C1E6BA] tracking-wider">Ibu & Anak</span>
             <p className="text-xs font-black text-white leading-tight">Kebutuhan Ibu & Anak</p>

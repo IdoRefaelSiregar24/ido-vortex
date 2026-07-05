@@ -10,7 +10,8 @@ create table  public.profiles (
   membership_status text not null default 'free' check (membership_status in ('free', 'premium', 'vip')),
   membership_points integer not null default 0 check (membership_points >= 0),
   membership_joined_at timestamp with time zone not null default timezone('utc'::text, now()),
-  created_at timestamp with time zone not null default timezone('utc'::text, now())
+  created_at timestamp with time zone not null default timezone('utc'::text, now()),
+  updated_at timestamp with time zone not null default timezone('utc'::text, now())
 );
 
 -- Aktifkan Row Level Security (RLS) jika belum aktif

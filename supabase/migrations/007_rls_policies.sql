@@ -141,10 +141,12 @@ CREATE POLICY "orders_update_admin"
     ON public.orders FOR UPDATE
     USING (public.is_admin_or_staff());
 
--- User bisa cancel order miliknya (hanya jika masih pending)
-CREATE POLICY "orders_update_own_cancel"
+-- User bisa update/cancel order miliknya sendiri (misal mengubah status ke completed saat checkout instant)
+CREATE POLICY "orders_update_own"
     ON public.orders FOR UPDATE
-    USING (auth.uid() = user_id AND status = 'pending');
+    USING (auth.uid() = user_id)
+    WITH CHECK (auth.uid() = user_id);
+
 
 
 -- ══════════════════════════════════════════════════════════════

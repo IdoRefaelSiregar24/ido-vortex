@@ -307,30 +307,38 @@ export default function LandingPage() {
             
             <div className="grid grid-cols-2 gap-3.5">
               {[
-                { label: "Multivitamin",   price: "Rp 89K",  discount: "20% off", img: "https://images.unsplash.com/photo-1550572017-edd951b55104?auto=format&fit=crop&w=150&q=80" },
-                { label: "Minyak Kayu Putih", price: "Rp 25K",  discount: null,      img: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=150&q=80" },
-                { label: "Madu Herbal",     price: "Rp 120K", discount: null,      img: "https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=150&q=80" },
-                { label: "Masker Medis",    price: "Rp 45K",  discount: null,      img: "https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&w=150&q=80" }
+                { label: "Multivitamin",   price: "Rp 89K",  discount: "20% off", img: "https://images.unsplash.com/photo-1550572017-edd951b55104?auto=format&fit=crop&w=250&q=80" },
+                { label: "Minyak Kayu Putih", price: "Rp 25K",  discount: null,      img: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=250&q=80" },
+                { label: "Madu Herbal",     price: "Rp 120K", discount: null,      img: "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&w=250&q=80" },
+                { label: "Masker Medis",    price: "Rp 45K",  discount: null,      img: "https://images.unsplash.com/photo-1585435557343-3b092031a831?auto=format&fit=crop&w=250&q=80" }
               ].map((item, i) => (
-                <div key={i} className="relative border border-gray-100 rounded-2xl p-3 bg-white flex flex-col items-center hover:border-ocean-green/30 hover:shadow-sm transition-all group min-h-[140px]">
-                  {/* Badges */}
-                  {item.discount && (
-                    <span className="absolute top-2 left-2 text-[8px] font-bold text-red-500">
-                      {item.discount}
+                <div key={i} className="relative border border-gray-100 rounded-2xl bg-white flex flex-col overflow-hidden hover:border-ocean-green/30 hover:shadow-md transition-all group h-[190px]">
+                  {/* Image container */}
+                  <div className="h-24 w-full relative overflow-hidden bg-gray-50">
+                    <img src={item.img} alt={item.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    {item.discount && (
+                      <span className="absolute top-2 left-2 text-[8px] font-black text-white bg-red-500 px-1.5 py-0.5 rounded shadow-sm">
+                        {item.discount}
+                      </span>
+                    )}
+                    <span className="absolute top-2 right-2 text-[8px] font-black text-white bg-ocean-green px-1.5 py-0.5 rounded shadow-sm">
+                      {item.price}
                     </span>
-                  )}
-                  <span className="absolute top-2 right-2 text-[8px] font-bold text-[#4ea674]">
-                    {item.price}
-                  </span>
+                  </div>
 
-                  <img src={item.img} alt={item.label} className="h-16 object-contain my-3 group-hover:scale-105 transition-transform" />
-                  
-                  <button
-                    onClick={() => handleAddToCart({ name: item.label })}
-                    className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-[#eaf8e7] hover:bg-[#c1e6ba] text-cyprus px-4 py-1 text-[8px] font-black rounded-full shadow-sm cursor-pointer whitespace-nowrap transition-colors"
-                  >
-                    Buy Now
-                  </button>
+                  {/* Body Info */}
+                  <div className="p-2 flex flex-col flex-1 justify-between">
+                    <div className="text-left">
+                      <h4 className="text-[10px] font-black text-cyprus truncate">{item.label}</h4>
+                    </div>
+                    
+                    <button
+                      onClick={() => handleAddToCart({ name: item.label })}
+                      className="w-full bg-[#eaf8e7] hover:bg-ocean-green hover:text-white text-cyprus text-[9px] font-black py-1.5 rounded-lg shadow-sm cursor-pointer transition-colors"
+                    >
+                      Buy Now
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -350,6 +358,7 @@ export default function LandingPage() {
             ctaLabel="Pesan Sekarang"
             ctaLink="/member-obat"
             bgClass="bg-gradient-to-br from-cyprus to-[#034a4f]"
+            image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTgHPHaYHnxT7rz3HoTtDpunZTu-IiWOLRUBH6ABnZHoyJabGmWxxFUqeE&s=10"
             tall
           />
           {/* Right column — 2 promo stacked */}
@@ -360,6 +369,7 @@ export default function LandingPage() {
             ctaLabel="Lihat Produk"
             ctaLink="/member-obat"
             bgClass="bg-gradient-to-br from-ocean-green to-[#3a7d5a]"
+            image="https://images.unsplash.com/photo-1616679911721-eff6eec18fcd?auto=format&fit=crop&w=400&q=80"
           />
           <PromoCard
             title="Program Keanggotaan Eksklusif VIP"
@@ -368,6 +378,7 @@ export default function LandingPage() {
             ctaLabel="Gabung VIP"
             ctaLink="/register"
             bgClass="bg-gradient-to-br from-[#4a2a7a] to-[#6b3fa8]"
+            image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRu7Ftoy3D0bkqht9-aEAYyXCl1-_Ec5_fuBOnIsAfpbBZuWmCLFlMMoQtj&s=10"
           />
           {/* Bottom 2 promo */}
           <PromoCard
@@ -377,6 +388,7 @@ export default function LandingPage() {
             ctaLabel="Upload Resep"
             ctaLink="/member-obat"
             bgClass="bg-gradient-to-br from-[#1a4a6b] to-[#2a6fa8]"
+            image="https://images.unsplash.com/photo-1584017911766-d451b3d0e843?auto=format&fit=crop&w=400&q=80"
           />
           <PromoCard
             title="Cek Kesehatan Dasar Gratis"
@@ -385,6 +397,7 @@ export default function LandingPage() {
             ctaLabel="Daftar Member"
             ctaLink="/register"
             bgClass="bg-gradient-to-br from-amber-600 to-orange-600"
+            image="https://images.unsplash.com/photo-1579154341098-e4e158cc7f55?auto=format&fit=crop&w=400&q=80"
           />
           <PromoCard
             title="Konsultasi Apoteker 24 Jam"
@@ -393,6 +406,7 @@ export default function LandingPage() {
             ctaLabel="Konsultasi Sekarang"
             ctaLink="/"
             bgClass="bg-gradient-to-br from-rose-600 to-pink-700"
+            image="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=400&q=80"
           />
         </div>
       </section>
@@ -423,7 +437,7 @@ export default function LandingPage() {
               reviews: 560,
               badgeStyle: "circle",
               badgeText: "27%",
-              image: "https://images.unsplash.com/photo-1631549916768-4119b255f9f2?auto=format&fit=crop&w=400&q=80",
+              image: "https://images.unsplash.com/photo-1550572017-edd951b55104?auto=format&fit=crop&w=400&q=80",
             },
             {
               name: "Ibuprofen 400mg Anti Nyeri",
