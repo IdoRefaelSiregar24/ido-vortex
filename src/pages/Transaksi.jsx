@@ -3,6 +3,7 @@ import { MdAdd, MdMoreVert, MdSearch, MdFilterList, MdSwapVert, MdMoreHoriz } fr
 import OrderStatCard from "../components/OrderStatCard";
 import Modal from "../components/Modal";
 import { transaksiData } from "../data";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
 
 export default function Transaksi() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -404,56 +405,56 @@ export default function Transaksi() {
 
                 {/* Table list */}
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse min-w-[800px]">
-                        <thead>
-                            <tr className="bg-aqua-spring text-cyprus text-[13px] font-semibold border-none">
-                                <th className="py-3.5 px-4 rounded-l-xl">Customer Id</th>
-                                <th className="py-3.5 px-4">Name</th>
-                                <th className="py-3.5 px-4">Date</th>
-                                <th className="py-3.5 px-4">Total</th>
-                                <th className="py-3.5 px-4">Method</th>
-                                <th className="py-3.5 px-4">Status</th>
-                                <th className="py-3.5 px-4 rounded-r-xl">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
+                    <Table className="w-full text-left border-collapse min-w-[800px]">
+                        <TableHeader>
+                            <TableRow className="bg-aqua-spring text-cyprus text-[13px] font-semibold border-none">
+                                <TableHead className="py-3.5 px-4 rounded-l-xl">Customer Id</TableHead>
+                                <TableHead className="py-3.5 px-4">Name</TableHead>
+                                <TableHead className="py-3.5 px-4">Date</TableHead>
+                                <TableHead className="py-3.5 px-4">Total</TableHead>
+                                <TableHead className="py-3.5 px-4">Method</TableHead>
+                                <TableHead className="py-3.5 px-4">Status</TableHead>
+                                <TableHead className="py-3.5 px-4 rounded-r-xl">Action</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody className="divide-y divide-gray-100">
                             {currentTransaksi.length > 0 ? (
                                 currentTransaksi.map((trx) => (
-                                    <tr key={trx.transaksiId} className="hover:bg-gray-50/50 transition-colors">
-                                        <td className="py-4 px-4 text-[13px] font-semibold text-gray-500">{trx.customerId}</td>
-                                        <td className="py-4 px-4 text-[13px] font-bold text-cyprus">{trx.pelanggan}</td>
-                                        <td className="py-4 px-4 text-[13px] font-semibold text-gray-500">
+                                    <TableRow key={trx.transaksiId} className="hover:bg-gray-50/50 transition-colors">
+                                        <TableCell className="py-4 px-4 text-[13px] font-semibold text-gray-500">{trx.customerId}</TableCell>
+                                        <TableCell className="py-4 px-4 text-[13px] font-bold text-cyprus">{trx.pelanggan}</TableCell>
+                                        <TableCell className="py-4 px-4 text-[13px] font-semibold text-gray-500">
                                             {new Date(trx.tanggal).toLocaleDateString("en-GB").replace(/\//g, "-")}
-                                        </td>
-                                        <td className="py-4 px-4 text-[13px] font-bold text-cyprus">
+                                        </TableCell>
+                                        <TableCell className="py-4 px-4 text-[13px] font-bold text-cyprus">
                                             {trx.priceUSD.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 })}
-                                        </td>
-                                        <td className="py-4 px-4 text-[13px] font-bold text-gray-700">{trx.method}</td>
-                                        <td className="py-4 px-4 text-[12px]">
+                                        </TableCell>
+                                        <TableCell className="py-4 px-4 text-[13px] font-bold text-gray-700">{trx.method}</TableCell>
+                                        <TableCell className="py-4 px-4 text-[12px]">
                                             <div className="flex items-center gap-1.5">
                                                 <span className={`w-1.5 h-1.5 rounded-full ${getStatusDotColor(trx.mappedStatus)}`} />
                                                 <span className={getStatusStyle(trx.mappedStatus)}>{trx.mappedStatus}</span>
                                             </div>
-                                        </td>
-                                        <td className="py-4 px-4 text-[13px] font-bold text-ocean-green">
+                                        </TableCell>
+                                        <TableCell className="py-4 px-4 text-[13px] font-bold text-ocean-green">
                                             <button 
                                                 onClick={() => alert(`Detail Transaksi: ${trx.transaksiId}\nCustomer: ${trx.pelanggan}`)}
                                                 className="hover:underline cursor-pointer"
                                             >
                                                 View Details
                                             </button>
-                                        </td>
-                                    </tr>
+                                        </TableCell>
+                                    </TableRow>
                                 ))
                             ) : (
-                                <tr>
-                                    <td colSpan="7" className="py-12 text-center text-gray-400 font-bold text-xs uppercase tracking-widest">
+                                <TableRow>
+                                    <TableCell colSpan="7" className="py-12 text-center text-gray-400 font-bold text-xs uppercase tracking-widest">
                                         Tidak ada transaksi ditemukan.
-                                    </td>
-                                </tr>
+                                    </TableCell>
+                                </TableRow>
                             )}
-                        </tbody>
-                    </table>
+                        </TableBody>
+                    </Table>
                 </div>
 
                 {/* Pagination */}

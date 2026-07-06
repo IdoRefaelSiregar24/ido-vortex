@@ -6,6 +6,7 @@ import { MdEdit, MdDelete, MdPersonAdd, MdSearch } from "react-icons/md";
 import { BsFillExclamationDiamondFill, BsAward } from "react-icons/bs";
 import { ImSpinner2 } from "react-icons/im";
 import Modal from "../components/Modal";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
 
 export default function UserManagement() {
     const { user: currentUser } = useOutletContext();
@@ -301,21 +302,21 @@ export default function UserManagement() {
                             <p className="text-sm font-medium">Tidak ada data user ditemukan</p>
                         </div>
                     ) : (
-                        <table className="w-full text-sm text-left">
-                            <thead className="bg-gray-50 text-gray-500 font-bold border-b border-gray-100 text-xs uppercase tracking-wider">
-                                <tr>
-                                    <th className="px-6 py-4">Nama Lengkap</th>
-                                    <th className="px-6 py-4">Email</th>
-                                    <th className="px-6 py-4">Role</th>
-                                    <th className="px-6 py-4">Member Tier</th>
-                                    <th className="px-6 py-4 text-center">Poin Loyalitas</th>
-                                    <th className="px-6 py-4">Tanggal Terdaftar</th>
+                        <Table className="w-full text-sm text-left">
+                            <TableHeader className="bg-gray-50 text-gray-500 font-bold border-b border-gray-100 text-xs uppercase tracking-wider">
+                                <TableRow>
+                                    <TableHead className="px-6 py-4">Nama Lengkap</TableHead>
+                                    <TableHead className="px-6 py-4">Email</TableHead>
+                                    <TableHead className="px-6 py-4">Role</TableHead>
+                                    <TableHead className="px-6 py-4">Member Tier</TableHead>
+                                    <TableHead className="px-6 py-4 text-center">Poin Loyalitas</TableHead>
+                                    <TableHead className="px-6 py-4">Tanggal Terdaftar</TableHead>
                                     {currentUser?.role === "admin" && (
-                                        <th className="px-6 py-4 text-center">Aksi</th>
+                                        <TableHead className="px-6 py-4 text-center">Aksi</TableHead>
                                     )}
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-100 font-medium text-gray-700">
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody className="divide-y divide-gray-100 font-medium text-gray-700">
                                 {filteredUsers.map((u) => {
                                     const userInitials = u.full_name
                                         ? u.full_name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase()
@@ -335,30 +336,30 @@ export default function UserManagement() {
                                     else if (u.membership_status === "free") statusColor = "bg-emerald-50 text-emerald-700 border border-emerald-150";
 
                                     return (
-                                        <tr key={u.id} className="hover:bg-gray-50/50 transition-colors">
-                                            <td className="px-6 py-4 flex items-center gap-3">
+                                        <TableRow key={u.id} className="hover:bg-gray-50/50 transition-colors">
+                                            <TableCell className="px-6 py-4 flex items-center gap-3">
                                                 <div className="w-9 h-9 rounded-full bg-aqua-spring border border-ocean-green/15 flex items-center justify-center text-ocean-green font-bold text-xs">
                                                     {userInitials}
                                                 </div>
                                                 <span className="font-semibold text-cyprus">{u.full_name}</span>
-                                            </td>
-                                            <td className="px-6 py-4 text-gray-500">{u.email}</td>
-                                            <td className="px-6 py-4">
+                                            </TableCell>
+                                            <TableCell className="px-6 py-4 text-gray-500">{u.email}</TableCell>
+                                            <TableCell className="px-6 py-4">
                                                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${roleColor}`}>
                                                     {u.role}
                                                 </span>
-                                            </td>
-                                            <td className="px-6 py-4">
+                                            </TableCell>
+                                            <TableCell className="px-6 py-4">
                                                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider ${statusColor}`}>
                                                     {u.membership_status}
                                                 </span>
-                                            </td>
-                                            <td className="px-6 py-4 text-center font-bold text-cyprus">
+                                            </TableCell>
+                                            <TableCell className="px-6 py-4 text-center font-bold text-cyprus">
                                                 {u.membership_points?.toLocaleString("id-ID") || 0} <span className="text-[10px] text-gray-400 font-medium">pts</span>
-                                            </td>
-                                            <td className="px-6 py-4 text-gray-400">{formatDate(u.created_at)}</td>
+                                            </TableCell>
+                                            <TableCell className="px-6 py-4 text-gray-400">{formatDate(u.created_at)}</TableCell>
                                             {currentUser?.role === "admin" && (
-                                                <td className="px-6 py-4 text-center">
+                                                <TableCell className="px-6 py-4 text-center">
                                                     <div className="inline-flex gap-2">
                                                         <button
                                                             onClick={() => openEditModal(u)}
@@ -377,13 +378,13 @@ export default function UserManagement() {
                                                             </button>
                                                         )}
                                                     </div>
-                                                </td>
+                                                </TableCell>
                                             )}
-                                        </tr>
+                                        </TableRow>
                                     );
                                 })}
-                            </tbody>
-                        </table>
+                            </TableBody>
+                        </Table>
                     )}
                 </div>
             </div>
