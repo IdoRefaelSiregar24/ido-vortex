@@ -22,6 +22,7 @@ const Forgot = React.lazy(() => import("./pages/auth/Forgot"));
 const ProductDetail = React.lazy(() => import("./pages/products/ProductDetail"));
 const Products = React.lazy(() => import("./pages/Products"));
 const UserManagement = React.lazy(() => import("./pages/UserManagement"));
+const Coupon = React.lazy(() => import("./pages/Coupon"));
 const LandingPage = React.lazy(() => import("./pages/LandingPage"));
 const MemberDashboard = React.lazy(() => import("./pages/MemberDashboard"));
 const MedicalRecordDashboard = React.lazy(() => import("./pages/MedicalRecordDashboard"));
@@ -58,6 +59,7 @@ function App() {
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/components" element={<Components />} />
           <Route path="/user-management" element={<UserManagement />} />
+          <Route path="/coupon" element={<Coupon />} />
           <Route path="/medical-records" element={<MedicalRecordDashboard />} />
 
           {/* Error Routes */}

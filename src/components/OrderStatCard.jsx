@@ -7,18 +7,18 @@ const OrderStatCard = ({ title, value, trendValue, trendDirection, period = "Las
   const isNeutral = trendDirection === 'none';
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 font-sans flex flex-col justify-between">
+    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 font-sans flex flex-col justify-between">
       <div className="flex justify-between items-start mb-4">
-        <h3 className="text-[15px] font-semibold text-gray-800">{title}</h3>
+        <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
         <button className="text-gray-400 hover:text-gray-600 -mr-1 -mt-1 p-1">
-          <MdMoreVert size={20} />
+          <MdMoreVert size={24} />
         </button>
       </div>
       
-      <div className="flex items-baseline gap-2 mb-2">
-        <h1 className="text-3xl font-bold text-cyprus">{value}</h1>
+      <div className="flex items-baseline gap-2 mb-4">
+        <h1 className="text-4xl xl:text-5xl font-bold text-[#082f2d] tracking-tight">{value}</h1>
         {trendValue && (
-          <div className={`flex items-center text-[13px] font-bold ${isDown ? 'text-error' : 'text-success'}`}>
+          <div className={`flex items-center text-[14px] font-bold ${isDown ? 'text-error' : 'text-[#22c55e]'}`}>
             {isUp && '↑ '}
             {isDown && '↓ '}
             {trendValue}
@@ -26,7 +26,7 @@ const OrderStatCard = ({ title, value, trendValue, trendDirection, period = "Las
         )}
       </div>
       
-      <p className="text-[13px] text-gray-400 font-medium">{period}</p>
+      <p className="text-sm text-gray-500 font-medium">{period}</p>
     </div>
   );
 };

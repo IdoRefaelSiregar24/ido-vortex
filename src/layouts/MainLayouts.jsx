@@ -24,6 +24,7 @@ export default function MainLayout() {
       if (pathname.startsWith('/products')) return 'Product List';
       if (pathname.startsWith('/components')) return 'Components';
       if (pathname.startsWith('/user-management')) return 'User Management';
+      if (pathname.startsWith('/coupon')) return 'Coupon Codes';
       if (pathname.startsWith('/medical-records')) return 'Medical Records';
       return 'Dashboard';
     };
