@@ -19,7 +19,7 @@ export default function InputField({
       container: "bg-aqua-spring border-transparent px-1.5 py-1.5",
       defaultPlaceholder: "What you're looking for",
       renderAction: () => (
-        <button className="inline-flex items-center gap-2 h-full px-4 py-2 bg-white rounded-full hover:opacity-90 transition-all cursor-pointer">
+        <button className="inline-flex items-center justify-center gap-2 h-[36px] px-4 bg-white rounded-full hover:bg-gray-50 hover:text-ocean-green active:scale-95 transition-all cursor-pointer shadow-sm">
           <SearchIcon />
           <span className="text-label font-normal text-cyprus">Search</span>
         </button>
@@ -27,10 +27,10 @@ export default function InputField({
     },
     "minimal": {
       // Menggunakan border garis abu-abu untuk tampilan dashboard yang lebih bersih
-      container: "bg-white border-garis px-4 py-1.5", 
+      container: "bg-white border-garis pl-4 pr-1.5 py-1.5", 
       defaultPlaceholder: "Search data, users, or reports",
       renderAction: () => (
-        <button className="inline-flex items-center justify-center p-1 text-grey hover:text-cyprus transition-colors cursor-pointer">
+        <button className="inline-flex items-center justify-center w-[36px] h-[36px] rounded-full text-grey hover:bg-aqua-spring hover:text-ocean-green active:scale-90 transition-all cursor-pointer">
           <SearchIcon className="w-[18px] h-[18px] text-current" />
         </button>
       )
@@ -39,7 +39,7 @@ export default function InputField({
       container: "bg-surf-crest border-transparent px-1.5 py-1.5",
       defaultPlaceholder: "Enter your email address",
       renderAction: () => (
-        <button className="inline-flex items-center gap-2 h-full px-5 py-2 bg-white rounded-full hover:opacity-90 transition-all cursor-pointer">
+        <button className="inline-flex items-center justify-center h-[36px] px-5 bg-white rounded-full hover:bg-gray-50 hover:text-ocean-green active:scale-95 transition-all cursor-pointer shadow-sm">
           <span className="text-label font-normal text-cyprus">Subscribe</span>
         </button>
       )
@@ -52,12 +52,12 @@ export default function InputField({
   const activePlaceholder = placeholder || current.defaultPlaceholder;
 
   return (
-    <div className={`inline-flex items-center gap-1.5 w-[453px] h-[48px] rounded-full border focus-within:border-ocean-green focus-within:ring-1 focus-within:ring-ocean-green/20 transition-all ${current.container} ${className}`}>
+    <div className={`inline-flex items-center gap-1.5 h-[48px] rounded-full border focus-within:border-ocean-green focus-within:ring-1 focus-within:ring-ocean-green/20 transition-all ${current.container} ${className}`}>
       
       <input 
         type={variant === "subscribe" ? "email" : "text"} 
         placeholder={activePlaceholder} 
-        className="flex-grow bg-transparent outline-none text-body font-normal text-grey placeholder:text-grey/70 pl-2"
+        className="flex-grow bg-transparent outline-none text-body font-normal text-grey placeholder:text-grey/70 pl-2 w-full min-w-0"
       />
       
       {/* Memuat tombol aksi di sebelah kanan sesuai varian */}

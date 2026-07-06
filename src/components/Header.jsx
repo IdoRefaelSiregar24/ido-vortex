@@ -53,7 +53,7 @@ export default function Header({ user, onToggleSidebar }) {
         <InputField 
           variant="minimal" 
           placeholder="Search..."
-          className="hidden sm:block w-[180px] md:w-[360px]" 
+          className="hidden sm:inline-flex w-[180px] md:w-[360px]" 
         />
 
         <button className="relative text-cyprus hover:text-ocean-green transition-colors cursor-pointer">
