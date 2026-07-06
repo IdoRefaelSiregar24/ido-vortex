@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { MdSearch, MdFilterList, MdSwapVert, MdMoreHoriz, MdLocalShipping, MdCheckCircleOutline, MdOutlineAccessTime, MdOutlineCancel } from 'react-icons/md';
 import Pagination from './Pagination';
 
-const generateDummyData = () => {
+export const generateDummyData = () => {
   const base = [
     { name: 'Paracetamol 500mg', payment: 'Paid', status: 'Delivered', price: '5.99' },
     { name: 'Ibuprofen 400mg', payment: 'Unpaid', status: 'Pending', price: '6.99' },
@@ -36,44 +36,122 @@ const generateDummyData = () => {
   return result;
 };
 
-const dummyOrders = generateDummyData();
+export const dummyOrders = generateDummyData();
 
-export default function OrderTable({ orders = dummyOrders }) {
+export default function OrderTable({ orders: propOrders, setOrders }) {
+  const [localOrders, setLocalOrders] = useState(dummyOrders);
+  const activeOrders = propOrders || localOrders;
+  const activeSetOrders = setOrders || setLocalOrders;
+
   const [activeTab, setActiveTab] = useState('All order');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
+  // Refs for click outside handling
+  const filterRef = useRef(null);
+  const sortRef = useRef(null);
+  const tableActionsRef = useRef(null);
+
+  // Popover Open States
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isSortOpen, setIsSortOpen] = useState(false);
+  const [isTableActionsOpen, setIsTableActionsOpen] = useState(false);
+
+  // Sorting & Filtering Options
+  const [sortBy, setSortBy] = useState('date-desc'); // date-desc, date-asc, price-asc, price-desc, name-asc, name-desc
+  const [filterPayment, setFilterPayment] = useState('All'); // All, Paid, Unpaid
+  const [filterStatus, setFilterStatus] = useState('All'); // All, Delivered, Shipped, Pending, Cancelled
+
+  // Click Outside Event Handler
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setIsFilterOpen(false);
+      }
+      if (sortRef.current && !sortRef.current.contains(event.target)) {
+        setIsSortOpen(false);
+      }
+      if (tableActionsRef.current && !tableActionsRef.current.contains(event.target)) {
+        setIsTableActionsOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Sync tab status filter with popover status filter
+  useEffect(() => {
+    if (activeTab === 'All order') setFilterStatus('All');
+    else if (activeTab === 'Completed') setFilterStatus('Delivered');
+    else if (activeTab === 'Pending') setFilterStatus('Pending');
+    else if (activeTab === 'Canceled') setFilterStatus('Cancelled');
+  }, [activeTab]);
+
   // Filter Logic
-  const filteredOrders = orders.filter((order) => {
-    // 1. Tab Filter
-    let tabMatch = true;
-    if (activeTab === 'Completed') tabMatch = order.status === 'Delivered';
-    else if (activeTab === 'Pending') tabMatch = order.status === 'Pending';
-    else if (activeTab === 'Canceled') tabMatch = order.status === 'Cancelled';
+  const filteredOrders = activeOrders.filter((order) => {
+    // 1. Tab & Popover Shipping Status Filter (they work together)
+    let statusMatch = true;
+    if (filterStatus !== 'All') {
+      statusMatch = order.status === filterStatus;
+    } else {
+      if (activeTab === 'Completed') statusMatch = order.status === 'Delivered';
+      else if (activeTab === 'Pending') statusMatch = order.status === 'Pending';
+      else if (activeTab === 'Canceled') statusMatch = order.status === 'Cancelled';
+    }
     
     // 2. Search Filter
     const searchMatch = order.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                         order.id.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return tabMatch && searchMatch;
+    // 3. Payment Filter
+    const paymentMatch = filterPayment === 'All' || order.payment === filterPayment;
+
+    return statusMatch && searchMatch && paymentMatch;
+  });
+
+  // Sort Logic
+  const sortedOrders = [...filteredOrders].sort((a, b) => {
+    if (sortBy === 'date-desc') {
+      const [d1, m1, y1] = a.date.split('-');
+      const [d2, m2, y2] = b.date.split('-');
+      return new Date(y2, m2-1, d2) - new Date(y1, m1-1, d1) || b.no - a.no;
+    }
+    if (sortBy === 'date-asc') {
+      const [d1, m1, y1] = a.date.split('-');
+      const [d2, m2, y2] = b.date.split('-');
+      return new Date(y1, m1-1, d1) - new Date(y2, m2-1, d2) || a.no - b.no;
+    }
+    if (sortBy === 'price-desc') {
+      return parseFloat(b.price) - parseFloat(a.price);
+    }
+    if (sortBy === 'price-asc') {
+      return parseFloat(a.price) - parseFloat(b.price);
+    }
+    if (sortBy === 'name-asc') {
+      return a.name.localeCompare(b.name);
+    }
+    if (sortBy === 'name-desc') {
+      return b.name.localeCompare(a.name);
+    }
+    return 0;
   });
 
   // Pagination Logic
-  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage) || 1;
-  const currentOrders = filteredOrders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const totalPages = Math.ceil(sortedOrders.length / itemsPerPage) || 1;
+  const currentOrders = sortedOrders.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   // Reset to page 1 on filter/search change
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1);
-  }, [activeTab, searchQuery]);
+  }, [activeTab, searchQuery, sortBy, filterPayment, filterStatus]);
 
-  // Dynamic Tabs Data
+  // Dynamic Tabs Data (Uses activeOrders directly)
   const tabs = [
-    { name: 'All order', count: orders.length },
-    { name: 'Completed', count: orders.filter(o => o.status === 'Delivered').length },
-    { name: 'Pending', count: orders.filter(o => o.status === 'Pending').length },
-    { name: 'Canceled', count: orders.filter(o => o.status === 'Cancelled').length },
+    { name: 'All order', count: activeOrders.length },
+    { name: 'Completed', count: activeOrders.filter(o => o.status === 'Delivered').length },
+    { name: 'Pending', count: activeOrders.filter(o => o.status === 'Pending').length },
+    { name: 'Canceled', count: activeOrders.filter(o => o.status === 'Cancelled').length },
   ];
 
   const getStatusIcon = (status) => {
@@ -106,14 +184,18 @@ export default function OrderTable({ orders = dummyOrders }) {
           {tabs.map((tab) => (
             <button
               key={tab.name}
-              onClick={() => setActiveTab(tab.name)}
-              className={`whitespace-nowrap px-4 py-2 text-[13px] font-semibold rounded-md transition-all ${
+              onClick={() => {
+                setActiveTab(tab.name);
+                // Also reset explicit status filter if switching tabs
+                setFilterStatus('All');
+              }}
+              className={`whitespace-nowrap px-4 py-2 text-[13px] font-semibold rounded-md transition-all cursor-pointer ${
                 activeTab === tab.name 
                   ? 'bg-white shadow-sm text-cyprus' 
                   : 'text-gray-500 hover:text-cyprus'
               }`}
             >
-              {tab.name} {tab.count && <span className={activeTab === tab.name ? 'text-ocean-green' : 'text-gray-400'}>({tab.count})</span>}
+              {tab.name} {tab.count !== undefined && <span className={activeTab === tab.name ? 'text-ocean-green' : 'text-gray-400'}>({tab.count})</span>}
             </button>
           ))}
         </div>
@@ -130,15 +212,124 @@ export default function OrderTable({ orders = dummyOrders }) {
             />
             <MdSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
           </div>
-          <button className="p-2 border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50 transition-colors">
-            <MdFilterList size={18} />
-          </button>
-          <button className="p-2 border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50 transition-colors">
-            <MdSwapVert size={18} />
-          </button>
-          <button className="p-2 border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50 transition-colors">
-            <MdMoreHoriz size={18} />
-          </button>
+
+          {/* Filter Popover */}
+          <div className="relative" ref={filterRef}>
+            <button 
+              onClick={() => setIsFilterOpen(!isFilterOpen)} 
+              className={`p-2 border rounded-lg text-gray-500 hover:bg-gray-50 transition-colors cursor-pointer ${isFilterOpen ? 'bg-aqua-spring text-ocean-green border-ocean-green/30' : 'border-gray-200'}`}
+            >
+              <MdFilterList size={18} />
+            </button>
+            {isFilterOpen && (
+              <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-100 rounded-xl shadow-lg z-50 p-4 text-left">
+                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Filters</h4>
+                
+                {/* Payment Status */}
+                <div className="space-y-1.5 mb-4">
+                  <label className="text-[11px] font-bold text-gray-500 uppercase">Payment Status</label>
+                  <select 
+                    value={filterPayment}
+                    onChange={(e) => setFilterPayment(e.target.value)}
+                    className="w-full px-2 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs font-semibold text-cyprus outline-none focus:ring-1 focus:ring-ocean-green cursor-pointer"
+                  >
+                    <option value="All">All</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Unpaid">Unpaid</option>
+                  </select>
+                </div>
+
+                {/* Shipping Status */}
+                <div className="space-y-1.5 mb-4">
+                  <label className="text-[11px] font-bold text-gray-500 uppercase">Shipping Status</label>
+                  <select 
+                    value={filterStatus}
+                    onChange={(e) => {
+                      setFilterStatus(e.target.value);
+                      // Sync back to tabs if selecting specific status
+                      if (e.target.value === 'All') setActiveTab('All order');
+                      else if (e.target.value === 'Delivered') setActiveTab('Completed');
+                      else if (e.target.value === 'Pending') setActiveTab('Pending');
+                      else if (e.target.value === 'Cancelled') setActiveTab('Canceled');
+                    }}
+                    className="w-full px-2 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs font-semibold text-cyprus outline-none focus:ring-1 focus:ring-ocean-green cursor-pointer"
+                  >
+                    <option value="All">All Statuses</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Shipped">Shipped</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Cancelled">Cancelled</option>
+                  </select>
+                </div>
+
+                {/* Reset Button */}
+                <button 
+                  onClick={() => { setFilterPayment('All'); setFilterStatus('All'); setActiveTab('All order'); setIsFilterOpen(false); }}
+                  className="w-full py-1.5 bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:text-error text-center text-xs font-semibold text-gray-600 rounded-lg transition-colors cursor-pointer"
+                >
+                  Reset Filters
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Sort Popover */}
+          <div className="relative" ref={sortRef}>
+            <button 
+              onClick={() => setIsSortOpen(!isSortOpen)} 
+              className={`p-2 border rounded-lg text-gray-500 hover:bg-gray-50 transition-colors cursor-pointer ${isSortOpen ? 'bg-aqua-spring text-ocean-green border-ocean-green/30' : 'border-gray-200'}`}
+            >
+              <MdSwapVert size={18} />
+            </button>
+            {isSortOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-lg z-50 py-1.5 text-left">
+                <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider px-4 py-2 border-b border-gray-50">Sort By</h4>
+                
+                {[
+                  { id: 'date-desc', label: 'Newest First' },
+                  { id: 'date-asc', label: 'Oldest First' },
+                  { id: 'price-desc', label: 'Highest Price' },
+                  { id: 'price-asc', label: 'Lowest Price' },
+                  { id: 'name-asc', label: 'Product Name (A-Z)' },
+                  { id: 'name-desc', label: 'Product Name (Z-A)' },
+                ].map((option) => (
+                  <button
+                    key={option.id}
+                    onClick={() => { setSortBy(option.id); setIsSortOpen(false); }}
+                    className={`w-full text-left px-4 py-2 text-xs font-semibold transition-colors cursor-pointer hover:bg-aqua-spring hover:text-ocean-green ${sortBy === option.id ? 'text-ocean-green bg-aqua-spring/30' : 'text-gray-700'}`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Table Actions Popover */}
+          <div className="relative" ref={tableActionsRef}>
+            <button 
+              onClick={() => setIsTableActionsOpen(!isTableActionsOpen)} 
+              className={`p-2 border rounded-lg text-gray-500 hover:bg-gray-50 transition-colors cursor-pointer ${isTableActionsOpen ? 'bg-aqua-spring text-ocean-green border-ocean-green/30' : 'border-gray-200'}`}
+            >
+              <MdMoreHoriz size={18} />
+            </button>
+            {isTableActionsOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-lg z-50 py-1.5 text-left">
+                <button 
+                  onClick={() => { alert('Select All checked (Prototype Action)'); setIsTableActionsOpen(false); }}
+                  className="w-full text-left px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-aqua-spring hover:text-ocean-green transition-colors cursor-pointer"
+                >
+                  Select All Items
+                </button>
+                <button 
+                  onClick={() => { alert('Delete selected clicked (Prototype Action)'); setIsTableActionsOpen(false); }}
+                  className="w-full text-left px-4 py-2 text-xs font-semibold text-error hover:bg-error/5 transition-colors cursor-pointer"
+                >
+                  Delete Selected
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
