@@ -226,11 +226,10 @@ export default function UserManagement() {
     };
 
     return (
-        <div className="max-w-7xl mx-auto space-y-6">
+        <div className="w-full space-y-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-left">
                 <div>
-                    <h2 className="text-2xl font-bold text-cyprus">Manajemen User & CRM</h2>
-                    <p className="text-sm text-gray-500 mt-1">Kelola hak akses, loyalitas poin, dan paket member staf & pelanggan</p>
+                    <p className="text-sm text-gray-500">Kelola hak akses, loyalitas poin, dan paket member staf & pelanggan</p>
                 </div>
                 {currentUser?.role === "admin" && (
                     <button

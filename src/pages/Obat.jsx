@@ -26,7 +26,7 @@ export default function Obat() {
     };
 
     return (
-        <div className="flex flex-col space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
+        <div className="flex flex-col space-y-6 w-full pb-10">
             <PageHeader title="Daftar Obat" breadcrumb={["Apotek", "Daftar Obat"]}>
                 <button
                     onClick={() => setIsModalOpen(true)}

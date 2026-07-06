@@ -19,7 +19,7 @@ const SunIcon = () => (
   </svg>
 );
 
-export default function Header({ user, onToggleSidebar }) {
+export default function Header({ user, title = "Dashboard", onToggleSidebar }) {
   const initials = user?.full_name
     ? user.full_name
         .split(" ")
@@ -45,7 +45,7 @@ export default function Header({ user, onToggleSidebar }) {
         </button>
 
         <h1 className="text-lg md:text-[22px] font-bold text-cyprus tracking-tight">
-          Dashboard
+          {title}
         </h1>
       </div>
 

@@ -45,11 +45,10 @@ export default function OrderManagement() {
   };
 
   return (
-    <div className="flex flex-col space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10 pt-4 bg-gray-50 min-h-screen">
+    <div className="flex flex-col space-y-6 w-full pb-10">
       
       {/* Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-left">
-          <h1 className="text-[22px] font-bold text-cyprus">Order List</h1>
+      <div className="flex justify-end items-center gap-4 text-left">
           <div className="flex gap-3">
               <Button 
                 onClick={() => setIsAddOrderOpen(true)}

@@ -191,11 +191,10 @@ const Products = () => {
   };
 
   return (
-    <div className="flex flex-col space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10 pt-4 bg-gray-50 min-h-screen text-left">
+    <div className="flex flex-col space-y-6 w-full pb-10 text-left">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Daftar Obat</h1>
-          <p className="text-xs text-gray-500 mt-1">Mengelola katalog produk, stok obat, resep, dan status aktif produk apotek online.</p>
+          <p className="text-xs text-gray-500">Mengelola katalog produk, stok obat, resep, dan status aktif produk apotek online.</p>
         </div>
         <div className="flex items-center space-x-3">
           <button 

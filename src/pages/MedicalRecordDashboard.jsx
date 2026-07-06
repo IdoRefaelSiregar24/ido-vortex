@@ -73,7 +73,7 @@ export default function MedicalRecordDashboard() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 text-left pb-10">
+    <div className="w-full space-y-6 text-left pb-10">
       {/* ── Page Header ── */}
       <PageHeader title="Rekam Medis Pasien" breadcrumb={["Apotek", "Rekam Medis"]}>
         <button

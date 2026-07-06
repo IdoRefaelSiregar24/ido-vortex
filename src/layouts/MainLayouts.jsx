@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import { supabase } from "../lib/supabase";
@@ -7,8 +7,28 @@ import Loading from "../components/Loading";
 
 export default function MainLayout() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [pageTitle, setPageTitle] = useState("Dashboard");
+
+  // Sync title when location changes as default fallback
+  useEffect(() => {
+    const getPageTitle = (pathname) => {
+      if (pathname.startsWith('/dashboard')) return 'Dashboard';
+      if (pathname.startsWith('/obat')) return 'Daftar Obat';
+      if (pathname.startsWith('/transaksi')) return 'Transaction';
+      if (pathname.startsWith('/order-management')) return 'Order Management';
+      if (pathname.startsWith('/pelanggan')) return 'Customers';
+      if (pathname.startsWith('/products/')) return 'Product Detail';
+      if (pathname.startsWith('/products')) return 'Product List';
+      if (pathname.startsWith('/components')) return 'Components';
+      if (pathname.startsWith('/user-management')) return 'User Management';
+      if (pathname.startsWith('/medical-records')) return 'Medical Records';
+      return 'Dashboard';
+    };
+    setPageTitle(getPageTitle(location.pathname));
+  }, [location.pathname]);
 
   useEffect(() => {
     let mounted = true;
@@ -84,9 +104,9 @@ export default function MainLayout() {
 
       {/* Konten: Sisi Kanan */}
       <div className="flex flex-col flex-1 min-w-0">
-        <Header user={profile} onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+        <Header user={profile} title={pageTitle} onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
         <main className="flex-1 overflow-y-auto p-4 md:p-8">
-          <Outlet context={{ user: profile }} />
+          <Outlet context={{ user: profile, setPageTitle }} />
         </main>
       </div>
     </div>

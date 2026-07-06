@@ -117,7 +117,7 @@ export default function Pelanggan() {
   };
 
   return (
-    <div className="flex flex-col space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10 pt-4 bg-gray-50 min-h-screen text-left">
+    <div className="flex flex-col space-y-6 w-full pb-10 text-left">
       
       {/* Header alert */}
       <Alert variant="default" className="bg-[#E8F5E9] border-green-200/50">

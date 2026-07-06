@@ -16,9 +16,6 @@ export default function PageHeader({ title, breadcrumb, children }) {
     return (
         <div id="pageheader-container" className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 text-left">
             <div id="pageheader-left" className="flex flex-col">
-                <h1 id="page-title" className="text-2xl md:text-3xl font-semibold text-gray-900">
-                    {title}
-                </h1>
                 {breadcrumbItems.length > 0 && (
                     <div className="flex items-center font-medium space-x-2 mt-2">
                         {breadcrumbItems.map((item, index) => (
