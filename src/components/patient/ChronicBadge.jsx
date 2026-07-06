@@ -9,26 +9,14 @@ import React from "react";
 
 // Map nama segment ke warna preset (fallback jika color dari DB kosong)
 const CONDITION_COLORS = {
-  "Pasien Diabetes":    { bg: "#FEF2F2", text: "#991B1B", border: "#FECACA" },
-  "Pasien Hipertensi":  { bg: "#EFF6FF", text: "#1D4ED8", border: "#BFDBFE" },
-  "Pasien Asma":        { bg: "#FFFBEB", text: "#92400E", border: "#FDE68A" },
-  "Pasien Jantung":     { bg: "#FAF5FF", text: "#6D28D9", border: "#DDD6FE" },
-  "Pasien Kolesterol":  { bg: "#FFF7ED", text: "#9A3412", border: "#FDBA74" },
-  "Ibu Hamil":          { bg: "#FFF0F6", text: "#9D174D", border: "#FBCFE8" },
-  "Lansia (>60th)":     { bg: "#F8FAFC", text: "#475569", border: "#CBD5E1" },
-  "Pasien Alergi Obat": { bg: "#FFF7F0", text: "#C2410C", border: "#FED7AA" },
-};
-
-// Ikononya sendiri (inline SVG mini)
-const CONDITION_ICONS = {
-  "Pasien Diabetes":    "🩸",
-  "Pasien Hipertensi":  "💊",
-  "Pasien Asma":        "🫁",
-  "Pasien Jantung":     "❤️",
-  "Pasien Kolesterol":  "📈",
-  "Ibu Hamil":          "🤰",
-  "Lansia (>60th)":     "👴",
-  "Pasien Alergi Obat": "⚠️",
+  "Pasien Diabetes":    { bg: "#FEF2F2", text: "#DC2626" },
+  "Pasien Hipertensi":  { bg: "#EFF6FF", text: "#2563EB" },
+  "Pasien Asma":        { bg: "#FFFBEB", text: "#D97706" },
+  "Pasien Jantung":     { bg: "#FAF5FF", text: "#7C3AED" },
+  "Pasien Kolesterol":  { bg: "#FFF7ED", text: "#EA580C" },
+  "Ibu Hamil":          { bg: "#FFF1F2", text: "#E11D48" },
+  "Lansia (>60th)":     { bg: "#F8FAFC", text: "#475569" },
+  "Pasien Alergi Obat": { bg: "#FFF7ED", text: "#EA580C" },
 };
 
 export default function ChronicBadge({ name, color, size = "md" }) {
@@ -39,35 +27,30 @@ export default function ChronicBadge({ name, color, size = "md" }) {
     style = {
       backgroundColor: preset.bg,
       color: preset.text,
-      borderColor: preset.border,
     };
   } else if (color) {
-    // Pakai warna DB dengan opacity
+    // Pakai warna DB dengan opacity 7%
     style = {
-      backgroundColor: color + "18",
+      backgroundColor: color + "12",
       color: color,
-      borderColor: color + "40",
     };
   } else {
     style = {
       backgroundColor: "#F1F5F9",
       color: "#475569",
-      borderColor: "#CBD5E1",
     };
   }
 
-  const icon = CONDITION_ICONS[name] ?? "🏥";
-
   const sizeClass = size === "sm"
-    ? "text-[10px] px-1.5 py-0.5"
-    : "text-xs px-2 py-1";
+    ? "text-[10px] px-2 py-0.5"
+    : "text-xs px-2.5 py-0.5";
 
   return (
     <span
-      className={`inline-flex items-center gap-1 font-semibold rounded-sm border ${sizeClass}`}
+      className={`inline-flex items-center gap-1.5 font-semibold rounded-full border-none ${sizeClass}`}
       style={style}
     >
-      <span className="text-[10px] leading-none">{icon}</span>
+      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: style.color }} />
       {name}
     </span>
   );
@@ -91,12 +74,12 @@ export function ChronicGroup({ conditions = [], segments = [], maxShow = 3, size
   }
 
   return (
-    <div className="flex flex-wrap gap-1">
+    <div className="flex flex-wrap gap-1.5">
       {visible.map((c, i) => (
         <ChronicBadge key={i} name={c.name} color={c.color} size={size} />
       ))}
       {rest > 0 && (
-        <span className="text-xs text-gray-400 font-medium px-1.5 py-0.5 bg-gray-100 rounded-sm border border-gray-200">
+        <span className="text-[10px] text-gray-400 font-semibold px-2 py-0.5 bg-gray-50 rounded-full border border-gray-100">
           +{rest} lagi
         </span>
       )}

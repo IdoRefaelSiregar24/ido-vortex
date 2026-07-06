@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MdOutlineChat, MdDeleteOutline, MdSend } from 'react-icons/md';
+import React, { useState, useRef, useEffect } from 'react';
+import { MdOutlineChat, MdDeleteOutline, MdSend, MdCheckCircleOutline, MdAutorenew, MdClose } from 'react-icons/md';
 import { RiShieldUserLine } from 'react-icons/ri';
 import Pagination from './Pagination';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
@@ -7,6 +7,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 export default function CustomerTable({ customers = [], searchQuery = "" }) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
+
+  // Loyalty points modal states
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [customMessage, setCustomMessage] = useState("");
+  const [broadcastStatus, setBroadcastStatus] = useState("idle"); // idle, sending, success
+  const [progress, setProgress] = useState(0);
+
+  const modalRef = useRef(null);
 
   // Filter based on search query
   const filteredCustomers = customers.filter((cust) => {
@@ -23,9 +31,42 @@ export default function CustomerTable({ customers = [], searchQuery = "" }) {
   const currentCustomers = filteredCustomers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   // Reset page when search query changes
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
+
+  // Click outside to close loyalty points modal
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        // Prevent closing during simulated sending
+        if (broadcastStatus !== "sending") {
+          setSelectedCustomer(null);
+          setBroadcastStatus("idle");
+        }
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [broadcastStatus]);
+
+  // Simulated sending progress
+  useEffect(() => {
+    let interval;
+    if (broadcastStatus === 'sending') {
+      interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            setBroadcastStatus('success');
+            return 100;
+          }
+          return prev + 10;
+        });
+      }, 150);
+    }
+    return () => clearInterval(interval);
+  }, [broadcastStatus]);
 
   const getTierColor = (tier) => {
     switch (tier?.toLowerCase()) {
@@ -44,13 +85,26 @@ export default function CustomerTable({ customers = [], searchQuery = "" }) {
   const handleWAQuickSend = (cust) => {
     const text = `Halo ${cust.name}, ini dari apotek Sehat Pekanbaru. Kami ingin mengabarkan bahwa poin loyalitas Anda saat ini adalah ${cust.membership_points.toLocaleString("id-ID")} pts. Jangan lupa tukarkan poin Anda di pemesanan berikutnya untuk potongan diskon hingga 50%!`;
     
-    let formattedPhone = cust.phone.replace(/[^0-9]/g, '');
+    setSelectedCustomer(cust);
+    setCustomMessage(text);
+    setBroadcastStatus("idle");
+    setProgress(0);
+  };
+
+  const triggerRealWASend = () => {
+    if (!selectedCustomer) return;
+    let formattedPhone = selectedCustomer.phone.replace(/[^0-9]/g, '');
     if (formattedPhone.startsWith('0')) {
       formattedPhone = '62' + formattedPhone.substring(1);
     }
-
-    const waUrl = `https://web.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(text)}`;
+    const waUrl = `https://web.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(customMessage)}`;
     window.open(waUrl, "_blank");
+    setSelectedCustomer(null);
+  };
+
+  const triggerSimulatedBroadcast = () => {
+    setBroadcastStatus("sending");
+    setProgress(0);
   };
 
   return (
@@ -91,20 +145,20 @@ export default function CustomerTable({ customers = [], searchQuery = "" }) {
                     {cust.membership_points.toLocaleString("id-ID")} <span className="text-[10px] text-gray-400 font-normal">pts</span>
                   </td>
                   <td className="py-4 px-6">
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-1.5">
                       {cust.segment_names && cust.segment_names.length > 0 ? (
                         cust.segment_names.map((segName, idx) => {
-                          const color = cust.segment_colors?.[idx] || '#71717a';
+                          const color = cust.segment_colors?.[idx] || '#64748b';
                           return (
                             <span 
                               key={idx} 
                               style={{
-                                backgroundColor: color + '15',
+                                backgroundColor: color + '12', // 7% opacity
                                 color: color,
-                                borderColor: color + '40'
                               }}
-                              className="px-2 py-0.5 rounded text-[10px] font-bold border"
+                              className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border-none"
                             >
+                              <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
                               {segName}
                             </span>
                           );
@@ -146,6 +200,114 @@ export default function CustomerTable({ customers = [], searchQuery = "" }) {
             totalPages={totalPages} 
             onPageChange={(page) => setCurrentPage(page)} 
           />
+        </div>
+      )}
+
+      {/* Pop-up Konfirmasi / Broadcast Poin */}
+      {selectedCustomer && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-cyprus/40 backdrop-blur-sm p-4 transition-opacity duration-200">
+          <div 
+            ref={modalRef}
+            className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden transition-all duration-300 transform scale-100 text-left"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-aqua-spring/50">
+              <h2 className="text-xs font-bold text-cyprus uppercase tracking-wider">Kirim Info Poin</h2>
+              {broadcastStatus !== 'sending' && (
+                <button 
+                  onClick={() => setSelectedCustomer(null)}
+                  className="text-gray-400 hover:text-cyprus hover:bg-gray-100 p-1 rounded-full transition-colors cursor-pointer"
+                >
+                  <MdClose size={18} />
+                </button>
+              )}
+            </div>
+
+            {/* Content */}
+            <div className="p-6">
+              {broadcastStatus === 'idle' && (
+                <div className="space-y-4">
+                  {/* Customer Info */}
+                  <div className="bg-aqua-spring/30 border border-aqua-spring rounded-xl p-4 flex flex-col gap-1">
+                    <span className="text-xs font-extrabold text-gray-400 uppercase">Penerima</span>
+                    <span className="text-sm font-black text-cyprus">{selectedCustomer.name}</span>
+                    <span className="text-xs text-gray-500 font-semibold">{selectedCustomer.phone} · <span className="text-ocean-green font-bold">{selectedCustomer.membership_points.toLocaleString("id-ID")} pts</span></span>
+                  </div>
+
+                  {/* Message Template */}
+                  <div className="flex flex-col gap-1.5 text-left">
+                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wide">Pesan WhatsApp (Dapat Diedit)</label>
+                    <textarea 
+                      value={customMessage}
+                      onChange={(e) => setCustomMessage(e.target.value)}
+                      rows={5}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-xs text-cyprus font-semibold outline-none focus:ring-1 focus:ring-ocean-green focus:border-ocean-green resize-none leading-relaxed"
+                    />
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex flex-col gap-2 pt-2">
+                    <button 
+                      onClick={triggerRealWASend}
+                      className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+                    >
+                      <MdSend size={14} /> Buka WhatsApp Web
+                    </button>
+                    <button 
+                      onClick={triggerSimulatedBroadcast}
+                      className="w-full py-2.5 bg-ocean-green hover:opacity-90 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+                    >
+                      <MdOutlineChat size={14} /> Simulasi Broadcast WhatsApp
+                    </button>
+                    <button 
+                      onClick={() => setSelectedCustomer(null)}
+                      className="w-full py-2.5 border border-gray-200 text-gray-500 hover:bg-gray-50 font-bold text-xs rounded-xl transition-all cursor-pointer"
+                    >
+                      Batal
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {broadcastStatus === 'sending' && (
+                <div className="py-8 flex flex-col items-center justify-center text-center space-y-4">
+                  <MdAutorenew className="text-ocean-green animate-spin" size={48} />
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-black text-cyprus uppercase tracking-wide">Menghubungkan ke API WhatsApp</h3>
+                    <p className="text-xs text-gray-400 font-semibold">Mengirimkan promo & info poin loyalitas...</p>
+                  </div>
+                  {/* Progress Bar */}
+                  <div className="w-full bg-gray-100 rounded-full h-2 max-w-[200px] overflow-hidden">
+                    <div 
+                      className="bg-ocean-green h-full rounded-full transition-all duration-150" 
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {broadcastStatus === 'success' && (
+                <div className="py-8 flex flex-col items-center justify-center text-center space-y-4">
+                  <div className="w-14 h-14 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600">
+                    <MdCheckCircleOutline size={36} />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-sm font-black text-cyprus uppercase tracking-wide">Pesan Berhasil Terkirim!</h3>
+                    <p className="text-xs text-gray-400 font-semibold">Simulasi broadcast WhatsApp ke {selectedCustomer.name} sukses.</p>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      setSelectedCustomer(null);
+                      setBroadcastStatus("idle");
+                    }}
+                    className="px-6 py-2 bg-cyprus text-white font-bold text-xs rounded-xl shadow-md hover:bg-cyprus/90 transition-all cursor-pointer"
+                  >
+                    Tutup
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>
