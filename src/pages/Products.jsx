@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Plus, MoreHorizontal, ChevronRight, AlertCircle, Edit, Trash2, Check, RefreshCw } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  Plus, MoreHorizontal, ChevronRight, ChevronLeft, AlertCircle, Edit, Trash2, Check, RefreshCw,
+  LayoutGrid, Pill, ShieldAlert, Activity, HeartPulse, Stethoscope 
+} from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import CategoryCard from '../components/products/CategoryCard';
 import ProductTable from '../components/products/ProductTable';
@@ -15,14 +18,12 @@ const images = [
 ];
 
 const categories = [
-  { name: 'Analgesik', image: images[0] },
-  { name: 'Antibiotik', image: images[1] },
-  { name: 'Antihistamin', image: images[2] },
-  { name: 'Anti-Inflamasi', image: images[3] },
-  { name: 'Suplemen', image: images[4] },
-  { name: 'Gastrointestinal', image: images[5] },
-  { name: 'Cardiovascular', image: images[0] },
-  { name: 'Vitamin & Mineral', image: images[1] },
+  { name: 'Semua', image: 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?auto=format&fit=crop&w=100&h=100&q=80' },
+  { name: 'Obat Bebas', image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=100&h=100&q=80' },
+  { name: 'Obat Bebas Terbatas', image: 'https://images.unsplash.com/photo-1631549916768-4119b2e5f926?auto=format&fit=crop&w=100&h=100&q=80' },
+  { name: 'Obat Keras', image: 'https://images.unsplash.com/photo-1607619275048-24722480f876?auto=format&fit=crop&w=100&h=100&q=80' },
+  { name: 'Suplemen', image: 'https://images.unsplash.com/photo-1550572017-ed9117651a74?auto=format&fit=crop&w=100&h=100&q=80' },
+  { name: 'Alkes', image: 'https://images.unsplash.com/photo-1603398938378-e54eab446dde?auto=format&fit=crop&w=100&h=100&q=80' }
 ];
 
 const initialForm = {
@@ -48,6 +49,25 @@ const Products = () => {
   const [form, setForm] = useState(initialForm);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState("Semua");
+  const sliderRef = useRef(null);
+
+  const scrollLeft = () => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollBy({ left: -200, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+    }
+  };
+
+  const filteredProducts = products.filter(product => {
+    if (selectedCategory === "Semua") return true;
+    return product.category?.toLowerCase() === selectedCategory.toLowerCase();
+  });
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -215,14 +235,44 @@ const Products = () => {
         </div>
       </div>
 
-      <div className="relative">
-        <div className="flex space-x-4 overflow-x-auto pb-4">
+      <div className="relative font-sans px-8">
+        <style>{`
+          .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
+        
+        {/* Left Scroll Button */}
+        <button 
+          onClick={scrollLeft}
+          className="absolute left-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2.5 shadow-md border border-gray-100 hover:border-gray-200 text-gray-500 hover:text-green-600 active:scale-95 transition-all z-10 cursor-pointer flex items-center justify-center"
+        >
+          <ChevronLeft size={18} />
+        </button>
+
+        {/* Scrollable categories container */}
+        <div 
+          ref={sliderRef}
+          className="flex space-x-4 overflow-x-auto py-2.5 hide-scrollbar scroll-smooth"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
           {categories.map((category, index) => (
-            <CategoryCard key={index} name={category.name} image={category.image} />
+            <CategoryCard 
+              key={index} 
+              name={category.name} 
+              image={category.image} 
+              active={selectedCategory === category.name}
+              onClick={() => setSelectedCategory(category.name)}
+            />
           ))}
         </div>
-        <button className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-md border border-gray-150">
-            <ChevronRight size={20} />
+
+        {/* Right Scroll Button */}
+        <button 
+          onClick={scrollRight}
+          className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2.5 shadow-md border border-gray-100 hover:border-gray-200 text-gray-500 hover:text-green-600 active:scale-95 transition-all z-10 cursor-pointer flex items-center justify-center"
+        >
+          <ChevronRight size={18} />
         </button>
       </div>
 
@@ -234,7 +284,7 @@ const Products = () => {
         </div>
       ) : (
         <ProductTable 
-          items={products} 
+          items={filteredProducts} 
           onEdit={handleOpenEditModal} 
           onDelete={handleDelete} 
         />

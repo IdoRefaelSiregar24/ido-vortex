@@ -3,6 +3,7 @@ import { MdSearch, MdFilterList, MdSwapVert, MdMoreHoriz, MdEdit, MdDeleteOutlin
 import { Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Pagination from '../Pagination';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 
 export default function ProductTable({ items = [], onEdit, onDelete }) {
   const [activeTab, setActiveTab] = useState('Semua Obat');
@@ -57,11 +58,21 @@ export default function ProductTable({ items = [], onEdit, onDelete }) {
 
   const getStatusColor = (status) => {
     switch(status) {
-      case 'In Stock': return 'text-emerald-700 bg-emerald-50 border-emerald-200';
-      case 'Low Stock': return 'text-amber-700 bg-amber-50 border-amber-200';
-      case 'Out of Stock': return 'text-red-700 bg-red-50 border-red-200';
-      case 'Non-aktif': return 'text-gray-500 bg-gray-50 border-gray-200';
-      default: return 'text-gray-500 bg-gray-50 border-gray-200';
+      case 'In Stock': return 'text-emerald-700 bg-emerald-500/10';
+      case 'Low Stock': return 'text-amber-700 bg-amber-500/10';
+      case 'Out of Stock': return 'text-red-700 bg-red-500/10';
+      case 'Non-aktif': return 'text-gray-500 bg-gray-500/10';
+      default: return 'text-gray-500 bg-gray-500/10';
+    }
+  };
+
+  const getStatusDotColor = (status) => {
+    switch(status) {
+      case 'In Stock': return 'bg-emerald-500';
+      case 'Low Stock': return 'bg-amber-500';
+      case 'Out of Stock': return 'bg-red-500';
+      case 'Non-aktif': return 'bg-gray-400';
+      default: return 'bg-gray-400';
     }
   };
 
@@ -115,32 +126,32 @@ export default function ProductTable({ items = [], onEdit, onDelete }) {
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse min-w-[850px]">
-          <thead>
-            <tr className="bg-aqua-spring text-cyprus text-[13px] font-bold border-b border-gray-150">
-              <th className="py-3.5 px-4 w-28">SKU</th>
-              <th className="py-3.5 px-4">Nama Obat</th>
-              <th className="py-3.5 px-4">Golongan</th>
-              <th className="py-3.5 px-4 text-right">Harga Satuan</th>
-              <th className="py-3.5 px-4 text-center">Stok</th>
-              <th className="py-3.5 px-4 text-center">Resep (K)</th>
-              <th className="py-3.5 px-4">Status</th>
-              <th className="py-3.5 px-4 text-center w-24">Aksi</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
+        <Table className="w-full text-left border-collapse min-w-[850px]">
+          <TableHeader>
+            <TableRow className="bg-aqua-spring text-cyprus text-[13px] font-bold border-b border-gray-150">
+              <TableHead className="py-3.5 px-4 w-28">SKU</TableHead>
+              <TableHead className="py-3.5 px-4">Nama Obat</TableHead>
+              <TableHead className="py-3.5 px-4">Golongan</TableHead>
+              <TableHead className="py-3.5 px-4 text-right">Harga Satuan</TableHead>
+              <TableHead className="py-3.5 px-4 text-center">Stok</TableHead>
+              <TableHead className="py-3.5 px-4 text-center">Resep (K)</TableHead>
+              <TableHead className="py-3.5 px-4">Status</TableHead>
+              <TableHead className="py-3.5 px-4 text-center w-24">Aksi</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody className="divide-y divide-gray-100">
             {currentProducts.length > 0 ? (
               currentProducts.map((product) => {
                 const status = getStatus(product);
                 return (
-                  <tr key={product.id} className="hover:bg-gray-50/50 transition-colors group">
-                    <td className="py-4 px-4 text-[13px] font-mono font-bold text-gray-600">{product.sku}</td>
-                    <td className="py-4 px-4">
+                  <TableRow key={product.id} className="hover:bg-gray-50/50 transition-colors group">
+                    <TableCell className="py-4 px-4 text-[13px] font-mono font-bold text-gray-600">{product.sku}</TableCell>
+                    <TableCell className="py-4 px-4">
                       <div className="flex flex-col text-left">
                         <div className="flex items-center gap-1.5">
                           <span className="text-[13px] font-extrabold text-cyprus leading-none">{product.name}</span>
                           {product.requires_prescription && (
-                            <span className="w-4 h-4 rounded-full bg-red-600 border border-black flex items-center justify-center text-[8px] font-black text-black leading-none" title="Obat Keras">
+                            <span className="w-4 h-4 rounded-full bg-red-650 flex items-center justify-center text-[8px] font-black text-white leading-none" title="Obat Keras">
                               K
                             </span>
                           )}
@@ -149,27 +160,28 @@ export default function ProductTable({ items = [], onEdit, onDelete }) {
                           <span className="text-[10px] text-gray-400 mt-1 line-clamp-1 max-w-xs font-medium">{product.description}</span>
                         )}
                       </div>
-                    </td>
-                    <td className="py-4 px-4 text-[12px] font-bold text-gray-600">{product.category}</td>
-                    <td className="py-4 px-4 text-[13px] font-black text-cyprus text-right">{formatRupiah(product.price)}</td>
-                    <td className="py-4 px-4 text-[13px] font-bold text-cyprus text-center">
+                    </TableCell>
+                    <TableCell className="py-4 px-4 text-[12px] font-bold text-gray-600">{product.category}</TableCell>
+                    <TableCell className="py-4 px-4 text-[13px] font-black text-cyprus text-right">{formatRupiah(product.price)}</TableCell>
+                    <TableCell className="py-4 px-4 text-[13px] font-bold text-cyprus text-center">
                       {product.stock} <span className="text-[10px] text-gray-400 font-normal">{product.unit || 'tablet'}</span>
-                    </td>
-                    <td className="py-4 px-4 text-center">
-                      <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
+                    </TableCell>
+                    <TableCell className="py-4 px-4 text-center">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${
                         product.requires_prescription 
-                          ? 'bg-rose-50 text-rose-700 border border-rose-200' 
-                          : 'bg-zinc-100 text-zinc-500 border border-zinc-200'
+                          ? 'bg-rose-500/10 text-rose-700' 
+                          : 'bg-zinc-500/10 text-zinc-600'
                       }`}>
-                        {product.requires_prescription ? 'Resep' : 'Bebas'}
+                        {product.requires_prescription ? 'Resep Keras' : 'Bebas'}
                       </span>
-                    </td>
-                    <td className="py-4 px-4 text-[12px] font-bold">
-                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${getStatusColor(status)}`}>
+                    </TableCell>
+                    <TableCell className="py-4 px-4">
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${getStatusColor(status)}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${getStatusDotColor(status)}`} />
                         {status}
                       </span>
-                    </td>
-                    <td className="py-4 px-4">
+                    </TableCell>
+                    <TableCell className="py-4 px-4">
                       <div className="flex items-center justify-center gap-2">
                         <button 
                           onClick={() => onEdit(product)}
@@ -186,19 +198,19 @@ export default function ProductTable({ items = [], onEdit, onDelete }) {
                           <MdDeleteOutline size={16} />
                         </button>
                       </div>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 );
               })
             ) : (
-              <tr>
-                <td colSpan="8" className="py-12 text-center text-gray-400 font-bold text-xs uppercase tracking-widest">
+              <TableRow>
+                <TableCell colSpan="8" className="py-12 text-center text-gray-400 font-bold text-xs uppercase tracking-widest">
                   Tidak ada obat ditemukan.
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
 
       {/* Pagination */}
