@@ -3,6 +3,7 @@ import { MdAdd, MdSearch, MdFilterList, MdOutlineInventory2 } from "react-icons/
 import PageHeader from "../components/PageHeader";
 import Modal from "../components/Modal";
 import { obatData } from "../data";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
 
 export default function Obat() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,11 +18,21 @@ export default function Obat() {
 
     const getKategoriStyle = (kategori) => {
         switch (kategori) {
-            case "Obat Bebas": return "bg-green-100 text-green-800";
-            case "Obat Bebas Terbatas": return "bg-yellow-100 text-yellow-800";
-            case "Obat Keras": return "bg-red-100 text-red-800";
-            case "Suplemen": return "bg-blue-100 text-blue-800";
-            default: return "bg-gray-100 text-gray-800";
+            case "Obat Bebas": return "bg-green-500/10 text-green-700";
+            case "Obat Bebas Terbatas": return "bg-yellow-500/10 text-yellow-700";
+            case "Obat Keras": return "bg-red-500/10 text-red-700";
+            case "Suplemen": return "bg-blue-500/10 text-blue-700";
+            default: return "bg-gray-500/10 text-gray-700";
+        }
+    };
+
+    const getKategoriDotColor = (kategori) => {
+        switch (kategori) {
+            case "Obat Bebas": return "bg-green-500";
+            case "Obat Bebas Terbatas": return "bg-yellow-500";
+            case "Obat Keras": return "bg-red-500";
+            case "Suplemen": return "bg-blue-500";
+            default: return "bg-gray-400";
         }
     };
 
@@ -62,43 +73,44 @@ export default function Obat() {
             {/* Table */}
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kode</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Obat</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
-                                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
-                                <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Stok</th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kadaluarsa</th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                    <Table className="min-w-full divide-y divide-gray-200">
+                        <TableHeader className="bg-gray-50">
+                            <TableRow>
+                                <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kode</TableHead>
+                                <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Obat</TableHead>
+                                <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</TableHead>
+                                <TableHead className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</TableHead>
+                                <TableHead className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Stok</TableHead>
+                                <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kadaluarsa</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody className="bg-white divide-y divide-gray-200">
                             {obat.map((item) => (
-                                <tr key={item.id} className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.id}</td>
-                                    <td className="px-6 py-4">
+                                <TableRow key={item.id} className="hover:bg-gray-50 transition-colors">
+                                    <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.id}</TableCell>
+                                    <TableCell className="px-6 py-4 text-left">
                                         <div className="text-sm font-medium text-gray-900">{item.nama}</div>
                                         <div className="text-xs text-gray-500 mt-0.5">{item.deskripsi}</div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getKategoriStyle(item.kategori)}`}>
+                                    </TableCell>
+                                    <TableCell className="px-6 py-4 whitespace-nowrap">
+                                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold ${getKategoriStyle(item.kategori)}`}>
+                                            <span className={`w-1.5 h-1.5 rounded-full ${getKategoriDotColor(item.kategori)}`} />
                                             {item.kategori}
                                         </span>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                                    </TableCell>
+                                    <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
                                         {new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(item.harga)}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                                    </TableCell>
+                                    <TableCell className="px-6 py-4 whitespace-nowrap text-center">
                                         <span className={`text-sm font-medium ${item.stok < 100 ? 'text-red-600' : 'text-gray-900'}`}>
                                             {item.stok}
                                         </span>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.kadaluarsa}</td>
-                                </tr>
+                                    </TableCell>
+                                    <TableCell className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.kadaluarsa}</TableCell>
+                                </TableRow>
                             ))}
-                        </tbody>
-                    </table>
+                        </TableBody>
+                    </Table>
                 </div>
             </div>
 
