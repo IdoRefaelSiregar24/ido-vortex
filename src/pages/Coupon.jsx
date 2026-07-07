@@ -5,7 +5,6 @@ import { BsFillExclamationDiamondFill } from "react-icons/bs";
 import { ImSpinner2 } from "react-icons/im";
 import Modal from "../components/Modal";
 import OrderStatCard from "../components/OrderStatCard";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../components/ui/table";
 import { Alert, AlertDescription } from "../components/ui/alert";
 import { supabase } from "../lib/supabase";
 
@@ -351,27 +350,27 @@ export default function Coupon() {
       </div>
 
       {/* Search and Table Box */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden text-left">
+      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 w-full text-left font-sans animate-fade-in">
         {/* Search & Filter Header */}
-        <div className="p-5 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gray-50/50">
-          <div className="flex flex-wrap items-center gap-3 flex-1 max-w-2xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div className="flex flex-wrap items-center gap-3 flex-1">
             {/* Search Query */}
-            <div className="relative flex-1 min-w-[220px]">
-              <MdSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-lg" />
+            <div className="relative w-full sm:w-64">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari kode kupon atau deskripsi..."
-                className="w-full pl-10 pr-4 py-2 text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green outline-none transition-all placeholder-gray-400 shadow-inner"
+                placeholder="Cari kode kupon..."
+                className="w-full pl-4 pr-10 py-2 bg-[#f8fafc] border-none rounded-lg text-[13px] font-medium text-gray-700 outline-none focus:ring-1 focus:ring-ocean-green"
               />
+              <MdSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
             </div>
             
             {/* Filter Jenis Kupon */}
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="px-3 py-2 text-sm bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green text-gray-700 font-medium"
+              className="px-3 py-2 text-[13px] bg-[#f8fafc] border-none rounded-lg outline-none focus:ring-1 focus:ring-ocean-green text-gray-700 font-semibold cursor-pointer"
             >
               <option value="all">Semua Tipe Diskon</option>
               <option value="percentage">Persentase (%)</option>
@@ -382,7 +381,7 @@ export default function Coupon() {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-3 py-2 text-sm bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-ocean-green/20 focus:border-ocean-green text-gray-700 font-medium"
+              className="px-3 py-2 text-[13px] bg-[#f8fafc] border-none rounded-lg outline-none focus:ring-1 focus:ring-ocean-green text-gray-700 font-semibold cursor-pointer"
             >
               <option value="all">Semua Status</option>
               <option value="active">Active</option>
@@ -408,31 +407,38 @@ export default function Coupon() {
               <p className="text-xs text-gray-300">Coba ganti filter pencarian atau buat kupon baru.</p>
             </div>
           ) : (
-            <Table className="w-full text-sm text-left border-collapse">
-              <TableHeader className="bg-gray-50 text-gray-500 font-bold border-b border-gray-100 text-xs uppercase tracking-wider">
-                <TableRow>
-                  <TableHead className="px-6 py-4">Kode Kupon</TableHead>
-                  <TableHead className="px-6 py-4">Potongan Diskon</TableHead>
-                  <TableHead className="px-6 py-4">Min. Belanja</TableHead>
-                  <TableHead className="px-6 py-4">Masa Berlaku</TableHead>
-                  <TableHead className="px-6 py-4">Penggunaan</TableHead>
-                  <TableHead className="px-6 py-4 text-center">Status</TableHead>
-                  <TableHead className="px-6 py-4 text-center">Aksi</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody className="divide-y divide-gray-100 font-medium text-gray-700">
-                {filteredCoupons.map((coupon) => {
+            <table className="w-full text-left border-collapse min-w-[850px]">
+              <thead>
+                <tr className="bg-aqua-spring text-cyprus text-[13px] font-semibold">
+                  <th className="py-3 px-4 rounded-l-md w-10">
+                    <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-ocean-green focus:ring-ocean-green cursor-pointer" />
+                  </th>
+                  <th className="py-3 px-2 w-12">No.</th>
+                  <th className="py-3 px-4 w-40">Kode Kupon</th>
+                  <th className="py-3 px-4">Potongan Diskon</th>
+                  <th className="py-3 px-4">Min. Belanja</th>
+                  <th className="py-3 px-4">Masa Berlaku</th>
+                  <th className="py-3 px-4">Penggunaan</th>
+                  <th className="py-3 px-4 text-center">Status</th>
+                  <th className="py-3 px-4 rounded-r-md text-center w-24">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredCoupons.map((coupon, index) => {
                   const today = new Date().toISOString().split("T")[0];
                   const isExpired = coupon.expiryDate < today;
                   const displayStatus = isExpired ? "expired" : coupon.status;
                   const usagePercentage = Math.min((coupon.usedCount / coupon.usageLimit) * 100, 100);
 
                   return (
-                    <TableRow key={coupon.id} className="hover:bg-gray-50/50 transition-colors animate-fade-in">
-                      {/* Monospace Code with copy button */}
-                      <TableCell className="px-6 py-4">
+                    <tr key={coupon.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors group">
+                      <td className="py-4 px-4">
+                        <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-ocean-green focus:ring-ocean-green cursor-pointer" />
+                      </td>
+                      <td className="py-4 px-2 text-[14px] font-medium text-gray-700">{index + 1}</td>
+                      <td className="py-4 px-4">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono font-bold text-sm text-cyprus bg-aqua-spring px-2.5 py-1 rounded-lg border border-ocean-green/10">
+                          <span className="font-mono font-bold text-[13px] text-cyprus bg-aqua-spring px-2.5 py-1 rounded-lg border border-ocean-green/10 animate-fade-in">
                             {coupon.code}
                           </span>
                           <button
@@ -443,34 +449,30 @@ export default function Coupon() {
                             {copiedCode === coupon.code ? <MdCheck className="text-success animate-scale-up" size={16} /> : <MdContentCopy size={15} />}
                           </button>
                         </div>
-                        <p className="text-xs text-gray-400 font-medium mt-1.5 max-w-xs truncate">{coupon.description}</p>
-                      </TableCell>
+                        <p className="text-[10px] text-gray-400 font-medium mt-1.5 max-w-xs truncate">{coupon.description}</p>
+                      </td>
 
-                      {/* Discount display */}
-                      <TableCell className="px-6 py-4">
-                        <span className="font-bold text-cyprus text-sm">
+                      <td className="py-4 px-4 text-[14px]">
+                        <span className="font-bold text-cyprus">
                           {coupon.type === "percentage" ? `${coupon.value}%` : `$${coupon.value}`}
                         </span>
                         <p className="text-[10px] text-gray-400 mt-0.5 capitalize">{coupon.type} Discount</p>
-                      </TableCell>
+                      </td>
 
-                      {/* Min purchase */}
-                      <TableCell className="px-6 py-4">
+                      <td className="py-4 px-4 text-[14px]">
                         <span className="text-gray-600 font-semibold">
                           {coupon.minPurchase > 0 ? `$${coupon.minPurchase}` : "Tidak Ada"}
                         </span>
-                      </TableCell>
+                      </td>
 
-                      {/* Expiry Date */}
-                      <TableCell className="px-6 py-4">
+                      <td className="py-4 px-4 text-[14px]">
                         <span className={isExpired ? "text-red-500 font-semibold" : "text-gray-600"}>
                           {new Date(coupon.expiryDate).toLocaleDateString("id-ID", { day: "2-digit", month: "short", year: "numeric" })}
                         </span>
-                      </TableCell>
+                      </td>
 
-                      {/* Progress usage */}
-                      <TableCell className="px-6 py-4 min-w-[140px]">
-                        <div className="flex justify-between text-xs text-gray-500 mb-1">
+                      <td className="py-4 px-4 min-w-[140px] text-[14px]">
+                        <div className="flex justify-between text-[11px] text-gray-500 mb-1">
                           <span>{coupon.usedCount} Terpakai</span>
                           <span>{coupon.usageLimit} Limit</span>
                         </div>
@@ -480,17 +482,15 @@ export default function Coupon() {
                             style={{ width: `${usagePercentage}%` }} 
                           />
                         </div>
-                      </TableCell>
+                      </td>
 
-                      {/* Status badge */}
-                      <TableCell className="px-6 py-4 text-center">
+                      <td className="py-4 px-4 text-center">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] uppercase tracking-wider ${getStatusBadge(displayStatus, coupon.expiryDate)}`}>
                           {displayStatus}
                         </span>
-                      </TableCell>
+                      </td>
 
-                      {/* Actions */}
-                      <TableCell className="px-6 py-4 text-center">
+                      <td className="py-4 px-4 text-center">
                         <div className="inline-flex gap-2">
                           <button
                             onClick={() => openEditModal(coupon)}
@@ -507,12 +507,12 @@ export default function Coupon() {
                             <MdDelete className="text-lg" />
                           </button>
                         </div>
-                      </TableCell>
-                    </TableRow>
+                      </td>
+                    </tr>
                   );
                 })}
-              </TableBody>
-            </Table>
+              </tbody>
+            </table>
           )}
         </div>
       </div>
