@@ -208,6 +208,7 @@ export default function MemberLayout() {
             {[
               { path: "/member-dashboard", label: "Dashboard" },
               { path: "/health-card", label: "Kartu Kesehatan" },
+              { path: "/member-subscriptions", label: "Langganan Obat" },
               { path: "/member-obat", label: "Katalog Obat" }
             ].map((tab) => {
               const isActive = location.pathname === tab.path;
@@ -258,6 +259,7 @@ export default function MemberLayout() {
           {[
             { path: "/member-dashboard", label: "Dashboard" },
             { path: "/health-card", label: "Kartu Kesehatan" },
+            { path: "/member-subscriptions", label: "Langganan" },
             { path: "/member-obat", label: "Katalog Obat" }
           ].map((tab) => {
             const isActive = location.pathname === tab.path;

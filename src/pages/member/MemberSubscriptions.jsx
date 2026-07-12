@@ -61,6 +61,8 @@ export default function MemberSubscriptions({ userId }) {
         if (userId) {
             fetchSubscriptions();
             fetchProducts();
+        } else {
+            setLoading(false);
         }
     }, [userId]);
 
@@ -168,7 +170,8 @@ export default function MemberSubscriptions({ userId }) {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="bg-[#FAFBFB] min-h-screen">
+            <div className="max-w-6xl mx-auto px-4 md:px-6 pt-8 pb-16 space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
@@ -397,6 +400,7 @@ export default function MemberSubscriptions({ userId }) {
                     </div>
                 </div>
             )}
+        </div>
         </div>
     );
 }

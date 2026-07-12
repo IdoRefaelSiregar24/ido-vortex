@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useOutletContext } from "react-router-dom";
 import Loading from "./components/Loading";
 import "./assets/tailwind.css";
 import ScrollToTop from "./components/ScrollToTop";
@@ -29,7 +29,14 @@ const MedicalRecordDashboard = React.lazy(() => import("./pages/MedicalRecordDas
 const PatientHealthCard = React.lazy(() => import("./pages/member/PatientHealthCard"));
 const MemberLayout = React.lazy(() => import("./layouts/MemberLayout"));
 const MemberObat = React.lazy(() => import("./pages/member/MemberObat"));
+const MemberSubscriptions = React.lazy(() => import("./pages/member/MemberSubscriptions"));
 
+
+// Wrapper agar userId dari MemberLayout outlet context bisa diteruskan ke MemberSubscriptions
+function MemberSubscriptionsPage() {
+  const { user } = useOutletContext();
+  return <MemberSubscriptions userId={user?.id} />;
+}
 
 function App() {
   return (
@@ -45,6 +52,7 @@ function App() {
         <Route element={<MemberLayout />}>
           <Route path="/member-dashboard" element={<MemberDashboard />} />
           <Route path="/health-card" element={<PatientHealthCard />} />
+          <Route path="/member-subscriptions" element={<MemberSubscriptionsPage />} />
         </Route>
 
 
